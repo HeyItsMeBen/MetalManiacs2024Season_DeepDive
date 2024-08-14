@@ -56,7 +56,7 @@ public class Camera_Exa extends LinearOpMode {
     double tgtPower = 0;
     //setup?
     OpenCvCamera camera;
-    AprilTagDetectionPipeline_notCoves aprilTagDetectionPipeline; //Note to self: y _notCoves
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
     //mor3 variables
     static final double FEET_PER_METER = 3.28084;
 
@@ -82,7 +82,7 @@ public class Camera_Exa extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        //mapping (syncing code to the driver station or whatever)
+        //mapping (syncing code to the control hub or whatever)
         frontleftMotor = hardwareMap.get(DcMotor.class, "Left");
         frontrightMotor = hardwareMap.get(DcMotor.class, "Right");
         //backleftMotor = hardwareMap.get(DcMotor.class, "backleftMotor");
@@ -94,7 +94,7 @@ public class Camera_Exa extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new AprilTagDetectionPipeline_notCoves(tagsize, fx, fy, cx, cy);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         //Not sure what pipeline is, but it's probably just some necessary code fo rit to run. So, this should just attach the pipeline file to this one
         camera.setPipeline(aprilTagDetectionPipeline);
