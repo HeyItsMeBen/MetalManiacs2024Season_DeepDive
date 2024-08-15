@@ -1,0 +1,21 @@
+Configuring the robot:
+
+Steps:
+ 
+  1) Turn on the Driver Station. It should resemble a black cube with a screen.
+
+  2) Ensure that the station is connected to the same Wifi as the control hub. I forgot what the name was, but I believe the password is metalmaniacs or something like that. 
+     Otherwise, it could be just "password" and we forgot to change it which we should've done. Just hold it close to the control hub or something and pray it connects. 
+
+  3) In the top right corner, press the three vertical dots. WHen a menu opens up, press "Configure Robot". Thsi should cause the robot to flash in multiple colors. 
+  
+  4) Press the section with the corresponding robot name (Such as if you wanted to modify the pushbot, you would press "pushbot").
+ 
+  5) There will be multiple sections for different kinds of devices, such as motors or servos. Select the one that corresponds with the device you are trying to map.
+ 
+  6) Find the corresponding port that the wire is connected to. In the dropbox, select the type of device it is (such as for a servo, a CRservo). Once done, name it based on the name 
+     it has been given in the file. This is crucial as the mapping is the "bridge" between software and hardware. 
+          - Note that the name will be case-sensitive
+
+  7) Once finished, exit out and make sure to save. 
+          - If you have nothing to change, such as just there to double check the name, DO NOT save
