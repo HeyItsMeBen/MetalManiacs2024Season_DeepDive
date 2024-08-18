@@ -107,6 +107,10 @@ public class PushBotCode extends LinearOpMode
     private DcMotor arm = null;
     private Servo leftClaw = null;
     private Servo rightClaw = null;
+    
+    private double left_increment = 0.0;
+    
+    private double right_increment = 0.0;
 
     @Override
     public void runOpMode()
@@ -126,8 +130,8 @@ public class PushBotCode extends LinearOpMode
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
 
-        left.setDirection(DcMotor.Direction.FORWARD); //Switched direction of motors
-        right.setDirection(DcMotor.Direction.REVERSE); //Switched direction of motors
+        left.setDirection(DcMotor.Direction.FORWARD);
+        right.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.FORWARD);
 
 
@@ -179,18 +183,24 @@ public class PushBotCode extends LinearOpMode
 
             }
             while(gamepad2.left_trigger > 0){
-                leftClaw.setPosition(1);
-                rightClaw.setPosition(-1);
+                leftClaw.setPosition(left_increment);
+                rightClaw.setPosition(right_increment);
+                left_increment += 0.25;
+                right_increment -= 0.25;
+                sleep(250);
             }
 
             while(gamepad2.right_trigger > 0){
-                leftClaw.setPosition(-1);
-                rightClaw.setPosition(1);
+                leftClaw.setPosition(left_increment);
+                rightClaw.setPosition(right_increment);
+                left_increment -= 0.25;
+                right_increment += 0.25;
+                sleep(250);
             }
 
-            left.setPower(0); //New changes made here
-            right.setPower(0); //New changes made here
-            arm.setPower(0); //New changes made here
+            left.setPower(0);
+            right.setPower(0);
+            arm.setPower(0);
 
             /*
             if ((runtime.seconds() > HALF_TIME) && !secondHalf)  {
