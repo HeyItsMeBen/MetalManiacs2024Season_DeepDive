@@ -209,11 +209,11 @@ public class Camera_Exa extends LinearOpMode {
         }
 
         // Autonumus Code               ///   MAIN SECTION   //////
-        if(tagOfInterest.id == Left){
+        if(tagOfInterest == null || tagOfInterest.id == Left){
             //left code
             frontleftMotor.setPower(0.1);
 
-        }else if(tagOfInterest == null || tagOfInterest.id == Middle) { //this part was edited, so it might cause errrors
+        }else if(tagOfInterest.id == Middle) {
             //middle code
             frontleftMotor.setPower(0.1);
             frontrightMotor.setPower(0.1);
