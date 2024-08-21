@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -208,20 +209,35 @@ public class Camera_Exa extends LinearOpMode {
             telemetry.update();
         }
 
+        frontleftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontrightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Autonumus Code               ///   MAIN SECTION   //////
+        //The if statements see if certain tags are detected or if none are detected
         if(tagOfInterest == null || tagOfInterest.id == Left){
             //left code
-            frontleftMotor.setPower(0.1);
-
+            telemetry.addLine("Left Tag Scanned");
+            telemetry.update();
+            frontleftMotor.setPower(0);
+            frontrightMotor.setPower(1);
+            sleep(1000);
         }else if(tagOfInterest.id == Middle) {
             //middle code
-            frontleftMotor.setPower(0.1);
-            frontrightMotor.setPower(0.1);
-
+            telemetry.addLine("Middle Tag Scanned");
+            telemetry.update();
+            frontleftMotor.setPower(1);
+            frontrightMotor.setPower(1);
+            sleep(1000);
         }else if(tagOfInterest.id == Right){
             //right code
-            frontrightMotor.setPower(0.1);
-
+            telemetry.addLine("Right Tag Scanned");
+            telemetry.update();
+            frontleftMotor.setPower(1);
+            frontrightMotor.setPower(0);
+            sleep(1000);
+        }else {
+            telemetry.addLine("No Tag Scanned");
+            telemetry.update();
         }
 
 
