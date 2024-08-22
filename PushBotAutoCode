@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -39,12 +40,14 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * command is issued. The pipeline is re-used from SkystoneDeterminationExample
  */
 @Autonomous
-public class Auto extends LinearOpMode
+public class PushBotAutoCode extends LinearOpMode
 {
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
-
     public DcMotor arm = null;
+    public Servo leftClaw = null;
+    public Servo rightClaw = null;
+
     static final double FORWARD_SPEED = 0.6;
     double leftFront;
     double rightFront;
@@ -57,8 +60,8 @@ public class Auto extends LinearOpMode
     double turn;
     double max;
     OpenCvWebcam webcam;
-    SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
-    SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
+    //SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
+    //SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
 
     @Override
     public void runOpMode()
@@ -73,40 +76,92 @@ public class Auto extends LinearOpMode
         leftDrive = hardwareMap.get(DcMotor.class, "Left"); // "FrontLeftWheel" matching with driver station configuration
         rightDrive = hardwareMap.get(DcMotor.class, "Right");
         arm = hardwareMap.get(DcMotor.class, "Arm");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
 
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotor.Direction.REVERSE);
+
         waitForStart();
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive())
         {
-            leftDrive.setPower(5);
-            rightDrive.setPower(4);
+            /*
+            //moves forward
+            leftDrive.setPower(1);
+            rightDrive.setPower(0.5);
+
+            sleep(1000);
+
+            //moves backwards
+            leftDrive.setPower(-1);
+            rightDrive.setPower(-0.5);
+
+            sleep(1000);
+
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+
+            sleep(1000);
+
+            //turn left
+            leftDrive.setPower(-0.5);
+            rightDrive.setPower(1);
+
+            sleep(1000);
+
+            //re-turn left
+            leftDrive.setPower(0.5);
+            rightDrive.setPower(-1);
+
+            sleep(1000);
+
+            //turn right
+            leftDrive.setPower(0.5);
+            rightDrive.setPower(-1);
+
+            sleep(1000);
+
+            //re-turn right
+            leftDrive.setPower(-0.5);
+            rightDrive.setPower(1);
+
+            sleep(1000);
+
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+
+            sleep(1000);
+            */
+            //arm.setPower(1);
+
+            //set claw initial position
+
+            //leftClaw.setPosition(0);
+            //rightClaw.setPosition(0);
+
+            sleep(1000);
+            //set claw close
+            leftClaw.setPosition(-1);
+            rightClaw.setPosition(1);
+
+            //sleep(1000);
+            //set claw open
+            //leftClaw.setPosition(0);
+            //rightClaw.setPosition(0);
+
+            //sleep(1000);
+
+
+           //arm.setPower(-1);
+
+            telemetry.addData("Left Claw Position:", leftClaw.getPosition());
+            telemetry.addData("Right Claw Position:", rightClaw.getPosition());
+            telemetry.update();
 
             sleep(10000);
 
-            leftDrive.setPower(-1);
-            rightDrive.setPower(12);
-
-            sleep(5000);
-
-            leftDrive.setPower(5);
-            rightDrive.setPower(5);
-
-            sleep(1000);
-
-            leftDrive.setPower(-5);
-            rightDrive.setPower(-5);
-
-            sleep(1000);
-
-            leftDrive.setPower(12);
-            rightDrive.setPower(-1);
-
-            sleep(2500);
-
-            leftDrive.setPower(-5);
-            rightDrive.setPower(-5);
 
             break;
             //leftDrive.setPower(2);
