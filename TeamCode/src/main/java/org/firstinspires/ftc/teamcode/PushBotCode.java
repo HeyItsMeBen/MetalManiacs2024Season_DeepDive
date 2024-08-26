@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -89,20 +87,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
 
-@Disabled
-@TeleOp(name="Concept: Gamepad Rumble", group ="Concept")
-public class ConceptGamepadRumble extends LinearOpMode
+@TeleOp(name="PushbotDrive", group ="Concept")
+public class PushBotCode extends LinearOpMode
 {
-    boolean lastA = false;                      // Use to track the prior button state.
-    boolean lastLB = false;                     // Use to track the prior button state.
-    boolean highLevel = false;                  // used to prevent multiple level-based rumbles.
-    boolean secondHalf = false;                 // Use to prevent multiple half-time warning rumbles.
+    //boolean lastA = false;                      // Use to track the prior button state.
+    //boolean lastLB = false;                     // Use to track the prior button state.
+    //boolean highLevel = false;                  // used to prevent multiple level-based rumbles.
+    //boolean secondHalf = false;                 // Use to prevent multiple half-time warning rumbles.
 
-    Gamepad.RumbleEffect customRumbleEffect;    // Use to build a custom rumble sequence.
+    //Gamepad.RumbleEffect customRumbleEffect;    // Use to build a custom rumble sequence.
     ElapsedTime runtime = new ElapsedTime();    // Use to determine when end game is starting.
 
-    final double HALF_TIME = 60.0;              // Wait this many seconds before rumble-alert for half-time.
-    final double TRIGGER_THRESHOLD  = 0.75;     // Squeeze more than 3/4 to get rumble.
+    //final double HALF_TIME = 60.0;              // Wait this many seconds before rumble-alert for half-time.
+    //final double TRIGGER_THRESHOLD  = 0.75;     // Squeeze more than 3/4 to get rumble.
 
     private DcMotor left = null;
     private DcMotor right = null;
@@ -111,19 +108,21 @@ public class ConceptGamepadRumble extends LinearOpMode
     private Servo leftClaw = null;
     private Servo rightClaw = null;
 
+    private double left_increment = 0.0;
 
+    private double right_increment = 0.0;
 
     @Override
     public void runOpMode()
     {
         // Example 1. a)   start by creating a three-pulse rumble sequence: right, LEFT, LEFT
-        customRumbleEffect = new Gamepad.RumbleEffect.Builder()
-                .addStep(0.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 300)  //  Pause for 300 mSec
-                .addStep(1.0, 0.0, 250)  //  Rumble left motor 100% for 250 mSec
-                .addStep(0.0, 0.0, 250)  //  Pause for 250 mSec
-                .addStep(1.0, 0.0, 250)  //  Rumble left motor 100% for 250 mSec
-                .build();
+        //customRumbleEffect = new Gamepad.RumbleEffect.Builder()
+        //        .addStep(0.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
+        //        .addStep(0.0, 0.0, 300)  //  Pause for 300 mSec
+        //        .addStep(1.0, 0.0, 250)  //  Rumble left motor 100% for 250 mSec
+        //        .addStep(0.0, 0.0, 250)  //  Pause for 250 mSec
+        //        .addStep(1.0, 0.0, 250)  //  Rumble left motor 100% for 250 mSec
+        //        .build();
 
         left = hardwareMap.get(DcMotor.class, "Left"); //added 7/24/24
         right = hardwareMap.get(DcMotor.class, "Right");
@@ -132,7 +131,7 @@ public class ConceptGamepadRumble extends LinearOpMode
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
 
         left.setDirection(DcMotor.Direction.FORWARD);
-        right.setDirection(DcMotor.Direction.FORWARD);
+        right.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.FORWARD);
 
 
@@ -150,7 +149,7 @@ public class ConceptGamepadRumble extends LinearOpMode
             boolean currentLB = gamepad1.left_bumper ;
 
             // Display the current Rumble status.  Just for interest.
-            telemetry.addData(">", "Are we RUMBLING? %s\n", gamepad1.isRumbling() ? "YES" : "no" );
+            telemetry.addData(">", "Robot Successfully Configured");
 
             // ----------------------------------------------------------------------------------------
             // Example 1. b) Watch the runtime timer, and run the custom rumble when we hit half-time.
@@ -184,14 +183,25 @@ public class ConceptGamepadRumble extends LinearOpMode
 
             }
             while(gamepad2.left_trigger > 0){
-                leftClaw.setPosition(1);
-                rightClaw.setPosition(-1);
+                leftClaw.setPosition(left_increment);
+                rightClaw.setPosition(right_increment);
+                left_increment += 0.25;
+                right_increment -= 0.25;
+                sleep(250);
             }
 
             while(gamepad2.right_trigger > 0){
-                leftClaw.setPosition(-1);
-                rightClaw.setPosition(1);
+                leftClaw.setPosition(left_increment);
+                rightClaw.setPosition(right_increment);
+                left_increment -= 0.25;
+                right_increment += 0.25;
+                sleep(250);
             }
+
+            left.setPower(0);
+            right.setPower(0);
+            arm.setPower(0);
+
             /*
             if ((runtime.seconds() > HALF_TIME) && !secondHalf)  {
                 gamepad1.runRumbleEffect(customRumbleEffect);
