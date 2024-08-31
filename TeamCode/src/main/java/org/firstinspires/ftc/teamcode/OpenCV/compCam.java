@@ -213,6 +213,7 @@ public class compCam extends LinearOpMode {
             telemetry.addLine("Warning: No tag was found! Last resort code will be ran for a 33% chance of succession :(");
             telemetry.update();
         }
+
         //deletable?
         /*frontleftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontrightMotor.setDirection(DcMotorSimple.Direction.REVERSE);*/
@@ -264,6 +265,7 @@ public class compCam extends LinearOpMode {
     //does this have to be put somewhere else? (deletable comment)
     public int tagToId(){
         //return tagOfInterest.id;
+        //return AprilTagDetection tagOfInterest.id;
         return 1;
     }
 }
