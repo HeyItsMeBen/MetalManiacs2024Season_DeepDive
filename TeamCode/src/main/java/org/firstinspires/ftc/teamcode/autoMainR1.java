@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //file imported here!!!
 import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+import org.firstinspires.ftc.teamcode.compDrive;
 
 /**
  * This OpMode opens a claw when a is pressed, then closes when b is pressed
@@ -51,7 +52,7 @@ import org.firstinspires.ftc.teamcode.OpenCV.compCam;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Spider", group = "Linear OpMode")
+@Autonomous(name = "autoMainR1", group = "Linear OpMode")
 //@Disabled
 public class autoMainR1 extends LinearOpMode {
 
@@ -61,6 +62,7 @@ public class autoMainR1 extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    //compDrive drive1= new compDrive(hardwareMap);
 
 
     @Override
@@ -83,12 +85,20 @@ public class autoMainR1 extends LinearOpMode {
         telemetry.update();
         waitForStart();
         runtime.reset();
+        //option1
         compCam tagID = new compCam();
-        tagID.tagToId();
+        compDrive drive1 = new compDrive(hardwareMap);
+        //tagID.tagToId();
         while (opModeIsActive()) {
             if (tagID.tagToId()==1){
-                frontLeftDrive.setPower(0.1);}
+                //frontLeftDrive.setPower(0.5);
+                drive1.moveForward(12, 0.5);}
         }
+        /*compCam tagID = new compCam();
+        while (opModeIsActive()) {
+            if (tagID==1){
+                frontLeftDrive.setPower(0.1);}
+        }*/
         // Send calculated power to wheels
 
 
