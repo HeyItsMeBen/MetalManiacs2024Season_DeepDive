@@ -24,10 +24,10 @@ public class compDrive {
         /*construct a new compDrive object*/
 
         // Initialize motors
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftWheel");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftWheel");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightWheel");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightWheel");
 
         // Set motors to run using encoders for precise movement
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -58,7 +58,7 @@ public class compDrive {
     }
 
     private void setBackward() {
-        //SET all 4 directions to forward
+        //SET all 4 directions to backwards
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -94,8 +94,8 @@ public class compDrive {
         //SET MOTOR directions to have robot move forward upper right!
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+       // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
@@ -275,6 +275,27 @@ public class compDrive {
      */
     public void moveUpperRight (double dblInches, double dblPower){
         // Convert distance to encoder counts
+        // Convert distance to encoder counts
+        int encoderCountsToMove = (int) (dblInches * ENCODER_COUNTS_PER_INCH);
+
+        stopDrive(); //Before Changing Directions. STOP motor first so no drift.
+
+        // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
+        // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
+        frontLeftDrive.setTargetPosition(encoderCountsToMove);
+        backLeftDrive.setTargetPosition(encoderCountsToMove);
+        frontRightDrive.setTargetPosition(encoderCountsToMove);
+        backRightDrive.setTargetPosition(encoderCountsToMove);
+
+        //Set all 4 motors position and also RUN_TO_POSITION
+        setMotorPower(dblPower);
+
+        // Wait until the motors reach the target position
+        while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
+                frontRightDrive.isBusy() && backRightDrive.isBusy()) {
+            // Optionally, add telemetry to display progress
+            //telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            //telemetry.update();
         int encoderCountsToMove = (int) (dblInches * ENCODER_COUNTS_PER_INCH);
 
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
