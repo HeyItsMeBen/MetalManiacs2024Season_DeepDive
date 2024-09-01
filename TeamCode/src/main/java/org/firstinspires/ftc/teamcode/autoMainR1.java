@@ -62,7 +62,9 @@ public class autoMainR1 extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    //compDrive drive1= new compDrive(hardwareMap);
+
+    // Drive Motor Power Array
+    private double[] dblDrivePower = new double[4];
 
 
     @Override
@@ -91,8 +93,17 @@ public class autoMainR1 extends LinearOpMode {
         //tagID.tagToId();
         while (opModeIsActive()) {
             if (tagID.tagToId()==1){
-                //frontLeftDrive.setPower(0.5);
-                drive1.moveForward(12, 0.5);}
+                //SET Drive Power 50%
+                dblDrivePower[0] = 0.5; //Set Front LEFT Motor Power Value
+                dblDrivePower[1] = 0.5; //Set Front RIGHT Motor Power Value
+                dblDrivePower[2] = 0.5; //Set Back LEFT Motor Power Value
+                dblDrivePower[3] = 0.5; //Set Back RIGHT Motor Power Value
+
+                //Dive Motor Forward at above power speed and up to ## of inches
+                drive1.moveForward(12, dblDrivePower);}
+
+                telemetry.addData(">", "TEST COMPLETED" );
+                telemetry.update();
         }
         /*compCam tagID = new compCam();
         while (opModeIsActive()) {
