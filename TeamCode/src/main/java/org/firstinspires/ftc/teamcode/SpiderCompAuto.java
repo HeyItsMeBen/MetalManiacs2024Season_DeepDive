@@ -1,5 +1,11 @@
-
 package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -48,9 +54,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "Spider", group = "Linear OpMode")
+@Autonomous(name = "SpiderCompAuto", group = "Linear OpMode")
 //@Disabled
-public class DriveCodeSpider extends LinearOpMode {
+public class SpiderCompAuto extends LinearOpMode {
 
     // Driver Code
     private ElapsedTime runtime = new ElapsedTime();
@@ -82,7 +88,7 @@ public class DriveCodeSpider extends LinearOpMode {
         while (opModeIsActive()) {
             // Drive Code
             //forward movement
-                /*frontLeftDrive.setPower(.5);
+              /*  frontLeftDrive.setPower(.5);
                 frontRightDrive.setPower(.5);
                 backLeftDrive.setPower(.5);
                 backRightDrive.setPower(.5);
@@ -97,6 +103,23 @@ public class DriveCodeSpider extends LinearOpMode {
                 backLeftDrive.setPower(0);
                 backRightDrive.setPower(0);
                 sleep(1000);*/
+
+            //backward movement
+            frontLeftDrive.setPower(-.25);
+            frontRightDrive.setPower(-.25);
+            backLeftDrive.setPower(-.25);
+            backRightDrive.setPower(-.25);
+            sleep(1000);
+            frontLeftDrive.setPower(-.25);
+            frontRightDrive.setPower(-.25);
+            backLeftDrive.setPower(-.25);
+            backRightDrive.setPower(-.25);
+            sleep(1000);
+            frontLeftDrive.setPower(0);
+            frontRightDrive.setPower(0);
+            backLeftDrive.setPower(0);
+            backRightDrive.setPower(0);
+            sleep(1000);
 
             //diagonal upper right
                 /*frontLeftDrive.setPower(.5);
@@ -166,16 +189,16 @@ public class DriveCodeSpider extends LinearOpMode {
                 backRightDrive.setPower(0);
                 sleep(1000);*/
 
-                /*right
-                frontLeftDrive.setPower(0.5);
-                frontRightDrive.setPower(-0.5);
-                backLeftDrive.setPower(-0.5);
-                backRightDrive.setPower(0.5);
+                //right
+               /*frontLeftDrive.setPower(0.25);
+                frontRightDrive.setPower(-0.25);
+                backLeftDrive.setPower(-0.25);
+                backRightDrive.setPower(0.25);
                 sleep(1000);
-                frontLeftDrive.setPower(0.5);
-                frontRightDrive.setPower(-0.5);
-                backLeftDrive.setPower(-0.5);
-                backRightDrive.setPower(0.5);
+                frontLeftDrive.setPower(0.25);
+                frontRightDrive.setPower(-0.25);
+                backLeftDrive.setPower(-0.25);
+                backRightDrive.setPower(0.25);
                 sleep(1000);
                 frontLeftDrive.setPower(0);
                 frontRightDrive.setPower(0);
@@ -184,15 +207,15 @@ public class DriveCodeSpider extends LinearOpMode {
                 sleep(1000);*/
 
             //left
-            frontLeftDrive.setPower(-0.5);
-            frontRightDrive.setPower(0.5);
-            backLeftDrive.setPower(0.5);
-            backRightDrive.setPower(-0.5);
+           frontLeftDrive.setPower(-0.75);
+            frontRightDrive.setPower(0.75);
+            backLeftDrive.setPower(0.75);
+            backRightDrive.setPower(-0.75);
             sleep(1000);
-            frontLeftDrive.setPower(-0.5);
-            frontRightDrive.setPower(0.5);
-            backLeftDrive.setPower(0.5);
-            backRightDrive.setPower(-0.5);
+            frontLeftDrive.setPower(-0.75);
+            frontRightDrive.setPower(0.75);
+            backLeftDrive.setPower(0.75);
+            backRightDrive.setPower(-0.75);
             sleep(1000);
             frontLeftDrive.setPower(0);
             frontRightDrive.setPower(0);
