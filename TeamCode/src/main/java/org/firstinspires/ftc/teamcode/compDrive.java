@@ -18,10 +18,10 @@ public class compDrive {
         /*construct a new compDrive object*/
 
         // Initialize motors
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftWheel");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftWheel");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightWheel");
-        backRightDrive = hardwareMap.get(DcMotor.class, "backRightWheel");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
+        backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
 
         // Set motors to run using encoders for precise movement
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
