@@ -58,7 +58,7 @@ import org.firstinspires.ftc.teamcode.compDrive;
 //@Disabled
 public class autoMainR1 extends LinearOpMode {
 
-    //Driver Code
+    // Driver Code
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
