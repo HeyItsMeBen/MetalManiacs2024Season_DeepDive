@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+
 @Autonomous
 public class LinearSlideAuto extends LinearOpMode {
     private DcMotor LinearSlide = null;
@@ -61,5 +62,5 @@ public class LinearSlideAuto extends LinearOpMode {
             ServoSlide.setPower(0);
             ServoSlide1.setPower(0);
         }
+        }
     }
-}
