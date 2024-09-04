@@ -32,6 +32,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //file imported here!!!
@@ -62,9 +64,8 @@ public class autoMainR1 extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-
-    // Drive Motor Power Array
-    private double[] dblDrivePower = new double[4];
+    private double[] dblPowerList={0.5, 0.5, 0.5, 0.5};
+    //compDrive drive1= new compDrive(hardwareMap);
 
 
     @Override
@@ -88,22 +89,46 @@ public class autoMainR1 extends LinearOpMode {
         waitForStart();
         runtime.reset();
         //option1
-        compCam tagID = new compCam();
+        compCam tagID = new compCam(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
         //tagID.tagToId();
         while (opModeIsActive()) {
-            if (tagID.tagToId()==1){
-                //SET Drive Power 50%
-                dblDrivePower[0] = 0.5; //Set Front LEFT Motor Power Value
-                dblDrivePower[1] = 0.5; //Set Front RIGHT Motor Power Value
-                dblDrivePower[2] = 0.5; //Set Back LEFT Motor Power Value
-                dblDrivePower[3] = 0.5; //Set Back RIGHT Motor Power Value
+            //if (tagID.tagToId()==4){
+                //frontLeftDrive.setPower(0.5);
+                //drive %50 power left
+                //drive1.moveLeft(12, dblPowerList);//
+            telemetry.addData("Op mode", "is active");
+            telemetry.update();
+            sleep(2500);
 
-                //Dive Motor Forward at above power speed and up to ## of inches
-                drive1.moveForward(12, dblDrivePower);}
+            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward
+            frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward
+            backRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
-                telemetry.addData(">", "TEST COMPLETED" );
-                telemetry.update();
+            frontLeftDrive.setTargetPosition(258);
+            backLeftDrive.setTargetPosition(258);
+            frontRightDrive.setTargetPosition(258);
+            backRightDrive.setTargetPosition(258);
+
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            frontLeftDrive.setPower(0.5);
+            frontRightDrive.setPower(0.5);
+            backLeftDrive.setPower(0.5);
+            backRightDrive.setPower(0.5);
+
+            sleep(2500);
+
+            frontLeftDrive.setPower(0);
+            frontRightDrive.setPower(0);
+            backLeftDrive.setPower(0);
+            backRightDrive.setPower(0);
+
+
         }
         /*compCam tagID = new compCam();
         while (opModeIsActive()) {
