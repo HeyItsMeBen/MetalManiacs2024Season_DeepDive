@@ -101,10 +101,10 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.update();
             sleep(2500);
 
-            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward
-            frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward
-            backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
+            frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
+            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
+            backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
             frontLeftDrive.setTargetPosition(258);
             backLeftDrive.setTargetPosition(258);
