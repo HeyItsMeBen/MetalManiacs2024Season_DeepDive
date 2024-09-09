@@ -91,6 +91,9 @@ public class autoMainR1 extends LinearOpMode {
         //option1
         compCam tagID = new compCam(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
+        int intTestMode = 0; //0 IS NOT IN TEST MODE
+
+        intTestMode = 2; //This must be changed depending on what team is testing
         //tagID.tagToId();
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
@@ -99,34 +102,58 @@ public class autoMainR1 extends LinearOpMode {
                 //drive1.moveLeft(12, dblPowerList);//
             telemetry.addData("Op mode", "is active");
             telemetry.update();
-            sleep(2500);
-
-            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
-            frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
-            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
-            backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
-
-            frontLeftDrive.setTargetPosition(258);
-            backLeftDrive.setTargetPosition(258);
-            frontRightDrive.setTargetPosition(258);
-            backRightDrive.setTargetPosition(258);
-
-            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            frontLeftDrive.setPower(0.5);
-            frontRightDrive.setPower(0.5);
-            backLeftDrive.setPower(0.5);
-            backRightDrive.setPower(0.5);
 
             sleep(2500);
+            if (intTestMode==1) {
+                frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
+                frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
+                backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
+                backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
-            frontLeftDrive.setPower(0);
-            frontRightDrive.setPower(0);
-            backLeftDrive.setPower(0);
-            backRightDrive.setPower(0);
+                frontLeftDrive.setTargetPosition(258);
+                backLeftDrive.setTargetPosition(258);
+                frontRightDrive.setTargetPosition(258);
+                backRightDrive.setTargetPosition(258);
+
+                frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                frontLeftDrive.setPower(0.5);
+                frontRightDrive.setPower(0.5);
+                backLeftDrive.setPower(0.5);
+                backRightDrive.setPower(0.5);
+
+                sleep(2500);
+
+                frontLeftDrive.setPower(0);
+                frontRightDrive.setPower(0);
+                backLeftDrive.setPower(0);
+                backRightDrive.setPower(0);
+            } else if (intTestMode == 2) {
+                //TEST compDrive Code
+                drive1.moveForward(3, dblPowerList); //Move Forward 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveBackward(3, dblPowerList); //Move Backward 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveLeft(3, dblPowerList); //Strafe Left 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveRight(3,dblPowerList); //Strafe Right 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveLowerLeft(3, dblPowerList); //Diagonal LowerLeft 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveLowerRight(3, dblPowerList); //Diagonal LowerRight 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveUpperLeft(3,dblPowerList); //Diagonal UpperLeft 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveUpperRight(3,dblPowerList); //Diagonal UpperRight 3 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveClockwiseTurn(3,dblPowerList); //Turn Clockwise for 3 inches long
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveCounterClockwiseTurn(3,dblPowerList); //Turn CounterClockwise for 3 inches long
+                sleep(2000); //Pause for 2 seconds
+            }
 
 
         }
