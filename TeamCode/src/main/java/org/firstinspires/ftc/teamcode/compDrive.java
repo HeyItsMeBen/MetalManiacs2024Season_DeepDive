@@ -54,33 +54,33 @@ public class compDrive {
     private void setBackward() {
         //SET all 4 directions to backwards
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
     private void setForward() {
         //SET all 4 directions to forward
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
     private void setStrafeLeft() {
         //SET motor directions to have robot STRAFE LEFT
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
     private void setStrafeRight(){
         //SET motor directions to have robot STRAFE RIGHT
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -90,7 +90,7 @@ public class compDrive {
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
        // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -98,7 +98,7 @@ public class compDrive {
         //SET MOTOR directions to have robot move forward upper left!
         //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
@@ -110,7 +110,7 @@ public class compDrive {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
 
@@ -118,7 +118,7 @@ public class compDrive {
         //SET MOTOR directions to have robot move backward lower right!
         //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
@@ -128,9 +128,9 @@ public class compDrive {
         //SET MOTOR directions to have robot TURN Counter Clockwise!
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -138,9 +138,9 @@ public class compDrive {
         //SET MOTOR directions to have robot TURN Clockwise
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
     private void setMotorPower(double[] dblPower) {
@@ -360,7 +360,7 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            telemetry.addData("Moving UpperRight", "Distance: %d inches", dblInches);
             telemetry.update();
         }
 
@@ -396,7 +396,7 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            telemetry.addData("Moving LowerLeft", "Distance: %d inches", dblInches);
             telemetry.update();
         }
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
@@ -431,7 +431,7 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            telemetry.addData("Moving LowerRight", "Distance: %d inches", dblInches);
             telemetry.update();
         }
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
@@ -461,7 +461,7 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            telemetry.addData("Turning Clockwise", "Distance: %d inches", dblInches);
             telemetry.update();
         }
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
@@ -491,7 +491,7 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            telemetry.addData("Moving CounterClockwise", "Distance: %d inches", dblInches);
             telemetry.update();
         }
 
