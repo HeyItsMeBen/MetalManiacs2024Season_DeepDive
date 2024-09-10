@@ -36,6 +36,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import org.firstinspires.ftc.teamcode.GyroScope;
+
 import java.util.ArrayList;
 //////  MAKE SURE to update hardware map  ////////
 /*Main things the whole program does:
@@ -268,7 +270,12 @@ public class compCam extends LinearOpMode {
     }
     //does this have to be put somewhere else? (deletable comment)
     public int tagToId(){
-        return tagOfInterest.id;
+        if (tagOfInterest==null) {
+            return 0;
+        }
+        else {
+            return tagOfInterest.id;
+        }
         //return AprilTagDetection tagOfInterest.id;
         //return 1;
     }
