@@ -117,10 +117,10 @@ public class autoMainR1 extends LinearOpMode {
             backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
             //sets how far we want to drive
-            frontLeftDrive.setTargetPosition(258);
-            backLeftDrive.setTargetPosition(258);
-            frontRightDrive.setTargetPosition(258);
-            backRightDrive.setTargetPosition(258);
+            frontLeftDrive.setTargetPosition(120);
+            backLeftDrive.setTargetPosition(120);
+            frontRightDrive.setTargetPosition(120);
+            backRightDrive.setTargetPosition(120);
 
             //drives to the set position
             frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
