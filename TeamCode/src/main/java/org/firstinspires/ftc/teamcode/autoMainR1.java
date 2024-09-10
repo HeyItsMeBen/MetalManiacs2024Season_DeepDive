@@ -37,8 +37,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //file imported here!!!
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.OpenCV.compCam;
 import org.firstinspires.ftc.teamcode.compDrive;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 /**
  * This OpMode opens a claw when a is pressed, then closes when b is pressed
@@ -54,7 +57,7 @@ import org.firstinspires.ftc.teamcode.compDrive;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "autoMainR1", group = "Linear OpMode")
+@Autonomous(name = "autoMainR1E", group = "Linear OpMode")
 //@Disabled
 public class autoMainR1 extends LinearOpMode {
 
@@ -64,6 +67,7 @@ public class autoMainR1 extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    OpenCvCamera camera;
     private double[] dblPowerList={0.5, 0.5, 0.5, 0.5};
     //compDrive drive1= new compDrive(hardwareMap);
 
@@ -76,6 +80,9 @@ public class autoMainR1 extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
         backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+
         // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -94,17 +101,17 @@ public class autoMainR1 extends LinearOpMode {
         //tagID.tagToId();
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
-                //frontLeftDrive.setPower(0.5);
-                //drive %50 power left
-                //drive1.moveLeft(12, dblPowerList);//
+            //frontLeftDrive.setPower(0.5);
+            //drive %50 power left
+            //drive1.moveLeft(12, dblPowerList);//
             telemetry.addData("Op mode", "is active");
             telemetry.update();
             sleep(2500);
 
-            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward
-            frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward
-            backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
+            frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
+            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
+            backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
             frontLeftDrive.setTargetPosition(258);
             backLeftDrive.setTargetPosition(258);
