@@ -62,6 +62,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 public class autoMainR1 extends LinearOpMode {
 
     // Driver Code
+    //defining variables
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
@@ -75,7 +76,7 @@ public class autoMainR1 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Driver Code
+        //hardware mapping
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
         backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
@@ -98,36 +99,42 @@ public class autoMainR1 extends LinearOpMode {
         //option1
         compCam tagID = new compCam(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
-        //tagID.tagToId();
+        //The auto code
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
             //frontLeftDrive.setPower(0.5);
             //drive %50 power left
             //drive1.moveLeft(12, dblPowerList);//
+            //tells us (in the driver hub) if this loop ran
             telemetry.addData("Op mode", "is active");
             telemetry.update();
             sleep(2500);
 
+            //sets direction
             frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
             frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
             backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
             backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
+            //sets how far we want to drive
             frontLeftDrive.setTargetPosition(258);
             backLeftDrive.setTargetPosition(258);
             frontRightDrive.setTargetPosition(258);
             backRightDrive.setTargetPosition(258);
 
+            //drives to the set position
             frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            //sets power and decides how fast we travel towards the set position
             frontLeftDrive.setPower(0.5);
             frontRightDrive.setPower(0.5);
             backLeftDrive.setPower(0.5);
             backRightDrive.setPower(0.5);
 
+            //waits a couple seconds before powering the wheels off
             sleep(2500);
 
             frontLeftDrive.setPower(0);
