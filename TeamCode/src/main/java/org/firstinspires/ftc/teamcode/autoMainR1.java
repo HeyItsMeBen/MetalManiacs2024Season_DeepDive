@@ -32,11 +32,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //file imported here!!!
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.OpenCV.compCam;
 import org.firstinspires.ftc.teamcode.compDrive;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 /**
  * This OpMode opens a claw when a is pressed, then closes when b is pressed
@@ -52,29 +57,39 @@ import org.firstinspires.ftc.teamcode.compDrive;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "autoMainR1", group = "Linear OpMode")
+@Autonomous(name = "autoMainR1E", group = "Linear OpMode")
 //@Disabled
 public class autoMainR1 extends LinearOpMode {
 
     // Driver Code
+    //defining variables
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+<<<<<<< HEAD
 
     // Drive Motor Power Array
     private double[] dblDrivePower = new double[4];
+=======
+    OpenCvCamera camera;
+    private double[] dblPowerList={0.5, 0.5, 0.5, 0.5};
+    //compDrive drive1= new compDrive(hardwareMap);
+>>>>>>> 04f782e94d7d5b0ca7c4ef715a51708c8a1485b6
 
 
     @Override
     public void runOpMode() {
 
-        // Driver Code
+        //hardware mapping
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
         backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
         backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+
         // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -88,10 +103,11 @@ public class autoMainR1 extends LinearOpMode {
         waitForStart();
         runtime.reset();
         //option1
-        compCam tagID = new compCam();
+        compCam tagID = new compCam(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
-        //tagID.tagToId();
+        //The auto code
         while (opModeIsActive()) {
+<<<<<<< HEAD
             if (tagID.tagToId()==1){
                 //SET Drive Power 50%
                 dblDrivePower[0] = 0.5; //Set Front LEFT Motor Power Value
@@ -104,6 +120,50 @@ public class autoMainR1 extends LinearOpMode {
 
                 telemetry.addData(">", "TEST COMPLETED" );
                 telemetry.update();
+=======
+            //if (tagID.tagToId()==4){
+            //frontLeftDrive.setPower(0.5);
+            //drive %50 power left
+            //drive1.moveLeft(12, dblPowerList);//
+            //tells us (in the driver hub) if this loop ran
+            telemetry.addData("Op mode", "is active");
+            telemetry.update();
+            sleep(2500);
+
+            //sets direction
+            frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
+            frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
+            backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
+            backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
+
+            //sets how far we want to drive
+            frontLeftDrive.setTargetPosition(120);
+            backLeftDrive.setTargetPosition(120);
+            frontRightDrive.setTargetPosition(120);
+            backRightDrive.setTargetPosition(120);
+
+            //drives to the set position
+            frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            //sets power and decides how fast we travel towards the set position
+            frontLeftDrive.setPower(0.5);
+            frontRightDrive.setPower(0.5);
+            backLeftDrive.setPower(0.5);
+            backRightDrive.setPower(0.5);
+
+            //waits a couple seconds before powering the wheels off
+            sleep(2500);
+
+            frontLeftDrive.setPower(0);
+            frontRightDrive.setPower(0);
+            backLeftDrive.setPower(0);
+            backRightDrive.setPower(0);
+
+
+>>>>>>> 04f782e94d7d5b0ca7c4ef715a51708c8a1485b6
         }
         /*compCam tagID = new compCam();
         while (opModeIsActive()) {

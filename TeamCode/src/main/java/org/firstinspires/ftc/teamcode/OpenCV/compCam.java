@@ -28,12 +28,15 @@ import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gyroscope;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import org.firstinspires.ftc.teamcode.GyroScope;
 
 import java.util.ArrayList;
 //////  MAKE SURE to update hardware map  ////////
@@ -46,6 +49,9 @@ import java.util.ArrayList;
  */
 @Autonomous //makes program autonomous?
 public class compCam extends LinearOpMode {
+    public compCam(HardwareMap hardwareMap){
+
+    }
     //assign variables
     //hopefully deletable
     /*private DcMotor frontleftMotor;
@@ -264,8 +270,13 @@ public class compCam extends LinearOpMode {
     }
     //does this have to be put somewhere else? (deletable comment)
     public int tagToId(){
-        //return tagOfInterest.id;
+        if (tagOfInterest==null) {
+            return 0;
+        }
+        else {
+            return tagOfInterest.id;
+        }
         //return AprilTagDetection tagOfInterest.id;
-        return 1;
+        //return 1;
     }
 }
