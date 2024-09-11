@@ -94,6 +94,7 @@ public class autoMainR1 extends LinearOpMode {
         int intTestMode = 0; //0 IS NOT IN TEST MODE
 
         intTestMode = 2; //This must be changed depending on what team is testing
+
         //tagID.tagToId();
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
@@ -110,15 +111,28 @@ public class autoMainR1 extends LinearOpMode {
                 backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
                 backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
-                frontLeftDrive.setTargetPosition(258);
-                backLeftDrive.setTargetPosition(258);
-                frontRightDrive.setTargetPosition(258);
-                backRightDrive.setTargetPosition(258);
+                telemetry.addData("Op mode", "Set Direction");
+                telemetry.update();
+                sleep(2000);
+
+                frontLeftDrive.setTargetPosition(100);
+                backLeftDrive.setTargetPosition(100);
+                frontRightDrive.setTargetPosition(100);
+                backRightDrive.setTargetPosition(100);
 
                 frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                frontLeftDrive.setTargetPosition(100);
+                backLeftDrive.setTargetPosition(100);
+                frontRightDrive.setTargetPosition(100);
+                backRightDrive.setTargetPosition(100);
+
+                telemetry.addData("Op mode", "Set Target Position");
+                telemetry.update();
+                sleep(2000);
 
                 frontLeftDrive.setPower(0.5);
                 frontRightDrive.setPower(0.5);
@@ -132,6 +146,11 @@ public class autoMainR1 extends LinearOpMode {
                 backLeftDrive.setPower(0);
                 backRightDrive.setPower(0);
             } else if (intTestMode == 2) {
+                telemetry.addData("compDriveTest", "Set Target Position");
+                telemetry.update();
+                sleep(2000);
+
+
                 //TEST compDrive Code
                 drive1.moveForward(3, dblPowerList); //Move Forward 3 inches
                 sleep(2000); //Pause for 2 seconds

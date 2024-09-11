@@ -12,7 +12,7 @@ public class compDrive {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-    private static final int ENCODER_COUNTS_PER_INCH = 43; // TEST value, replace with actual based on motor and wheel diameter
+    private static final int ENCODER_COUNTS_PER_INCH = 20; // TEST value, replace with actual based on motor and wheel diameter
 
     public compDrive(HardwareMap hardwareMap){
         /*construct a new compDrive object*/
@@ -34,7 +34,6 @@ public class compDrive {
 
         //SET Motors to STOP for safety
         stopDrive();
-
         //None of the above code will move the power since stopDrive was called setting motor powers to zero.
     }
 
@@ -93,7 +92,6 @@ public class compDrive {
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
-
     private void setUpperLeft(){
         //SET MOTOR directions to have robot move forward upper left!
         //CHANGE VALUES BELOW then delete this comment line
@@ -116,7 +114,6 @@ public class compDrive {
 
     private void setLowerRight(){
         //SET MOTOR directions to have robot move backward lower right!
-        //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -126,7 +123,6 @@ public class compDrive {
 
     private void setCounterClockwiseTurn() {
         //SET MOTOR directions to have robot TURN Counter Clockwise!
-        //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -136,7 +132,6 @@ public class compDrive {
 
     private void setClockwiseTurn() {
         //SET MOTOR directions to have robot TURN Clockwise
-        //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -145,6 +140,7 @@ public class compDrive {
 
     private void setMotorPower(double[] dblPower) {
         // Set the motor mode to RUN_TO_POSITION
+        // RUN_TO_POSITION makes sure the motor only rotate to the TARGET position
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -152,6 +148,7 @@ public class compDrive {
 
         //Ensure all the values stored in dblPower are POSITIVE
         //NO negative power values sent since code is using motor directions
+        //Using Absolute function from the Math library
         for (int i = 0; i < dblPower.length; i++) {
             dblPower[i] = Math.abs(dblPower[i]);
         }
@@ -168,7 +165,14 @@ public class compDrive {
     public void stopDrive() {
         double[] dblMotorPower = new double[4] ; //new double[4] automatically assigns all array elements to 0.0
 
+        // Set motors to run to target position, at this time it's ZERO. Run Nowhere.
+        frontLeftDrive.setTargetPosition(0);
+        backLeftDrive.setTargetPosition(0);
+        frontRightDrive.setTargetPosition(0);
+        backRightDrive.setTargetPosition(0);
+
         //Stopping all power. No more movement!
+        //Before calling method, setTargetPosition for all motors must have been assigned.
         setMotorPower(dblMotorPower);
 
         // Reset encoder counts every time for accuracy of movement in inches
