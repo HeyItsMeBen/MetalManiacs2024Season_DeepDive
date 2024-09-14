@@ -54,9 +54,9 @@ import org.firstinspires.ftc.teamcode.compDrive;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name = "autoMainR1", group = "Linear OpMode")
+@Autonomous(name = "autoMainR2", group = "Linear OpMode")
 //@Disabled
-public class autoMainR1 extends LinearOpMode {
+public class autoMainR2 extends LinearOpMode {
 
     // Driver Code
     private ElapsedTime runtime = new ElapsedTime();
@@ -64,7 +64,7 @@ public class autoMainR1 extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    private double[] dblPowerList={0.5, 0.5, 0.5, 0.5};
+    private double[] dblPowerList={0.25, 0.25, 0.25, 0.25}; //MOTOR POWERS
 
     @Override
     public void runOpMode() {
@@ -93,23 +93,30 @@ public class autoMainR1 extends LinearOpMode {
 
         intTestMode = 2; //This must be changed depending on what team is testing
 
-        //tagID.tagToId();
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
-                //frontLeftDrive.setPower(0.5);
-                //drive %50 power left
-                //drive1.moveLeft(12, dblPowerList);//
+            //frontLeftDrive.setPower(0.5);
+            //drive %50 power left
+            //drive1.moveLeft(12, dblPowerList);//
             telemetry.addData("Op mode", "is active");
             telemetry.update();
-
             sleep(2500);
+            if (intTestMode == 0) {
+                //ACTUAL COMPETITION PATH
+                telemetry.addData("COMP PATH", "TEST MODE 0. Sleep 1 seconds.");
+                telemetry.update();
+                sleep(1000);
+            }
             if (intTestMode==1) {
+                //Move Forward
                 frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
                 frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
                 backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
                 backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
 
                 telemetry.addData("Op mode", "Set Direction");
+                telemetry.update();
+                telemetry.addData("Op mode", "TEST MODE 1. Sleep 2 seconds.");
                 telemetry.update();
                 sleep(2000);
 
@@ -146,33 +153,33 @@ public class autoMainR1 extends LinearOpMode {
             } else if (intTestMode == 2) {
                 telemetry.addData("compDriveTest", "Set Target Position");
                 telemetry.update();
+                telemetry.addData("compDriveTest", "TEST MODE 2. Sleep 2 seconds.");
+                telemetry.update();
                 sleep(2000);
 
 
-                //TEST compDrive Code
-                drive1.moveForward(3, dblPowerList); //Move Forward 3 inches
+                //TEST 2 compDrive Code
+                drive1.moveForward(1, dblPowerList); //Move Forward 1 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveBackward(3, dblPowerList); //Move Backward 3 inches
+                /*drive1.moveBackward(1, dblPowerList); //Move Backward 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveLeft(3, dblPowerList); //Strafe Left 3 inches
+                drive1.moveLeft(1, dblPowerList); //Strafe Left 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveRight(3,dblPowerList); //Strafe Right 3 inches
+                drive1.moveRight(1,dblPowerList); //Strafe Right 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveLowerLeft(3, dblPowerList); //Diagonal LowerLeft 3 inches
+                drive1.moveLowerLeft(1, dblPowerList); //Diagonal LowerLeft 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveLowerRight(3, dblPowerList); //Diagonal LowerRight 3 inches
+                drive1.moveLowerRight(1, dblPowerList); //Diagonal LowerRight 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveUpperLeft(3,dblPowerList); //Diagonal UpperLeft 3 inches
+                drive1.moveUpperLeft(1,dblPowerList); //Diagonal UpperLeft 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveUpperRight(3,dblPowerList); //Diagonal UpperRight 3 inches
+                drive1.moveUpperRight(1,dblPowerList); //Diagonal UpperRight 3 inches
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveClockwiseTurn(3,dblPowerList); //Turn Clockwise for 3 inches long
+                drive1.moveClockwiseTurn(1,dblPowerList); //Turn Clockwise for 3 inches long
                 sleep(2000); //Pause for 2 seconds
-                drive1.moveCounterClockwiseTurn(3,dblPowerList); //Turn CounterClockwise for 3 inches long
-                sleep(2000); //Pause for 2 seconds
+                drive1.moveCounterClockwiseTurn(1,dblPowerList); //Turn CounterClockwise for 3 inches long
+                sleep(2000); //Pause for 2 seconds*/
             }
-
-
         }
         /*compCam tagID = new compCam();
         while (opModeIsActive()) {

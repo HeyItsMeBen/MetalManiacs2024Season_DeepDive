@@ -12,7 +12,7 @@ public class compDrive {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-    private static final int ENCODER_COUNTS_PER_INCH = 20; // TEST value, replace with actual based on motor and wheel diameter
+    private static final int ENCODER_COUNTS_PER_INCH = 10; // TEST value, replace with actual based on motor and wheel diameter
 
     public compDrive(HardwareMap hardwareMap){
         /*construct a new compDrive object*/
@@ -29,12 +29,10 @@ public class compDrive {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //SET initial motor directions to all going FORWARD
-        setForward();
-
         //SET Motors to STOP for safety
         stopDrive();
         //None of the above code will move the power since stopDrive was called setting motor powers to zero.
+
     }
 
     /*
@@ -60,7 +58,9 @@ public class compDrive {
 
     private void setForward() {
         //SET all 4 directions to forward
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        //Forward means counterclockwise, when looking away from the motor shaft
+        //Reverse means clockwise, when looking away from the motor shaft
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -155,9 +155,9 @@ public class compDrive {
 
         //SET MOTOR Power for all 4 motors based on the whatever value has been passed in as dblPower;
         frontLeftDrive.setPower(dblPower[0]);
-        backLeftDrive.setPower(dblPower[1]);
-        frontRightDrive.setPower(dblPower[2]);
-        backRightDrive.setPower(dblPower[3]);
+        backLeftDrive.setPower(0);//dblPower[1]);
+        frontRightDrive.setPower(0);//dblPower[2]);
+        backRightDrive.setPower(0);//dblPower[3]);
     }
 
     //ALL PUBLIC methods can be called by autoMainB1.java, autoMainB2.java, autoMainR1.java, autoMainR2.java files once imported

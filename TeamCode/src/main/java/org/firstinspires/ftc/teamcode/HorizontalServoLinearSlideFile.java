@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 */
 
 @Autonomous(name="HorizontalServo-LinearSlideFile-Test", group ="Concept")
-public class HorizontalServoLinearSlideFile extends LinearOpMode
+public class  HorizontalServoLinearSlideFile extends LinearOpMode
 {
     ElapsedTime runtime = new ElapsedTime();    // Use to determine when end game is starting.
 
