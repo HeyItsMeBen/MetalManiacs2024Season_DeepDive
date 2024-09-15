@@ -87,6 +87,8 @@ public class autoMainR2 extends LinearOpMode {
         compDrive drive1 = new compDrive(hardwareMap);
         int intTestMode = 0; //0 IS NOT IN TEST MODE
 
+        //*******THIS MUST BE CHANGED to 0, 1, 2, 3 *********//
+        //*******Depending on what team wants to test *******//
         intTestMode = 2; //This must be changed depending on what team is testing
 
         while (opModeIsActive()) {
@@ -148,6 +150,7 @@ public class autoMainR2 extends LinearOpMode {
                 backRightDrive.setPower(0);
 
             } else if (intTestMode == 2) {
+                //TEST PATHS with Encoders using compDrive
                 telemetry.addData("runCompDriveTest", "Set Target Position");
                 telemetry.update();
                 telemetry.addData("runCompDriveTest", "TEST MODE 2. Sleep 2 seconds.");
@@ -177,6 +180,21 @@ public class autoMainR2 extends LinearOpMode {
                 sleep(2000); //Pause for 2 seconds
                 drive1.moveCounterClockwiseTurn(1,dblPowerList); //Turn CounterClockwise for 3 inches long
                 sleep(2000); //Pause for 2 seconds*/
+            }
+            else if (intTestMode == 3){
+                //TEST PATHS with WITHOUT ENCODERS using compDrive
+                telemetry.addData("runCompDriveWOEncoderTest", "NO ENCODERS USED");
+                telemetry.update();
+                sleep(1000);
+
+                drive1.moveForwardWOEncoders(dblPowerList); //(using time
+                sleep(2000); //run 2 seconds
+                drive1.stopMotorWOEncoders(); //STOP MOTORS
+                drive1.moveBackwardWOEncoders(dblPowerList); //MOVE BACKWARDS (using time)
+                sleep(2000);
+                drive1.stopMotorWOEncoders();//STOP MOTORS
+
+
             }
         }
         /*compCam tagID = new compCam();
