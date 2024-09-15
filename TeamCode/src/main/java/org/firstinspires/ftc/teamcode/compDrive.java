@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +13,7 @@ public class compDrive {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-    private static final int ENCODER_COUNTS_PER_INCH = 10; // TEST value, replace with actual based on motor and wheel diameter
+    private static final int ENCODER_COUNTS_PER_INCH = 8; // TEST value, replace with actual based on motor and wheel diameter
 
     public compDrive(HardwareMap hardwareMap){
         /*construct a new compDrive object*/
@@ -50,10 +51,10 @@ public class compDrive {
 
     private void setBackward() {
         //SET all 4 directions to backwards
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
     private void setForward() {
@@ -63,33 +64,34 @@ public class compDrive {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
     }
 
     private void setStrafeLeft() {
         //SET motor directions to have robot STRAFE LEFT
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
     private void setStrafeRight(){
         //SET motor directions to have robot STRAFE RIGHT
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
 
     private void setUpperRight(){
         //SET MOTOR directions to have robot move forward upper right!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
        // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
     private void setUpperLeft(){
@@ -105,10 +107,10 @@ public class compDrive {
     private void setLowerLeft(){
         //SET MOTOR directions to have robot move backward lower left!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -123,19 +125,19 @@ public class compDrive {
 
     private void setCounterClockwiseTurn() {
         //SET MOTOR directions to have robot TURN Counter Clockwise!
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
 
     private void setClockwiseTurn() {
         //SET MOTOR directions to have robot TURN Clockwise
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
     private void setMotorPower(double[] dblPower) {
@@ -146,6 +148,13 @@ public class compDrive {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
+        // set direction for motors
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
         //Ensure all the values stored in dblPower are POSITIVE
         //NO negative power values sent since code is using motor directions
         //Using Absolute function from the Math library
@@ -155,9 +164,9 @@ public class compDrive {
 
         //SET MOTOR Power for all 4 motors based on the whatever value has been passed in as dblPower;
         frontLeftDrive.setPower(dblPower[0]);
-        backLeftDrive.setPower(0);//dblPower[1]);
-        frontRightDrive.setPower(0);//dblPower[2]);
-        backRightDrive.setPower(0);//dblPower[3]);
+        backLeftDrive.setPower(dblPower[1]);
+        frontRightDrive.setPower(dblPower[2]);
+        backRightDrive.setPower(dblPower[3]);
     }
 
     //ALL PUBLIC methods can be called by autoMainB1.java, autoMainB2.java, autoMainR1.java, autoMainR2.java files once imported
@@ -179,10 +188,39 @@ public class compDrive {
         resetEncoderCount();
     }
 
-    //TO DO:  Keep doing MAX Power for remainder 8 paths and then delete comment
-    /*
-     * BELOW public methods allow robot to drive at FASTEST pre-determined speed of 100% power
-     */
+    //TEST method to move wheels forward WITHOUT encoders
+    public void stopMotorWOEncoders(){
+        //SET MOTOR Power to ZERO for all 4 motors to STOP robot movement
+        frontLeftDrive.setPower(0);
+        backLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        backRightDrive.setPower(0);
+    }
+
+    //TEST method to move wheels forward WITHOUT encoders
+    public void moveForwardWOEncoders(double[] dblPower) {
+        // Set motors to run WITHOUT USING encoders
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Set wheel direction so all wheels will move forward regardless of motor and gear orientation
+        setForward();
+
+        //Ensure all the values stored in dblPower are POSITIVE
+        //NO negative power values sent since code is using motor directions
+        //Using Absolute function from the Math library
+        for (int i = 0; i < dblPower.length; i++) {
+            dblPower[i] = Math.abs(dblPower[i]);
+        }
+
+        //SET MOTOR Power for all 4 motors based on the whatever value has been passed in as dblPower;
+        frontLeftDrive.setPower(dblPower[0]);
+        backLeftDrive.setPower(dblPower[1]);
+        frontRightDrive.setPower(dblPower[2]);
+        backRightDrive.setPower(dblPower[3]);
+    }
 
     //Robot will drive forward ## of inches indicated by dblInches, and at % power indicated by dblPower. CAREFUL! CLEAR the FIELD!
     //moveForward(6.0, {1.0, 1.0, 1.0, 1.0}) will result in robot to move forward 6 inches at maximum power
@@ -214,7 +252,9 @@ public class compDrive {
             //telemetry.update();
         }
         // Stop the motors and reset the power to 0 and also reset encoder count
-        stopDrive(); //End Drive Reset Encoders
+        if (frontLeftDrive.getTargetPosition() == encoderCountsToMove){
+            stopDrive();
+        }//End Drive Reset Encoders
     }
 
     public void moveBackward (double dblInches, double[] dblPower){
@@ -226,6 +266,13 @@ public class compDrive {
 
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
+        //set motor directions
+        frontLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
         frontLeftDrive.setTargetPosition(encoderCountsToMove);
         backLeftDrive.setTargetPosition(encoderCountsToMove);
         frontRightDrive.setTargetPosition(encoderCountsToMove);
@@ -242,6 +289,31 @@ public class compDrive {
             //telemetry.update();
         }
         stopDrive(); //End Drive Reset Encoders
+    }
+
+    //TEST method to move wheels backward WITHOUT encoders
+    public void moveBackwardWOEncoders(double[] dblPower) {
+        // Set motors to run WITHOUT USING encoders
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Set wheel direction so all wheels will move forward regardless of motor and gear orientation
+        setBackward();
+
+        //Ensure all the values stored in dblPower are POSITIVE
+        //NO negative power values sent since code is using motor directions
+        //Using Absolute function from the Math library
+        for (int i = 0; i < dblPower.length; i++) {
+            dblPower[i] = Math.abs(dblPower[i]);
+        }
+
+        //SET MOTOR Power for all 4 motors based on the whatever value has been passed in as dblPower;
+        frontLeftDrive.setPower(dblPower[0]);
+        backLeftDrive.setPower(dblPower[1]);
+        frontRightDrive.setPower(dblPower[2]);
+        backRightDrive.setPower(dblPower[3]);
     }
 
 

@@ -32,13 +32,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//file imported here!!!
 import org.firstinspires.ftc.teamcode.OpenCV.compCam;
-import org.firstinspires.ftc.teamcode.compDrive;
 
 /**
  * This OpMode opens a claw when a is pressed, then closes when b is pressed
@@ -150,19 +146,21 @@ public class autoMainR2 extends LinearOpMode {
                 frontRightDrive.setPower(0);
                 backLeftDrive.setPower(0);
                 backRightDrive.setPower(0);
+
             } else if (intTestMode == 2) {
-                telemetry.addData("compDriveTest", "Set Target Position");
+                telemetry.addData("runCompDriveTest", "Set Target Position");
                 telemetry.update();
-                telemetry.addData("compDriveTest", "TEST MODE 2. Sleep 2 seconds.");
+                telemetry.addData("runCompDriveTest", "TEST MODE 2. Sleep 2 seconds.");
                 telemetry.update();
                 sleep(2000);
 
 
                 //TEST 2 compDrive Code
                 drive1.moveForward(1, dblPowerList); //Move Forward 1 inches
+                drive1.stopDrive();
                 sleep(2000); //Pause for 2 seconds
-                /*drive1.moveBackward(1, dblPowerList); //Move Backward 3 inches
-                sleep(2000); //Pause for 2 seconds
+                drive1.moveBackward(1, dblPowerList); //Move Backward 3 inches
+                //sleep(2000); //Pause for 2 seconds
                 drive1.moveLeft(1, dblPowerList); //Strafe Left 3 inches
                 sleep(2000); //Pause for 2 seconds
                 drive1.moveRight(1,dblPowerList); //Strafe Right 3 inches
@@ -182,7 +180,7 @@ public class autoMainR2 extends LinearOpMode {
             }
         }
         /*compCam tagID = new compCam();
-        while (opModeIsActive()) {
+        while (opModeIsActive()) {f
             if (tagID==1){
                 frontLeftDrive.setPower(0.1);}
         }*/
