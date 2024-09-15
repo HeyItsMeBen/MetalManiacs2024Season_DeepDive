@@ -1,0 +1,110 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+
+@TeleOp(name = "Drive & Endgame Period Code", group = "Linear OpMode")
+public class DriveEndgamePeriodCode extends LinearOpMode {
+
+    // Driver Code
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor frontLeftDrive = null;
+    private DcMotor backLeftDrive = null;
+    private DcMotor frontRightDrive = null;
+    private DcMotor backRightDrive = null;
+    private float POWER_REDUCTION = 2;
+
+    compLinearSlide ls = new compLinearSlide(hardwareMap);
+    compClaw c = new compClaw(hardwareMap);
+
+    @Override
+    public void runOpMode() {
+
+        // Driver Code
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
+        backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
+        // set direction for motors
+
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        // Wait for the start button
+        telemetry.addData(">", "Status: Initialized" );
+        telemetry.update();
+        waitForStart();
+        runtime.reset();
+        while (opModeIsActive()) {
+            // Drive Code
+            double max;
+            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  gamepad1.left_stick_x;
+            double yaw     =  gamepad1.right_stick_x;
+            // Combine the joystick requests for each axis-motion to determine each wheel's power.
+            // Set up a variable for each drive wheel to save the power level for telemetry.
+            double leftFrontPower  = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower   = axial - lateral + yaw;
+            double rightBackPower  = axial + lateral - yaw;
+            // Normalize the values so no wheel power exceeds 100%
+            // This ensures that the robot maintains the desired motion.
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+            max = POWER_REDUCTION*max; //Reduces power to slow down robot. This can be modified to increase or reduce robot speed by will.
+            if (max > 1.0) {
+                leftFrontPower  /= max;
+                rightFrontPower /= max;
+                leftBackPower   /= max;
+                rightBackPower  /= max;
+            }
+            // Send calculated power to wheels
+            frontLeftDrive.setPower(leftFrontPower);
+            frontRightDrive.setPower(rightFrontPower);
+            backLeftDrive.setPower(leftBackPower);
+            backRightDrive.setPower(rightBackPower);
+
+            //Intake and Outtake code for linear slides
+            if (gamepad2.right_stick_y > 0){
+                ls.extendVertical(1);
+            }
+            if (gamepad2.right_stick_y > 0){
+                ls.extendVertical(-1);
+            }
+            ls.extendVertical(0);
+
+            //Add claw code here later
+            if (gamepad2.left_trigger > 0){
+                c.open_close(-1,1);
+            }
+            if (gamepad2.right_trigger > 0) {
+                 c.open_close(1, -1);
+            }
+
+            if (gamepad1.left_trigger > 0){
+                c.moveArm(1);
+            }
+            if (gamepad1.right_trigger > 0) {
+                c.moveArm(-1);
+            }
+            c.moveArm(0);
+
+            idle();
+        }
+
+        // Signal done;
+
+        telemetry.addData(">", "Done");
+        telemetry.update();
+    }
+}
