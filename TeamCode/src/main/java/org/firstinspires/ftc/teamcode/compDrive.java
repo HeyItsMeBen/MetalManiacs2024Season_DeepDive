@@ -257,6 +257,7 @@ public class compDrive {
         }//End Drive Reset Encoders
     }
 
+    //Move robot backwards using encoders for precision. Depends on motor direction in setBackward()
     public void moveBackward (double dblInches, double[] dblPower){
         // Convert distance to encoder counts
         int encoderCountsToMove = (int) (dblInches * ENCODER_COUNTS_PER_INCH);
