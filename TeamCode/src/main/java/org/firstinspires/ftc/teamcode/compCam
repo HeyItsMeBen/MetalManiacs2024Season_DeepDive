@@ -22,53 +22,26 @@
 
 package org.firstinspires.ftc.teamcode.OpenCV;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Blinker;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gyroscope;
+//imports
+import static java.lang.Thread.sleep;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import java.util.ArrayList;
 
+//webcam imports
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.GyroScope;
+//Main class
+public class compCam {
+    //double tgtPower = 0;          //delete?
 
-import java.util.ArrayList;
-//////  MAKE SURE to update hardware map  ////////
-/*Main things the whole program does:
-    1. Setup (including attaching pipeline)
-    2. Detect tags
-    3. Get one wanted tag Id
-    4. Get other info based about that tag (telemetry) like distance
-    5. Autonomous. Make decisions based on the given info.
- */
-@Autonomous //makes program autonomous?
-public class compCam extends LinearOpMode {
-    public compCam(HardwareMap hardwareMap){
-
-    }
-    //assign variables
-    //hopefully deletable
-    /*private DcMotor frontleftMotor;
-    private DcMotor frontrightMotor;
-    private DcMotor backleftMotor;
-    private DcMotor backrightMotor;
-    */
-    //deletable?
-    private Blinker control_Hub;
-    private Gyroscope imu;
-
-    double tgtPower = 0;
-    //setup?
+    //setup, including creating objects from imported files
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
-    //mor3 variables
-    //deletable?
+    //creating variables
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -83,34 +56,27 @@ public class compCam extends LinearOpMode {
     // UNITS ARE METERS
     double tagsize = 0.166;
 
-    //tag ID 1,2,3 from the 36h11 family
-    int Left = 1;
-    int Middle = 2;
-    int Right = 3;
+    //tag ID's              //THESE LINES ARE IMPORTANT. These are what the camera will be looking for
+    int Left = 4;
+    int Middle = 5;
+    int Right = 6;
 
-    //This variable should hold the value(ID) of the April tag it detects
+    //This variable holds the value (ID) of the april tag that it detects. It's very central to this program
     AprilTagDetection tagOfInterest = null;
 
-    @Override
-    public void runOpMode() {
-        //mapping (syncing code to the control hub or whatever)
-        //deletable?
-        /*frontleftMotor = hardwareMap.get(DcMotor.class, "Left");
-        frontrightMotor = hardwareMap.get(DcMotor.class, "Right");*/
-        //backleftMotor = hardwareMap.get(DcMotor.class, "backleftMotor");
-        //backrightMotor = hardwareMap.get(DcMotor.class, "backrightMotor");
-        //control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
-        //imu = hardwareMap.get(Gyroscope.class, "imu");
 
 
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+    //This is the constructor
+    public compCam(HardwareMap hMap) {
+        //hardware map the camera
+        int cameraMonitorViewId = hMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        //create the pipeline object
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
-        //Not sure what pipeline is, but it's probably just some necessary code fo rit to run. So, this should just attach the pipeline file to this one
+        //sets the pipeline
         camera.setPipeline(aprilTagDetectionPipeline);
-        //Looks like event listeners
+        //Looks like an event listener?
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -121,162 +87,59 @@ public class compCam extends LinearOpMode {
             }
 
             @Override
-            //assuming this is a fail-safe mechanism
+            //probably a fail-safe mechanism
             public void onError(int errorCode)
             {
 
             }
         });
-        //how often the camera sends info to the main "control hub" (or whatever it's called)
-        telemetry.setMsTransmissionInterval(50);
-
-        /*
-         * The INIT-loop:
-         * This REPLACES waitForStart!
-         */
-        //"while program is being run, run this code"
-        while (!isStarted() && !isStopRequested())
-        {
-            //list of april tags that it detected?
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-            //not sure, either .size means the length in meters, or Id, or the length of the list
-            if(currentDetections.size() != 0)
-            {
-                //resets value for use in the next steps
-                boolean tagFound = false;
-                //runs the the exact amount of times as there are april tags detcted
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    //if the tag is of of the wanted tags, then we found what we are looking for!
-                    if(tag.id == Left || tag.id == Middle || tag.id == Right)
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                }
-                //if we found it, then put this text into the console and give info about the tag
-                if(tagFound)
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                }
-                //if we did not find it, do this
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
-            }
-            //if no tags are seen
-            else
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
-
-            }
-            //update the info, since new info may have been found
-            telemetry.update();
-            //wait before checking for april tags again
-            sleep(20);
-        }
-
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-        //I'm assuming that the previous comment means that stop has been requested or something
-
-        /* Update the telemetry */
-        //if tag was found, edit info then update text
-        if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("Warning: No tag was found! Last resort code will be ran for a 33% chance of succession :(");
-            telemetry.update();
-        }
-
-        //deletable?
-        /*frontleftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontrightMotor.setDirection(DcMotorSimple.Direction.REVERSE);*/
-
-        // Autonumus Code               ///   MAIN SECTION   //////
-        //The if statements see if certain tags are detected or if none are detected
-        /*if(tagOfInterest == null || tagOfInterest.id == Left){
-            //left code
-            telemetry.addLine("Left Tag Scanned");
-            telemetry.update();
-            frontleftMotor.setPower(0);
-            frontrightMotor.setPower(1);
-            sleep(1000);
-        }else if(tagOfInterest.id == Middle) {
-            //middle code
-            telemetry.addLine("Middle Tag Scanned");
-            telemetry.update();
-            frontleftMotor.setPower(1);
-            frontrightMotor.setPower(1);
-            sleep(1000);
-        }else if(tagOfInterest.id == Right){
-            //right code
-            telemetry.addLine("Right Tag Scanned");
-            telemetry.update();
-            frontleftMotor.setPower(1);
-            frontrightMotor.setPower(0);
-            sleep(1000);
-        }else {
-            telemetry.addLine("No Tag Scanned");
-            telemetry.update();
-        }*/
-
-
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        //while (opModeIsActive()) {sleep(20);}
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
-    {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        //This was commented out because it was causing errors. It might be cuz the pipeline is notCoves
-        /*telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));*/
+
+
+    //my methods:
+    //this method scans for April tags and saves the first one in the 'tagOfInterest' variable
+    public void scan() {
+        //this gets the ID's of the April Tags that were just detected
+        ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+        //if the list of detections is NOT empty(meaning if we found at least one tag), run the following code
+        if (currentDetections.size() != 0) {
+            //resets value for use in the next steps
+            boolean tagFound = false;
+            //runs the the exact amount of times as there are recent april tags detected. This basically means it runs through every tag to see if we want it (until it breaks)
+            for (AprilTagDetection tag : currentDetections) {
+                //if the tag is of of the wanted tags, then...
+                if (tag.id == Left || tag.id == Middle || tag.id == Right) {
+                    //assign the value of that wanted tag to 'tagOfInterest'
+                    tagOfInterest = tag;
+                    //this means we found a tag that we want
+                    tagFound = true;
+                    //break from this loop. We don't need anymore tag ID's
+                    break;
+                }
+            }
+            //if we did not find a wanted tag AND a tag was found before, then reset 'tagOfInterest' for later use
+            if (!tagFound && tagOfInterest != null) {
+                tagOfInterest=null;
+            }
+        }
+        //if no tags are currently seen...
+        else {
+            //if WANTED tags have ever been seen, reset 'tagOfInterest' for later use
+            if (tagOfInterest != null) {
+                tagOfInterest=null;
+            }
+        }
     }
-    //does this have to be put somewhere else? (deletable comment)
+    //This method returns the tag ID
     public int tagToId(){
+        //if no tags were scanned, return 0
         if (tagOfInterest==null) {
             return 0;
         }
+        //otherwise, return the ID of the tag that was found
         else {
             return tagOfInterest.id;
         }
-        //return AprilTagDetection tagOfInterest.id;
-        //return 1;
     }
 }
