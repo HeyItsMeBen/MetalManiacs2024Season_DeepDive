@@ -46,6 +46,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * to use those parameters.
  */
 // Comment this out to add to the OpMode list
+//trigger line
 public class compGyro {
     // The IMU sensor object
     IMU imu;

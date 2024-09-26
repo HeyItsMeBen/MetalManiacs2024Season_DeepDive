@@ -22,7 +22,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
-
+//hi
 //sets mode to autonomous and makes the main class
 @Autonomous(name = "autoMainR1", group = "Linear OpMode")
 public class autoMainR1 extends LinearOpMode {
