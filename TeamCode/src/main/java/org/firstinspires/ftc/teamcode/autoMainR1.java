@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.compLinearSlide;    //commented
 
 import java.util.ArrayList;
 
-
+//1
 //sets mode to autonomous and makes the main class
 @Autonomous(name = "autoMainR1", group = "Linear OpMode")
 public class autoMainR1 extends LinearOpMode {
