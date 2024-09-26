@@ -6,7 +6,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+<<<<<<< HEAD
 //trigger code
+=======
+
+>>>>>>> origin/Test-Branch
 public class compClaw {
     private DcMotor arm = null;
     private Servo leftClaw  = null;
@@ -15,13 +19,24 @@ public class compClaw {
     public compClaw(HardwareMap hMap) {
 
         //LinearSlide
+<<<<<<< HEAD
         arm = hMap.get(DcMotor.class, "PlaceHolder"); //added 7/24/24
         leftClaw = hMap.get(Servo.class, "PlaceHolder"); // change display name after we design
         rightClaw = hMap.get(Servo.class, "PlaceHolder");
+=======
+        arm = hMap.get(DcMotor.class, "arm"); //added 7/24/24
+        leftClaw = hMap.get(Servo.class, "armLeftServo"); // change display name after we design
+        rightClaw = hMap.get(Servo.class, "armRightServo");
+>>>>>>> origin/Test-Branch
 
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setPower(0);
+<<<<<<< HEAD
+=======
+        leftClaw.setDirection(Servo.Direction.FORWARD);
+        rightClaw.setDirection(Servo.Direction.REVERSE);
+>>>>>>> origin/Test-Branch
 
     }
 
