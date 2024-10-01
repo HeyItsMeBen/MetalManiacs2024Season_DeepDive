@@ -1,3 +1,5 @@
+//This file is merely for temporary use at the Folsom Library Showcasing
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

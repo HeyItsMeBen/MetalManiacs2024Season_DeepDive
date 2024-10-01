@@ -1,4 +1,4 @@
-
+//trigger code
 /*
  * Copyright (c) 2021 OpenFTC Team
  *
@@ -28,12 +28,15 @@ import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gyroscope;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import org.firstinspires.ftc.teamcode.GyroScope;
 
 import java.util.ArrayList;
 //////  MAKE SURE to update hardware map  ////////
@@ -45,12 +48,18 @@ import java.util.ArrayList;
     5. Autonomous. Make decisions based on the given info.
  */
 @Autonomous //makes program autonomous?
-public class Camera_Exa extends LinearOpMode {
+public class compCam extends LinearOpMode {
+    public compCam(HardwareMap hardwareMap){
+
+    }
     //assign variables
-    private DcMotor frontleftMotor;
+    //hopefully deletable
+    /*private DcMotor frontleftMotor;
     private DcMotor frontrightMotor;
     private DcMotor backleftMotor;
     private DcMotor backrightMotor;
+    */
+    //deletable?
     private Blinker control_Hub;
     private Gyroscope imu;
 
@@ -59,6 +68,7 @@ public class Camera_Exa extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
     //mor3 variables
+    //deletable?
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -84,8 +94,9 @@ public class Camera_Exa extends LinearOpMode {
     @Override
     public void runOpMode() {
         //mapping (syncing code to the control hub or whatever)
-        frontleftMotor = hardwareMap.get(DcMotor.class, "Left");
-        frontrightMotor = hardwareMap.get(DcMotor.class, "Right");
+        //deletable?
+        /*frontleftMotor = hardwareMap.get(DcMotor.class, "Left");
+        frontrightMotor = hardwareMap.get(DcMotor.class, "Right");*/
         //backleftMotor = hardwareMap.get(DcMotor.class, "backleftMotor");
         //backrightMotor = hardwareMap.get(DcMotor.class, "backrightMotor");
         //control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -209,12 +220,13 @@ public class Camera_Exa extends LinearOpMode {
             telemetry.update();
         }
 
-        frontleftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontrightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //deletable?
+        /*frontleftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontrightMotor.setDirection(DcMotorSimple.Direction.REVERSE);*/
 
         // Autonumus Code               ///   MAIN SECTION   //////
         //The if statements see if certain tags are detected or if none are detected
-        if(tagOfInterest == null || tagOfInterest.id == Left){
+        /*if(tagOfInterest == null || tagOfInterest.id == Left){
             //left code
             telemetry.addLine("Left Tag Scanned");
             telemetry.update();
@@ -238,7 +250,7 @@ public class Camera_Exa extends LinearOpMode {
         }else {
             telemetry.addLine("No Tag Scanned");
             telemetry.update();
-        }
+        }*/
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
@@ -255,5 +267,16 @@ public class Camera_Exa extends LinearOpMode {
         /*telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));*/
+    }
+    //does this have to be put somewhere else? (deletable comment)
+    public int tagToId(){
+        if (tagOfInterest==null) {
+            return 0;
+        }
+        else {
+            return tagOfInterest.id;
+        }
+        //return AprilTagDetection tagOfInterest.id;
+        //return 1;
     }
 }

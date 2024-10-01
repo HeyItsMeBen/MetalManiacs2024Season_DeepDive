@@ -1,3 +1,5 @@
+//This is for the outtake
+
 package org.firstinspires.ftc.teamcode;
 import static android.os.SystemClock.sleep;
 
@@ -13,8 +15,6 @@ public class compLinearSlide {
 
     private Servo ServoSpecimanDeployL = null;
     private Servo ServoSpecimanDeployR = null;
-
-    private static final int ENCODER_COUNTS_PER_INCH = 8;   //added from Comp_Drive
 
     public compLinearSlide(HardwareMap hardwareMap) {
 
@@ -32,13 +32,10 @@ public class compLinearSlide {
         ServoSpecimanDeployL.setDirection(Servo.Direction.FORWARD);
         ServoSpecimanDeployR.setDirection(Servo.Direction.REVERSE);
 
-
-        LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LinearSlideL.setTargetPosition(0);
-        LinearSlideR.setTargetPosition(0);
         LinearSlideL.setPower(0);
         LinearSlideR.setPower(0);
+
+
     }
 
     public void extendVertical (double vertPower) {
@@ -46,22 +43,10 @@ public class compLinearSlide {
         LinearSlideR.setPower(vertPower);
     }
 
-    public void open_close(double left, double right) {
+    public void DeploySample(double left, double right) {
         ServoSpecimanDeployL.setPosition(left);
         ServoSpecimanDeployR.setPosition(right);
     }
-    public void test1(){
-        LinearSlideL.setTargetPosition(50);
-        LinearSlideR.setTargetPosition(50);
 
-        LinearSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        LinearSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        LinearSlideL.setPower(0.25);
-        LinearSlideL.setPower(0.25);
-
-        LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
 
 }

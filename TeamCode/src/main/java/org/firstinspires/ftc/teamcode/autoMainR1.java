@@ -10,6 +10,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //A lot of imports here. They include camera, compDrive, and array files
 //Note: I'm not sure if the imports related to 'Camera' are neccessary anymore (exept for maybe in testing)
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.OpenCV.Camera_Exa;
+import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+import org.firstinspires.ftc.teamcode.compDrive;
+import org.firstinspires.ftc.teamcode.compClaw;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import java.util.ArrayList;
+
+//hi
+=======
+
+//A lot of imports here. They include camera, compDrive, and array files
+//Note: I'm not sure if the imports related to 'Camera' are neccessary anymore (exept for maybe in testing)
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;       //commented
 //import org.firstinspires.ftc.teamcode.OpenCV.compCam;         //commented
 //import org.openftc.easyopencv.OpenCvCamera;                   //commented
@@ -21,7 +37,7 @@ import org.firstinspires.ftc.teamcode.compLinearSlide;    //commented
 
 import java.util.ArrayList;
 
-//1
+
 //sets mode to autonomous and makes the main class
 @Autonomous(name = "autoMainR1", group = "Linear OpMode")
 public class autoMainR1 extends LinearOpMode {
