@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+
+
+
 //basic imports like motors and opModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,37 +11,34 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+
+
+
+
+
+
 //A lot of imports here. They include camera, compDrive, and array files
-//Note: I'm not sure if the imports related to 'Camera' are neccessary anymore (exept for maybe in testing)
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.OpenCV.Camera_Exa;
+
+
+//imports related to camera have been commented. They are not needed for this season
+/*import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;*/
+
+
 import org.firstinspires.ftc.teamcode.compDrive;
 import org.firstinspires.ftc.teamcode.compClaw;
-import org.openftc.apriltag.AprilTagDetection;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.compLinearSlide;
 
-//hi
-=======
 
-//A lot of imports here. They include camera, compDrive, and array files
-//Note: I'm not sure if the imports related to 'Camera' are neccessary anymore (exept for maybe in testing)
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;       //commented
-//import org.firstinspires.ftc.teamcode.OpenCV.compCam;         //commented
-//import org.openftc.easyopencv.OpenCvCamera;                   //commented
-//import org.openftc.easyopencv.OpenCvCameraFactory;            //commented
-//added
-import org.firstinspires.ftc.teamcode.compDrive;      //commented
-import org.firstinspires.ftc.teamcode.compClaw;       //commented
-import org.firstinspires.ftc.teamcode.compLinearSlide;    //commented
+
 
 import java.util.ArrayList;
 
 
 //sets mode to autonomous and makes the main class
+//Note to self: the number is 38.1971863 if u ever lose it again
 @Autonomous(name = "autoMainR1", group = "Linear OpMode")
 public class autoMainR1 extends LinearOpMode {
     //defining variables
@@ -54,8 +54,14 @@ public class autoMainR1 extends LinearOpMode {
     double[] dblPower={0.25, 0.25, 0.25, 0.25};
     //OpenCvCamera camera;              //commented
 
+
+
+
     //creates new objects from imported/integrated files
     //compCam tagID = new compCam(hardwareMap);             //commented
+
+
+
 
     @Override
     //This runs when the program is activated
@@ -65,18 +71,33 @@ public class autoMainR1 extends LinearOpMode {
         compLinearSlide slides = new compLinearSlide(hardwareMap);
         //createObjects();
 
+
+
+
         //hardware mapping
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
-        /*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);*/      //commented
+
+
+
+      /*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+      camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);*/      //commented
+
+
+
 
         arm = hardwareMap.get(DcMotor.class, "arm"); //ADD this to hardware map IMP
         leftClaw = hardwareMap.get(Servo.class, "leftOuttake");
         rightClaw = hardwareMap.get(Servo.class, "rightOuttake");
+
+
+
+
+
+
 
 
         // set direction for motors
@@ -84,6 +105,9 @@ public class autoMainR1 extends LinearOpMode {
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+
+
 
         // Wait for the start button
         telemetry.addData(">", "Status: Initialized" );
@@ -93,7 +117,16 @@ public class autoMainR1 extends LinearOpMode {
         //camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);     //delete? may be useful for streaming later
 
 
+
+
+
+
+
+
         testMode=1;
+
+
+
 
         //The actual auto code
         //this repeats the whole time while the program is running
@@ -112,10 +145,10 @@ public class autoMainR1 extends LinearOpMode {
             sleep(3000);
             claw.open_close(0.5,0.5);   //close
             sleep(1000);
-                /*drive1.moveForward(122.2222222, dblPower);
-                sleep(2000);
-                drive1.moveLeft(75, dblPower);
-                sleep(2000);*/
+              /*drive1.moveForward(122.2222222, dblPower);
+              sleep(2000);
+              drive1.moveLeft(75, dblPower);
+              sleep(2000);*/
             //scoreSample(drive1, claw, slides);
             telemetry.addLine("drive completed!!! integration success!");
             telemetry.update();
@@ -144,10 +177,10 @@ public class autoMainR1 extends LinearOpMode {
                 sleep(1000);
                 claw.open_close(1,1);
                 sleep(1000);
-                /*drive1.moveForward(122.2222222, dblPower);
-                sleep(2000);
-                drive1.moveLeft(75, dblPower);
-                sleep(2000);*/
+              /*drive1.moveForward(122.2222222, dblPower);
+              sleep(2000);
+              drive1.moveLeft(75, dblPower);
+              sleep(2000);*/
                 //scoreSample(drive1, claw, slides);
                 telemetry.addLine("drive completed!!! integration success!");
                 telemetry.update();
@@ -168,12 +201,21 @@ public class autoMainR1 extends LinearOpMode {
                     telemetry.update();
                     sleep(500);
 
+
+
+
                     //sets direction
                     //strafe left
                     frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
                     frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
                     backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
                     backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
+
+
+
+
+
+
 
 
                     //sets how far we want to drive
@@ -183,11 +225,23 @@ public class autoMainR1 extends LinearOpMode {
                     backRightDrive.setTargetPosition(50);
 
 
+
+
+
+
+
+
                     //drives to the set position
                     frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+
+
+
 
 
                     //sets power and decides how fast we travel towards the set position
@@ -197,14 +251,32 @@ public class autoMainR1 extends LinearOpMode {
                     backRightDrive.setPower(0.25);
 
 
+
+
+
+
+
+
                     //waits a couple seconds before powering the wheels off
                     sleep(200);
+
+
+
+
+
+
 
 
                     frontLeftDrive.setPower(0);
                     frontRightDrive.setPower(0);
                     backLeftDrive.setPower(0);
                     backRightDrive.setPower(0);
+
+
+
+
+
+
 
 
                 }
@@ -222,8 +294,11 @@ public class autoMainR1 extends LinearOpMode {
         frontLeftDrive.setDirection;
         frontLeftDrive.setPosition;
 
+
+
+
     }*/
-   public void scoreSample(compDrive drive1, compClaw claw, compLinearSlide slides){     //actual do stuff
+    public void scoreSample(compDrive drive1, compClaw claw, compLinearSlide slides){     //actual do stuff
         //intake
         claw.moveArm(-0.25);
         sleep(200);
@@ -231,6 +306,9 @@ public class autoMainR1 extends LinearOpMode {
         claw.moveArm(0.25);
         sleep(200);
         claw.open_close(1, 1);
+
+
+
 
         //output
         slides.extendVertical(-0.25);
@@ -240,3 +318,5 @@ public class autoMainR1 extends LinearOpMode {
         drive1.moveRight(12, dblPower);
     }
 }
+
+
