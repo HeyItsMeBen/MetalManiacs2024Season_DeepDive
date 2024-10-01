@@ -33,8 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+//
 
 /**
  * This OpMode opens a claw when a is pressed, then closes when b is pressed
@@ -67,10 +66,10 @@ public class autoMainR2 extends LinearOpMode {
     public void runOpMode() {
 
         // Driver Code
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -84,7 +83,7 @@ public class autoMainR2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
         //option1
-        compCam tagID = new compCam(hardwareMap);
+        //compCam tagID = new compCam(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
         int intTestMode = 0; //0 IS NOT IN TEST MODE
 
@@ -188,12 +187,12 @@ public class autoMainR2 extends LinearOpMode {
                 telemetry.update();
                 sleep(1000);
 
-                drive1.moveForwardWOEncoders(dblPowerList); //(using time
-                sleep(2000); //run 2 seconds
-                drive1.stopMotorWOEncoders(); //STOP MOTORS
-                drive1.moveBackwardWOEncoders(dblPowerList); //MOVE BACKWARDS (using time)
-                sleep(2000);
-                drive1.stopMotorWOEncoders();//STOP MOTORS
+//                drive1.moveForwardWOEncoders(dblPowerList); //(using time
+//                sleep(2000); //run 2 seconds
+//                drive1.stopMotorWOEncoders(); //STOP MOTORS
+//                drive1.moveBackwardWOEncoders(dblPowerList); //MOVE BACKWARDS (using time)
+//                sleep(2000);
+//                drive1.stopMotorWOEncoders();//STOP MOTORS
 
 
             }

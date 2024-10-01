@@ -17,10 +17,10 @@ public class compDrive {
         /*construct a new compDrive object*/
 
         // Initialize motors
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
         // Set motors to run using encoders for precise movement
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -54,32 +54,39 @@ public class compDrive {
         //SET all 4 directions to backwards
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
+
     private void setForward() {
-        //SET all 4 directions to forward
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        /*frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+         */
+
+        //SET all 4 directions to move forward
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
     }
 
     private void setStrafeLeft() {
         //SET motor directions to have robot STRAFE LEFT
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
     }
 
     private void setStrafeRight(){
         //SET motor directions to have robot STRAFE RIGHT
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
     }
 
 
@@ -88,8 +95,8 @@ public class compDrive {
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-       // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
     }
 
 
@@ -97,7 +104,7 @@ public class compDrive {
         //SET MOTOR directions to have robot move forward upper left!
         //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
@@ -109,7 +116,7 @@ public class compDrive {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
     }
 
 
@@ -117,7 +124,7 @@ public class compDrive {
         //SET MOTOR directions to have robot move backward lower right!
         //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
@@ -127,9 +134,9 @@ public class compDrive {
         //SET MOTOR directions to have robot TURN Counter Clockwise!
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
     }
 
 
@@ -137,9 +144,9 @@ public class compDrive {
         //SET MOTOR directions to have robot TURN Clockwise
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
     }
 
     private void setMotorPower(double[] dblPower) {
@@ -166,6 +173,12 @@ public class compDrive {
     //STOP DRIVING by setting all 4 motors to zero
     public void stopDrive() {
         double[] dblMotorPower = new double[4] ; //new double[4] automatically assigns all array elements to 0.0
+
+        // Set target position for each motor to ZERO
+        frontLeftDrive.setTargetPosition(0);
+        backLeftDrive.setTargetPosition(0);
+        frontRightDrive.setTargetPosition(0);
+        backRightDrive.setTargetPosition(0);
 
         //Stopping all power. No more movement!
         setMotorPower(dblMotorPower);

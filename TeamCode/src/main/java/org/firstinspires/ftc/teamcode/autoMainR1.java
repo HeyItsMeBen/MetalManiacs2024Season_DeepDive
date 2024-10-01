@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //file imported here!!!
-import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+//import org.firstinspires.ftc.teamcode.OpenCV.compCam;
 import org.firstinspires.ftc.teamcode.compDrive;
 
 /**
@@ -89,7 +89,7 @@ public class autoMainR1 extends LinearOpMode {
         waitForStart();
         runtime.reset();
         //option1
-        compCam tagID = new compCam(hardwareMap);
+        //compCam tagID = new compCam(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
         //tagID.tagToId();
         while (opModeIsActive()) {
