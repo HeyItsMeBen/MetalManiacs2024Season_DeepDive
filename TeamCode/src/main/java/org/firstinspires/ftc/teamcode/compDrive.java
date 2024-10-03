@@ -60,25 +60,20 @@ public class compDrive {
 
 
     private void setForward() {
-        /*frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-         */
-
         //SET all 4 directions to move forward
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
     }
 
     private void setStrafeLeft() {
         //SET motor directions to have robot STRAFE LEFT
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move backward
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+
     }
 
     private void setStrafeRight(){
@@ -93,7 +88,7 @@ public class compDrive {
     private void setUpperRight(){
         //SET MOTOR directions to have robot move forward upper right!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
@@ -197,6 +192,11 @@ public class compDrive {
     public void moveForward(double dblInches, double[] dblPower) {
         // Convert distance to encoder counts
         int encoderCountsToMove = (int) (dblInches * ENCODER_COUNTS_PER_INCH);
+        // Set target position for each motor to ZERO
+        frontLeftDrive.setTargetPosition(0);
+        backLeftDrive.setTargetPosition(0);
+        frontRightDrive.setTargetPosition(0);
+        backRightDrive.setTargetPosition(0);
 
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
         setForward(); //Set motors direction to move FORWARD

@@ -50,9 +50,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 //trigger code
-@Autonomous(name = "autoMainR2", group = "Linear OpMode")
+@Autonomous(name = "autoMainR4", group = "Linear OpMode")
 //@Disabled
-public class autoMainR2 extends LinearOpMode {
+public class autoMainR4 extends LinearOpMode {
 
     // Driver Code
     private ElapsedTime runtime = new ElapsedTime();
@@ -155,31 +155,35 @@ public class autoMainR2 extends LinearOpMode {
                 telemetry.update();
                 telemetry.addData("runCompDriveTest", "TEST MODE 2. Sleep 2 seconds.");
                 telemetry.update();
-                sleep(2000);
+                sleep(1000);
 
 
                 //TEST 2 compDrive Code
-                drive1.moveForward(1, dblPowerList); //Move Forward 1 inches
+                telemetry.addData("runCompDriveTest", "Move Forward 2 inches");
+                telemetry.update();
+                drive1.moveForward(2, dblPowerList); //Move Forward 2 inches
                 drive1.stopDrive();
-                sleep(2000); //Pause for 2 seconds
-                drive1.moveBackward(1, dblPowerList); //Move Backward 3 inches
+                sleep(1000); //Pause for 2 seconds
+                telemetry.addData("runCompDriveTest", "Move Backward 2 inches");
+                telemetry.update();
+                drive1.moveBackward(2, dblPowerList); //Move Backward 2 inches
                 //sleep(2000); //Pause for 2 seconds
-                drive1.moveLeft(1, dblPowerList); //Strafe Left 3 inches
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveRight(1,dblPowerList); //Strafe Right 3 inches
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveLowerLeft(1, dblPowerList); //Diagonal LowerLeft 3 inches
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveLowerRight(1, dblPowerList); //Diagonal LowerRight 3 inches
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveUpperLeft(1,dblPowerList); //Diagonal UpperLeft 3 inches
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveUpperRight(1,dblPowerList); //Diagonal UpperRight 3 inches
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveClockwiseTurn(1,dblPowerList); //Turn Clockwise for 3 inches long
-                sleep(1000); //Pause for 2 seconds
-                drive1.moveCounterClockwiseTurn(1,dblPowerList); //Turn CounterClockwise for 3 inches long
-                sleep(1000); //Pause for 2 seconds*/
+                drive1.moveLeft(2, dblPowerList); //Strafe Left 2 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveRight(2,dblPowerList); //Strafe Right 2 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveLowerLeft(2, dblPowerList); //Diagonal LowerLeft 2 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveLowerRight(2, dblPowerList); //Diagonal LowerRight 2 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveUpperLeft(2,dblPowerList); //Diagonal UpperLeft 2 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveUpperRight(2,dblPowerList); //Diagonal UpperRight 2 inches
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveClockwiseTurn(2,dblPowerList); //Turn Clockwise for 2 inches long
+                sleep(2000); //Pause for 2 seconds
+                drive1.moveCounterClockwiseTurn(2,dblPowerList); //Turn CounterClockwise for 3 inches long
+                sleep(2000); //Pause for 2 seconds*/
             }
             else if (intTestMode == 3){
                 //TEST PATHS with WITHOUT ENCODERS using compDrive
