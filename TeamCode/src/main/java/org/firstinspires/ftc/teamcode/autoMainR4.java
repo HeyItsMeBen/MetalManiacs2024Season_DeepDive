@@ -162,16 +162,25 @@ public class autoMainR4 extends LinearOpMode {
                 telemetry.addData("runCompDriveTest", "Move Forward 2 inches");
                 telemetry.update();
                 drive1.moveForward(2, dblPowerList); //Move Forward 2 inches
-                drive1.stopDrive();
-                sleep(1000); //Pause for 2 seconds
+
+                sleep(1000); //Pause for 1 seconds
                 telemetry.addData("runCompDriveTest", "Move Backward 2 inches");
                 telemetry.update();
                 drive1.moveBackward(2, dblPowerList); //Move Backward 2 inches
-                //sleep(2000); //Pause for 2 seconds
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Strafe Left 2 inches");
+                telemetry.update();
                 drive1.moveLeft(2, dblPowerList); //Strafe Left 2 inches
-                sleep(2000); //Pause for 2 seconds
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Strafe Right 2 inches");
+                telemetry.update();
+
                 drive1.moveRight(2,dblPowerList); //Strafe Right 2 inches
                 sleep(2000); //Pause for 2 seconds
+
+
                 drive1.moveLowerLeft(2, dblPowerList); //Diagonal LowerLeft 2 inches
                 sleep(2000); //Pause for 2 seconds
                 drive1.moveLowerRight(2, dblPowerList); //Diagonal LowerRight 2 inches

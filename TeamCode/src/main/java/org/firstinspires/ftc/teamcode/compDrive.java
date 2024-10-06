@@ -52,10 +52,10 @@ public class compDrive {
 
     private void setBackward() {
         //SET all 4 directions to backwards
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -78,11 +78,104 @@ public class compDrive {
 
     private void setStrafeRight(){
         //SET motor directions to have robot STRAFE RIGHT
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private void setUpperRight(){
@@ -372,8 +465,8 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-            telemetry.update();
+          //  telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+           // telemetry.update();
         }
 
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
@@ -408,8 +501,8 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-            telemetry.update();
+            //telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+           // telemetry.update();
         }
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
     }
@@ -443,8 +536,8 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-            telemetry.update();
+            //telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+           // telemetry.update();
         }
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
     }
@@ -473,8 +566,8 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-            telemetry.update();
+            //telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+           // telemetry.update();
         }
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
     }
@@ -503,8 +596,8 @@ public class compDrive {
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-            telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-            telemetry.update();
+           // telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+           // telemetry.update();
         }
 
         stopDrive(); //Reset encoders and STOP motors.
