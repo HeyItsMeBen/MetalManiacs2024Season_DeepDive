@@ -85,106 +85,13 @@ public class compDrive {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void setUpperRight(){
         //SET MOTOR directions to have robot move forward upper right!
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
     }
 
 
@@ -201,10 +108,10 @@ public class compDrive {
     private void setLowerLeft(){
         //SET MOTOR directions to have robot move backward lower left!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move reverse
     }
 
 
@@ -222,8 +129,8 @@ public class compDrive {
         //SET MOTOR directions to have robot TURN Counter Clockwise!
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move reverse
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
     }
 
@@ -232,8 +139,8 @@ public class compDrive {
         //SET MOTOR directions to have robot TURN Clockwise
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
     }
 
