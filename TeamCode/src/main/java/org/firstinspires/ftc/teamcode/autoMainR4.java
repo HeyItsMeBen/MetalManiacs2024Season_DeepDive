@@ -157,7 +157,6 @@ public class autoMainR4 extends LinearOpMode {
                 telemetry.update();
                 sleep(1000);
 
-
                 //TEST 2 compDrive Code
                 telemetry.addData("runCompDriveTest", "Move Forward 2 inches");
                 telemetry.update();
@@ -176,23 +175,42 @@ public class autoMainR4 extends LinearOpMode {
 
                 telemetry.addData("runCompDriveTest", "Strafe Right 2 inches");
                 telemetry.update();
-
                 drive1.moveRight(2,dblPowerList); //Strafe Right 2 inches
-                sleep(2000); //Pause for 2 seconds
+                sleep(1000); //Pause for 1 seconds
 
-
+                telemetry.addData("runCompDriveTest", "Move Lower Left 2 inches");
+                telemetry.update();
                 drive1.moveLowerLeft(2, dblPowerList); //Diagonal LowerLeft 2 inches
-                sleep(2000); //Pause for 2 seconds
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Move Lower Right 2 inches");
+                telemetry.update();
                 drive1.moveLowerRight(2, dblPowerList); //Diagonal LowerRight 2 inches
-                sleep(2000); //Pause for 2 seconds
-                drive1.moveUpperLeft(2,dblPowerList); //Diagonal UpperLeft 2 inches
-                sleep(2000); //Pause for 2 seconds
-                drive1.moveUpperRight(2,dblPowerList); //Diagonal UpperRight 2 inches
-                sleep(2000); //Pause for 2 seconds
-                drive1.moveClockwiseTurn(2,dblPowerList); //Turn Clockwise for 2 inches long
-                sleep(2000); //Pause for 2 seconds
-                drive1.moveCounterClockwiseTurn(2,dblPowerList); //Turn CounterClockwise for 3 inches long
-                sleep(2000); //Pause for 2 seconds*/
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Move Upper Left 5 inches");
+                telemetry.update();
+                drive1.moveUpperLeft(5,dblPowerList); //Diagonal UpperLeft 24 inches
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Move Upper Right 5 inches");
+                telemetry.update();
+                drive1.moveUpperRight(5,dblPowerList); //Diagonal UpperRight 24 inches
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Turn Clockwise 3 inches");
+                telemetry.update();
+                drive1.moveClockwiseTurn(3,dblPowerList); //Turn Clockwise for 2 inches long
+                sleep(1000); //Pause for 1 seconds
+
+                telemetry.addData("runCompDriveTest", "Turn CounterClockwise 3 inches");
+                telemetry.update();
+                drive1.moveCounterClockwiseTurn(3,dblPowerList); //Turn CounterClockwise for 3 inches long
+                sleep(1000); //Pause for 1 seconds*/
+
+                telemetry.addData("runCompDriveTest", "End Test of R4 <3");
+                telemetry.update();
+
             }
             else if (intTestMode == 3){
                 //TEST PATHS with WITHOUT ENCODERS using compDrive

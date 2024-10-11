@@ -99,8 +99,8 @@ public class compDrive {
         //SET MOTOR directions to have robot move forward upper left!
         //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
@@ -119,8 +119,8 @@ public class compDrive {
         //SET MOTOR directions to have robot move backward lower right!
         //CHANGE VALUES BELOW then delete this comment line
         //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
@@ -128,20 +128,20 @@ public class compDrive {
     private void setCounterClockwiseTurn() {
         //SET MOTOR directions to have robot TURN Counter Clockwise!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move reverse
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
     }
 
 
     private void setClockwiseTurn() {
         //SET MOTOR directions to have robot TURN Clockwise
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move reverse
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move reverse
+        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
     }
 
     private void setMotorPower(double[] dblPower) {
@@ -319,15 +319,15 @@ public class compDrive {
         //dblRealPower[3] hold value for Back Right
         double[] dblRealPower= {0.0, dblPower[1],dblPower[2], 0.0};
 
-        stopDrive(); //Before Changing Directions. STOP motor first so no drift.
-        setUpperLeft(); //Set FrontRight and BackLeft motor forward
-
+        //stopDrive(); //Before Changing Directions. STOP motor first so no drift.
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
-        frontLeftDrive.setTargetPosition(0); //NO Target Position Movement
+        frontLeftDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
         backLeftDrive.setTargetPosition(encoderCountsToMove);
         frontRightDrive.setTargetPosition(encoderCountsToMove);
-        backRightDrive.setTargetPosition(0); //NO Target Position Movement
+        backRightDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
+
+        setUpperLeft(); //Set FrontRight and BackLeft motor forward
 
         //Set all 4 motors position and also RUN_TO_POSITION
         setMotorPower(dblRealPower);
@@ -361,8 +361,8 @@ public class compDrive {
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
         frontLeftDrive.setTargetPosition(encoderCountsToMove);
-        backLeftDrive.setTargetPosition(0);
-        frontRightDrive.setTargetPosition(0);
+        backLeftDrive.setTargetPosition(encoderCountsToMove);
+        frontRightDrive.setTargetPosition(encoderCountsToMove);
         backRightDrive.setTargetPosition(encoderCountsToMove);
 
         //Set all 4 motors position and also RUN_TO_POSITION
@@ -397,8 +397,8 @@ public class compDrive {
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
         frontLeftDrive.setTargetPosition(encoderCountsToMove);
-        backLeftDrive.setTargetPosition(0);
-        frontRightDrive.setTargetPosition(0);
+        backLeftDrive.setTargetPosition(encoderCountsToMove);
+        frontRightDrive.setTargetPosition(encoderCountsToMove);
         backRightDrive.setTargetPosition(encoderCountsToMove);
 
         //Set all 4 motors position and also RUN_TO_POSITION
@@ -431,10 +431,10 @@ public class compDrive {
 
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
-        frontLeftDrive.setTargetPosition(0);
+        frontLeftDrive.setTargetPosition(encoderCountsToMove);
         backLeftDrive.setTargetPosition(encoderCountsToMove);
         frontRightDrive.setTargetPosition(encoderCountsToMove);
-        backRightDrive.setTargetPosition(0);
+        backRightDrive.setTargetPosition(encoderCountsToMove);
 
         //Set all 4 motors position and also RUN_TO_POSITION
         setMotorPower(dblPower);
