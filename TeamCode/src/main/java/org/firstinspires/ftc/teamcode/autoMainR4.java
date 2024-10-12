@@ -60,7 +60,7 @@ public class autoMainR4 extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    private double[] dblPowerList={0.25, 0.25, 0.25, 0.25}; //MOTOR POWERS
+    private double[] dblPowerList={0.5, 0.5, 0.5, 0.5}; //MOTOR POWERS
 
     @Override
     public void runOpMode() {
@@ -89,7 +89,7 @@ public class autoMainR4 extends LinearOpMode {
 
         //*******THIS MUST BE CHANGED to 0, 1, 2, 3 *********//
         //*******Depending on what team wants to test *******//
-        intTestMode = 2; //This must be changed depending on what team is testing
+        intTestMode = 3; //This must be changed depending on what team is testing
 
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
@@ -213,17 +213,11 @@ public class autoMainR4 extends LinearOpMode {
 
             }
             else if (intTestMode == 3){
-                //TEST PATHS with WITHOUT ENCODERS using compDrive
-                telemetry.addData("runCompDriveWOEncoderTest", "NO ENCODERS USED");
+                telemetry.addData("runCompDriveTest", "chicken");
                 telemetry.update();
-                sleep(1000);
+                drive1.moveLowerRight(24, dblPowerList); //Diagonal LowerRight 24 inches
+                sleep(1000); //Pause for 1 seconds
 
-//                drive1.moveForwardWOEncoders(dblPowerList); //(using time
-//                sleep(2000); //run 2 seconds
-//                drive1.stopMotorWOEncoders(); //STOP MOTORS
-//                drive1.moveBackwardWOEncoders(dblPowerList); //MOVE BACKWARDS (using time)
-//                sleep(2000);
-//                drive1.stopMotorWOEncoders();//STOP MOTORS
 
 
             }

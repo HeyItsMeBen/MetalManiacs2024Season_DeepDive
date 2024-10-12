@@ -90,7 +90,7 @@ public class compDrive {
         //CHANGE VALUES BELOW then delete this comment line
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        // frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        //frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD); //opposite to move forward
     }
 
@@ -108,7 +108,7 @@ public class compDrive {
     private void setLowerLeft(){
         //SET MOTOR directions to have robot move backward lower left!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move reverse
@@ -118,10 +118,10 @@ public class compDrive {
     private void setLowerRight(){
         //SET MOTOR directions to have robot move backward lower right!
         //CHANGE VALUES BELOW then delete this comment line
-        //frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        //backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        //backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move forward
+        //frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -348,36 +348,36 @@ public class compDrive {
         int encoderCountsToMove = (int) (dblInches * ENCODER_COUNTS_PER_INCH);
 
         //Override Power to ensure only the correct motors move.
-        //UPPER RIGHT ZERO Power to Front Left and Back Right
+        //UPPER LEFT ZERO Power to Front Left and Back Right
         //dblRealPower[0] holds value for Front Left
         //dblRealPower[1] holds value for Front Right
         //dblRealPower[2] hold value for Back Left
         //dblRealPower[3] hold value for Back Right
-        double[] dblRealPower= {dblPower[0], 0.0,0.0, dblPower[3]};
+        double[] dblRealPower= {dblPower[0], 0.0, 0.0, dblPower[3]};
 
-        stopDrive(); //Before Changing Directions. STOP motor first so no drift.
-        setUpperRight(); //Set FrontLeft and BackRight motor forward
-
+        //stopDrive(); //Before Changing Directions. STOP motor first so no drift.
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
-        frontLeftDrive.setTargetPosition(encoderCountsToMove);
+        frontLeftDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
         backLeftDrive.setTargetPosition(encoderCountsToMove);
         frontRightDrive.setTargetPosition(encoderCountsToMove);
-        backRightDrive.setTargetPosition(encoderCountsToMove);
+        backRightDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
+
+        setUpperLeft(); //Set FrontRight and BackLeft motor forward
 
         //Set all 4 motors position and also RUN_TO_POSITION
-        setMotorPower(dblPower);
+        setMotorPower(dblRealPower);
 
         // Wait until the motors reach the target position
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
-          //  telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-           // telemetry.update();
+            //telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
+            //telemetry.update();
         }
-
-        stopDrive(); //Before Changing Directions. STOP motor first so no drift.
+        stopDrive(); //End Drive Reset Encoders
     }
+
 
 
     public void moveLowerLeft (double dblInches, double[] dblPower){
@@ -418,35 +418,36 @@ public class compDrive {
     public void moveLowerRight (double dblInches, double[] dblPower){
         // Convert distance to encoder counts
         int encoderCountsToMove = (int) (dblInches * ENCODER_COUNTS_PER_INCH);
+
         //Override Power to ensure only the correct motors move.
-        //UPPER RIGHT ZERO Power to Front Left and Back Right
+        //UPPER LEFT ZERO Power to Front Left and Back Right
         //dblRealPower[0] holds value for Front Left
         //dblRealPower[1] holds value for Front Right
         //dblRealPower[2] hold value for Back Left
         //dblRealPower[3] hold value for Back Right
-        double[] dblRealPower= {dblPower[1], 0.0,0.0, dblPower[2]};
+        double[] dblRealPower= {dblPower[0], 0.0, 0.0, dblPower[3]};
 
-        stopDrive(); //Before Changing Directions. STOP motor first so no drift.
-        setLowerRight(); //Set FrontLeft and BackRight motor reverse
-
+        //stopDrive(); //Before Changing Directions. STOP motor first so no drift.
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
-        frontLeftDrive.setTargetPosition(encoderCountsToMove);
+        frontLeftDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
         backLeftDrive.setTargetPosition(encoderCountsToMove);
         frontRightDrive.setTargetPosition(encoderCountsToMove);
-        backRightDrive.setTargetPosition(encoderCountsToMove);
+        backRightDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
+
+        setLowerRight();
 
         //Set all 4 motors position and also RUN_TO_POSITION
-        setMotorPower(dblPower);
+        setMotorPower(dblRealPower);
 
         // Wait until the motors reach the target position
         while (frontLeftDrive.isBusy() && backLeftDrive.isBusy() &&
                 frontRightDrive.isBusy() && backRightDrive.isBusy()) {
             // Optionally, add telemetry to display progress
             //telemetry.addData("Moving Backward", "Distance: %d inches", dblInches);
-           // telemetry.update();
+            //telemetry.update();
         }
-        stopDrive(); //Before Changing Directions. STOP motor first so no drift.
+        stopDrive(); //End Drive Reset Encoders
     }
 
     /* TO DO
