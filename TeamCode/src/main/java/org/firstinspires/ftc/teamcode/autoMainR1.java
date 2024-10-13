@@ -128,7 +128,7 @@ public class autoMainR1 extends LinearOpMode {
             sleep(1000);
             drive1.moveForward(tileLength, dblPower); //2-->1.5
             sleep(1000);
-            //drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);  //commented
+            drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);  //commented
             sleep(1000);
             /*Code for Claw and slides*/ //needs to be 0.25 SPEED (i think)
             //scores sample onto bar
@@ -140,7 +140,7 @@ public class autoMainR1 extends LinearOpMode {
             //end
 
             //move back to modified start position
-            //drive1.moveCounterClockwiseTurn(fullCircle*0.5, dblPower);  //commented
+            drive1.moveCounterClockwiseTurn(fullCircle*0.5, dblPower);  //commented
             sleep(1000);
 
             //retract linear slides. IMPORTANT: does not rly belong here?
@@ -164,11 +164,11 @@ public class autoMainR1 extends LinearOpMode {
                 drive1.moveLeft(i*0.33333*1.33333, dblPower);
                 sleep(1000);
                 //grab sample and transfer it
-                claw.open_close(0, 0);
+                claw.open_close(0.25,0.25);   //0-->0.25
                 sleep(1000);
                 claw.moveArm(-0.25);    //does arm have encoder?
                 sleep(1000);
-                claw.open_close(1, 1);
+                claw.open_close(0.5, 0.5); //0-->0.5
                 sleep(1000);
                 claw.moveArm(0.25);
                 sleep(1000);
