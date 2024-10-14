@@ -159,26 +159,65 @@ public class autoMainR2 extends LinearOpMode {
 
 
                 //TEST 2 compDrive Code
-                drive1.moveForward(1, dblPowerList); //Move Forward 1 inches
+                drive1.moveForward(10, dblPowerList); //Move Forward 1 inches
                 drive1.stopDrive();
-                sleep(2000); //Pause for 2 seconds
-                drive1.moveBackward(1, dblPowerList); //Move Backward 3 inches
+                telemetry.addData(">", "Move Forward");
+                telemetry.update();
+                sleep(1000); //Pause for 2 seconds
+
+                drive1.moveBackward(10, dblPowerList); //Move Backward 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Backward");
+                telemetry.update();
+                sleep(1000); //Pause for 2 seconds
+
                 //sleep(2000); //Pause for 2 seconds
-                drive1.moveLeft(1, dblPowerList); //Strafe Left 3 inches
+                drive1.moveLeft(10, dblPowerList); //Strafe Left 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Left");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveRight(1,dblPowerList); //Strafe Right 3 inches
+
+                drive1.moveRight(10,dblPowerList); //Strafe Right 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Right");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveLowerLeft(1, dblPowerList); //Diagonal LowerLeft 3 inches
+
+                drive1.moveLowerLeft(10, dblPowerList); //Diagonal LowerLeft 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Diagonal Left Down");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveLowerRight(1, dblPowerList); //Diagonal LowerRight 3 inches
+
+                drive1.moveLowerRight(10, dblPowerList); //Diagonal LowerRight 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Diagonal Right Down");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveUpperLeft(1,dblPowerList); //Diagonal UpperLeft 3 inches
+
+                drive1.moveUpperLeft(10, dblPowerList); //Diagonal UpperLeft 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Diagonal Left Up");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveUpperRight(1,dblPowerList); //Diagonal UpperRight 3 inches
+
+                drive1.moveUpperRight(10, dblPowerList); //Diagonal UpperRight 3 inches
+                drive1.stopDrive();
+                telemetry.addData(">", "Move Diagonal Right Up");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveClockwiseTurn(1,dblPowerList); //Turn Clockwise for 3 inches long
+
+                drive1.moveClockwiseTurn(10, dblPowerList); //Turn Clockwise for 3 inches long
+                drive1.stopDrive();
+                telemetry.addData(">", "Turn CLockwise");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds
-                drive1.moveCounterClockwiseTurn(1,dblPowerList); //Turn CounterClockwise for 3 inches long
+
+                drive1.moveCounterClockwiseTurn(10, dblPowerList); //Turn CounterClockwise for 3 inches long
+                drive1.stopDrive();
+                telemetry.addData(">", "Turn CounterClockwise");
+                telemetry.update();
                 sleep(1000); //Pause for 2 seconds*/
             }
             else if (intTestMode == 3){

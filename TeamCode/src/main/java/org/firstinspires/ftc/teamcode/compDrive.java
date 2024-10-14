@@ -108,7 +108,7 @@ public class compDrive {
     private void setLowerLeft(){
         //SET MOTOR directions to have robot move backward lower left!
         //CHANGE VALUES BELOW then delete this comment line
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         //backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         //frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE); //opposite to move reverse
@@ -363,7 +363,7 @@ public class compDrive {
         frontRightDrive.setTargetPosition(encoderCountsToMove);
         backRightDrive.setTargetPosition(encoderCountsToMove); //NO Target Position Movement
 
-        setUpperLeft(); //Set FrontRight and BackLeft motor forward
+        setUpperRight(); //Set FrontRight and BackLeft motor forward
 
         //Set all 4 motors position and also RUN_TO_POSITION
         setMotorPower(dblRealPower);
@@ -394,11 +394,13 @@ public class compDrive {
         stopDrive(); //Before Changing Directions. STOP motor first so no drift.
         setLowerLeft(); //Set FrontLeft and BackRight motor reverse
 
+        dblPower[1] = 0;
+        dblPower[2] = 0;
         // Set target position for each motor. motor direction is reverse so encoder counts should be negative.
         // Since the motors directions have been set already in above, encoderCountsToMove will always be positive
         frontLeftDrive.setTargetPosition(encoderCountsToMove);
-        backLeftDrive.setTargetPosition(encoderCountsToMove);
-        frontRightDrive.setTargetPosition(encoderCountsToMove);
+        backLeftDrive.setTargetPosition(0);
+        frontRightDrive.setTargetPosition(0);
         backRightDrive.setTargetPosition(encoderCountsToMove);
 
         //Set all 4 motors position and also RUN_TO_POSITION

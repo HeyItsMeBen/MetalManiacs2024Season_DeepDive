@@ -9,11 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-//1
+
 public class compClaw {
-    private DcMotor arm = null;
-    private Servo leftClaw  = null;
-    private Servo rightClaw = null;
+    private DcMotor arm;
+    private Servo leftClaw;
+    private Servo rightClaw;
 
 
 
@@ -35,7 +35,7 @@ public class compClaw {
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setPower(0);
         leftClaw.setDirection(Servo.Direction.FORWARD);
-        rightClaw.setDirection(Servo.Direction.REVERSE);
+        rightClaw.setDirection(Servo.Direction.FORWARD);
 
 
 
@@ -49,9 +49,6 @@ public class compClaw {
         leftClaw.setPosition(left);
         rightClaw.setPosition(right);
     }
-
-
-
 
     public void moveArm(double power) {
         arm.setPower(power);

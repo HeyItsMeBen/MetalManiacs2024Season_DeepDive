@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 //1
 public class compLinearSlide {
-    private DcMotor LinearSlideL = null;
-    private DcMotor LinearSlideR  = null;
+    private DcMotor LinearSlideL;
+    private DcMotor LinearSlideR;
 
 
 
 
-    private Servo ServoSpecimanDeployL = null;
-    private Servo ServoSpecimanDeployR = null;
+    private Servo ServoSpecimanDeployL;
+    private Servo ServoSpecimanDeployR;
 
 
 
@@ -28,21 +28,21 @@ public class compLinearSlide {
 
 
 
-    public compLinearSlide(HardwareMap hardwareMap) {
+    public compLinearSlide(HardwareMap hMap) {
 
 
 
 
         //LinearSlide
-        LinearSlideL = hardwareMap.get(DcMotor.class, "leftSlide"); //added 7/24/24
-        LinearSlideR = hardwareMap.get(DcMotor.class, "rightSlide"); // change display name after we design
+        LinearSlideL = hMap.get(DcMotor.class, "leftSlide"); //added 7/24/24
+        LinearSlideR = hMap.get(DcMotor.class, "rightSlide"); // change display name after we design
 
 
 
 
         //Deploy the bucket for the servos
-        ServoSpecimanDeployL = hardwareMap.get(Servo.class, "leftOuttake");
-        ServoSpecimanDeployR = hardwareMap.get(Servo.class, "rightOuttake");
+        ServoSpecimanDeployL = hMap.get(Servo.class, "leftOuttake");
+        ServoSpecimanDeployR = hMap.get(Servo.class, "rightOuttake");
 
 
         LinearSlideL.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -52,56 +52,32 @@ public class compLinearSlide {
         /*ServoSpecimanDeployL.setDirection(Servo.Direction.REVERSE);
         ServoSpecimanDeployR.setDirection(Servo.Direction.FORWARD);*/
 
-
-
         /*LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);      //Commented. Used for encoders, which we don't have yet
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LinearSlideL.setTargetPosition(0);
         LinearSlideR.setTargetPosition(0);
+
+        ServoSpecimanDeployL.setDirection(Servo.Direction.FORWARD);
+        ServoSpecimanDeployR.setDirection(Servo.Direction.REVERSE);
+
+
+        //LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //LinearSlideL.setTargetPosition(0);
+        //LinearSlideR.setTargetPosition(0);
+>>>>>>> Stashed changes
         LinearSlideL.setPower(0);
         LinearSlideR.setPower(0);
          */
     }
-
-
-
 
     public void extendVertical (double vertPower) {
         LinearSlideL.setPower(vertPower);
         LinearSlideR.setPower(vertPower);
     }
 
-
-
-
-    public void open_close(double left, double right) {
+    public void open_close_outtake (double left, double right) {
         ServoSpecimanDeployL.setPosition(left);
         ServoSpecimanDeployR.setPosition(right);
     }
-    public void test1(){
-        LinearSlideL.setTargetPosition(50);
-        LinearSlideR.setTargetPosition(50);
-
-
-
-
-        LinearSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        LinearSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-
-
-        LinearSlideL.setPower(0.25);
-        LinearSlideL.setPower(0.25);
-
-
-
-
-        LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-
-
-
 }

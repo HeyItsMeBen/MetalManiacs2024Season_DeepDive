@@ -331,9 +331,9 @@ public class autoMainR1 extends LinearOpMode {
 
         //output
         slides.extendVertical(-0.25);
-        slides.open_close(0,0);
+        slides.open_close_outtake(0,0);
         slides.extendVertical(0.25);
-        slides.open_close(1,1);
+        slides.open_close_outtake(1,1);
         drive1.moveRight(12, dblPower);
     }
     public void scoreMainR1Sample(compDrive drive1, compClaw claw, compLinearSlide slides){
