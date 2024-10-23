@@ -23,8 +23,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        compLinearSlide ls = new compLinearSlide(hardwareMap);
-        compClaw c = new compClaw(hardwareMap);
+        compLinearSlide linearSlide = new compLinearSlide(hardwareMap);
+        compClaw claw = new compClaw(hardwareMap);
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -48,9 +48,9 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             // Drive Code
             double max;
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial   =   gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral =  -gamepad1.left_stick_x;
+            double yaw     =   gamepad1.right_stick_x;
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = axial + lateral + yaw;
@@ -79,42 +79,42 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + 1
             //Activate by toggling the triggers
             if (gamepad1.left_trigger > 0){
-                c.moveArm(0.5);
+                claw.moveArm(-0.5);
             }
             if (gamepad1.right_trigger > 0) {
-                c.moveArm(-0.5);
+                claw.moveArm(0.5);
             }
-            c.moveArm(0);
+            claw.moveArm(0);
 
             //Intake code: Servos
             //To utilize, set the gamepad to start + 2
             //Activate by toggling the triggers
-            if (gamepad2.left_trigger > 0){
-                c.open_close(-1,1);
+            if (gamepad2.left_trigger > 0){ //Open
+                claw.open_close(1,-1);
             }
-            if (gamepad2.right_trigger > 0) {
-                c.open_close(1, -1);
+            if (gamepad2.right_trigger > 0) { //Close
+                claw.open_close(0.5, -0.5);
             }
 
             //Outtake code: Linear Slides
             //To utilize, set the gamepad to start + 2
             //Activate by using the up/down right joystick
             if (gamepad2.right_stick_y > 0){
-                ls.extendVertical(1);
+                linearSlide.extendVertical(1);
             }
             if (gamepad2.right_stick_y > 0){
-                ls.extendVertical(-1);
+                linearSlide.extendVertical(-1);
             }
-            ls.extendVertical(0);
+            linearSlide.extendVertical(0);
 
             //Outtake code: Servos
             //To utilize, set the gamepad to start + 2
             //Activate by pressing the bumpers
             if (gamepad2.left_bumper) {
-                ls.open_close_outtake(1, -1);
+                linearSlide.open_close_outtake(1, -1);
             }
             if (gamepad2.right_bumper) {
-                ls.open_close_outtake(-1, 1);
+                linearSlide.open_close_outtake(-1, 1);
             }
 
             idle();

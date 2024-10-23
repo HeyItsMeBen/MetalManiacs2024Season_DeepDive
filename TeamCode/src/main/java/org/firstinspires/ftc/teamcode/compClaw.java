@@ -42,9 +42,6 @@ public class compClaw {
 
     }
 
-
-
-
     public void open_close (double left, double right) {
         leftClaw.setPosition(left);
         rightClaw.setPosition(right);

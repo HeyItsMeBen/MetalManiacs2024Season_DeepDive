@@ -47,28 +47,6 @@ public class compLinearSlide {
 
         LinearSlideL.setDirection(DcMotorSimple.Direction.FORWARD);
         LinearSlideR.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-        /*ServoSpecimanDeployL.setDirection(Servo.Direction.REVERSE);
-        ServoSpecimanDeployR.setDirection(Servo.Direction.FORWARD);*/
-
-        /*LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);      //Commented. Used for encoders, which we don't have yet
-        LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LinearSlideL.setTargetPosition(0);
-        LinearSlideR.setTargetPosition(0);
-
-        ServoSpecimanDeployL.setDirection(Servo.Direction.FORWARD);
-        ServoSpecimanDeployR.setDirection(Servo.Direction.REVERSE);
-
-
-        //LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //LinearSlideL.setTargetPosition(0);
-        //LinearSlideR.setTargetPosition(0);
->>>>>>> Stashed changes
-        LinearSlideL.setPower(0);
-        LinearSlideR.setPower(0);
-         */
     }
 
     public void extendVertical (double vertPower) {
