@@ -84,12 +84,13 @@ public class autoMainR4 extends LinearOpMode {
         runtime.reset();
         //option1
         //compCam tagID = new compCam(hardwareMap);
+        compClaw claw = new compClaw(hardwareMap);
         compDrive drive1 = new compDrive(hardwareMap);
         int intTestMode = 0; //0 IS NOT IN TEST MODE
 
         //*******THIS MUST BE CHANGED to 0, 1, 2, 3 *********//
         //*******Depending on what team wants to test *******//
-        intTestMode = 3; //This must be changed depending on what team is testing
+        intTestMode = 4; //This must be changed depending on what team is testing
 
         while (opModeIsActive()) {
             //if (tagID.tagToId()==4){
@@ -212,15 +213,20 @@ public class autoMainR4 extends LinearOpMode {
                 telemetry.update();
 
             }
-            else if (intTestMode == 3){
+            else if (intTestMode == 3) {
                 telemetry.addData("runCompDriveTest", "chicken");
                 telemetry.update();
                 drive1.moveLowerRight(24, dblPowerList); //Diagonal LowerRight 24 inches
                 sleep(1000); //Pause for 1 seconds
-
-
-
             }
+
+            else if (intTestMode == 4){
+            telemetry.addData("compClaw", "testing servo");
+            telemetry.update();
+            claw.open_close(0.75, -1.25);
+                sleep(2000); //Pause for 2 seconds
+                claw.open_close(-1, 1);
+                }
         }
         /*compCam tagID = new compCam();
         while (opModeIsActive()) {f

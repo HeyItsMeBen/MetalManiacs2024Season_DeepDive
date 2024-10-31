@@ -47,6 +47,12 @@ public class compClaw {
         rightClaw.setPosition(right);
     }
 
+    public void getStartPosition(double left, double right)
+    {
+        left = leftClaw.getPosition();
+        right = rightClaw.getPosition();
+    }
+
     public void moveArm(double power) {
         arm.setPower(power);
     }
