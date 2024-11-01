@@ -52,8 +52,8 @@ public class DriveCode extends LinearOpMode {
         rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
         armLeftServo = hardwareMap.get(Servo.class, "armLeftServo");
         armRightServo = hardwareMap.get(Servo.class, "armRightServo");
-        slideLeftServo = hardwareMap.get(Servo.class, "slideLeftServo");
-        slideRightServo = hardwareMap.get(Servo.class, "slideRightServo");
+        slideLeftServo = hardwareMap.get(Servo.class, "leftOuttake");
+        slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
 
         // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -99,41 +99,44 @@ public class DriveCode extends LinearOpMode {
             backRightDrive.setPower(rightBackPower);
 
             while (gamepad1.y) {
-                arm.setPower(0.75);
+                arm.setPower(0.25);
             }
             arm.setPower(0);
 
             while (gamepad1.a) {
-                arm.setPower(-0.75);
+                arm.setPower(-0.25);
             }
             arm.setPower(0);
 
             if (gamepad1.left_bumper) {
-                armLeftServo.setPosition(0.8);
-                armRightServo.setPosition(0.6);
+                armLeftServo.setPosition(0.55);
+                armRightServo.setPosition(0.8);
             }
             if (gamepad1.right_bumper) {
-                armLeftServo.setPosition(0.55);
-                armRightServo.setPosition(0.55);
+                armLeftServo.setPosition(0.6);
+                armRightServo.setPosition(0.75);
             }
             // Slide move up for Rung Scoring
             if (gamepad2.x) {
-                slideMoveUpRung(0.75, 3);
+                slideMoveUpRung(0.5, 3);
             }
             if (gamepad2.b) {
-                slideMoveDownRung(0.75, 3);
+                slideMoveDownRung(0.5, 3);
             }
 
             if (gamepad2.a) {
-                basketScore(0.75, 5);
+                basketScore(0.5, 5);
             }
+
             if (gamepad2.left_bumper) {
-                slideLeftServo.setPosition(0.0);
-                slideRightServo.setPosition(1.0);
+
+                telemetry.addData("Currently at", " at %7d :%7d",
+                        slideLeftServo.getPosition(), slideRightServo.getPosition());
+                telemetry.update();
             }
             if (gamepad2.right_bumper) {
-                slideLeftServo.setPosition(-0.5);
-                slideRightServo.setPosition(-0.5);
+                slideLeftServo.setPosition(0.5);
+                slideRightServo.setPosition(0.25);
             }
         }
 
@@ -144,8 +147,8 @@ public class DriveCode extends LinearOpMode {
         int newRightSlideTarget;
 
         if (opModeIsActive()) {
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (15 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (15 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -187,8 +190,8 @@ public class DriveCode extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-2.5 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (-2.5 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (2.5 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (2.5 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -227,8 +230,8 @@ public class DriveCode extends LinearOpMode {
 
             sleep(250);
 
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-11 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (-11 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (17.5 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (17.5 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -267,8 +270,8 @@ public class DriveCode extends LinearOpMode {
         int newRightSlideTarget;
 
         if (opModeIsActive()) {
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (15 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (15 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -307,8 +310,8 @@ public class DriveCode extends LinearOpMode {
 
             sleep(250);
 
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-13 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-13 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (20 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (20 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
