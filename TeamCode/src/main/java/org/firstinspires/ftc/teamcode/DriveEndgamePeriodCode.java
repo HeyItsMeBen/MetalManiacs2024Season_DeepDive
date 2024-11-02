@@ -19,7 +19,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
     private float POWER_REDUCTION = 2;
-
+    private static final int LINEAR_ENCODER_COUNTS_PER_INCH = 43;
+    int linearencoderCountsToMove = (int) (48 * LINEAR_ENCODER_COUNTS_PER_INCH);
     @Override
     public void runOpMode() {
 
@@ -89,32 +90,38 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //Intake code: Servos
             //To utilize, set the gamepad to start + 2
             //Activate by toggling the triggers
-            if (gamepad2.left_trigger > 0){ //Open
-                claw.open_close(1,-1);
+            if (gamepad1.left_bumper){ //Open
+                claw.open_close(0.6,0.75);
             }
-            if (gamepad2.right_trigger > 0) { //Close
-                claw.open_close(0.5, -0.5);
+            if (gamepad1.right_bumper) { //Close
+                claw.open_close(0.55, 0.8);
             }
 
             //Outtake code: Linear Slides
             //To utilize, set the gamepad to start + 2
             //Activate by using the up/down right joystick
-            if (gamepad2.right_stick_y > 0){
-                linearSlide.extendVertical(1);
+                 if (gamepad2.right_stick_y > 0){
+                linearSlide.extendVertical(.75);
             }
-            if (gamepad2.right_stick_y > 0){
-                linearSlide.extendVertical(-1);
+                 //changed it to less then to move slides down :) ev
+            if (gamepad2.right_stick_y < 0){
+                linearSlide.extendVertical(-.75);
             }
             linearSlide.extendVertical(0);
 
             //Outtake code: Servos
             //To utilize, set the gamepad to start + 2
             //Activate by pressing the bumpers
-            if (gamepad2.left_bumper) {
-                linearSlide.open_close_outtake(1, -1);
+
+           /*open*/ if (gamepad2.left_bumper) {
+                linearSlide.open_close_outtake(1.0, 0.625);
+                telemetry.addData("OpenOutakeClaw", "testing servo OPEN");
+                telemetry.update();
             }
-            if (gamepad2.right_bumper) {
-                linearSlide.open_close_outtake(-1, 1);
+            /*close*/ if (gamepad2.right_bumper) {
+                linearSlide.open_close_outtake(0.925, 0.75);
+                telemetry.addData("CloawOutakeClaw", "testing servo CLOSE");
+                telemetry.update();
             }
 
             idle();
