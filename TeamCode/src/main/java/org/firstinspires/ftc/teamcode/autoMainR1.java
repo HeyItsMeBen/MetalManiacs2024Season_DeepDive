@@ -37,7 +37,7 @@ public class autoMainR1 extends LinearOpMode {
 
     public int testMode;
     public double tileLength=23.75;
-    public double fullCircle=12.959*7.11111111*0.125;
+    public double fullCircle=51.8362788*1.16666667*2;
     double[] dblPower={0.25, 0.25, 0.25, 0.25};
 
 
@@ -86,8 +86,8 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.update();
             drive1.moveRight(tileLength*2, dblPower); //1.5-->1.75-->2
             sleep(1000);
-            slides.extendVertical(0.75);
-            sleep(50);          //100-->30-->
+            slides.extendVertical(-0.75);
+            sleep(500);          //100-->30-->50-->500
             slides.extendVertical(0);
             drive1.moveForward(tileLength, dblPower); //2-->1.5-->1
             sleep(1000);
@@ -99,8 +99,8 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.update();
             slides.open_close_outtake(0.925, 0.75);            //closes
             sleep(1000);
-            slides.extendVertical(-0.75);
-            sleep(50);
+            slides.extendVertical(0.75);
+            sleep(500);
             slides.extendVertical(0);
             slides.open_close_outtake(1.0, 0.625);            //opens
             sleep(1000);
@@ -152,10 +152,10 @@ public class autoMainR1 extends LinearOpMode {
                 claw.open_close(0.6,0.75);
                 sleep(1000);
                 claw.moveArm(-0.25);
-                sleep(1000);
+                sleep(5000);
                 claw.open_close(0.55, 0.8); //1-->0.75
                 sleep(1000);
-                claw.moveArm(0.25);     //also, arm doesn't get set to 0. W/o encoder, power will continoulsy be sent
+                claw.moveArm(0.25);
                 sleep(1000);
                 claw.open_close(0.6, 0.75);   //0-->0.5
                 sleep(1000);
@@ -207,7 +207,7 @@ public class autoMainR1 extends LinearOpMode {
             drive1.moveBackward(tileLength*0.5, dblPower); //9-->tileLength*0.5
             sleep(1000);
         }
-        //The actual auto code
+
         //this repeats the whole time while the program is running
         while (opModeIsActive()) {
             telemetry.addLine("so far so good (opMode is active)");
