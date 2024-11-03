@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "Drive & Endgame Period Code", group = "Linear OpMode")
 public class DriveEndgamePeriodCode extends LinearOpMode {
 
-    // Driver Code
+    // Driver Code: Variables
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
@@ -30,16 +30,17 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        //Declare using Linear Slide object and Claw (Intake Arm and claws) object
         compLinearSlide linearSlide = new compLinearSlide(hardwareMap);
         compClaw claw = new compClaw(hardwareMap);
 
-        // Driver Code
+        // Driver Code: Map the 4 motors based off of Driver Station
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
-        // set direction for motors
+        // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -50,17 +51,20 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         telemetry.update();
         waitForStart();
         runtime.reset();
+
+        //Start Button Pushed
         while (opModeIsActive()) {
 
             //SET this 2 to use math theta, sine, cosine; otherwise SET to 0.
             int intTestMode = 2;
 
             // Drive Code
-            double max;
+            double max; //variable to define maximum motor values never > 100%
+
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   =   gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x;
-            double yaw     =   -gamepad1.right_stick_x;
+            double yaw     =  -gamepad1.right_stick_x;
 
             if (intTestMode > 1) {
 
@@ -102,7 +106,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             }
 
             if (intTestMode > 1) {
-                telemetry.addData("DriveEndgame Period", "testing strafe :) 0");
+                telemetry.addData("DriveEndgame Period", "testing strafe :)");
                 telemetry.update();
                 max = Math.max(Math.abs(sine),
                         Math.abs(cosine));
@@ -151,10 +155,10 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //Outtake code: Linear Slides
             //To utilize, set the gamepad to start + 2
             //Activate by using the up/down right joystick
-                 if (gamepad2.right_stick_y > 0){
+            if (gamepad2.right_stick_y > 0){
                 linearSlide.extendVertical(.75);
             }
-                 //changed it to less then to move slides down :) ev
+            //changed it to less then to move slides down :) ev
             if (gamepad2.right_stick_y < 0){
                 linearSlide.extendVertical(-.75);
             }
@@ -164,12 +168,14 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + 2
             //Activate by pressing the bumpers
 
-           /*open*/ if (gamepad2.left_bumper) {
+           /*open*/
+            if (gamepad2.left_bumper) {
                 linearSlide.open_close_outtake(1.0, 0.625);
                 telemetry.addData("OpenOutakeClaw", "testing servo OPEN");
                 telemetry.update();
             }
-            /*close*/ if (gamepad2.right_bumper) {
+            /*close*/
+            if (gamepad2.right_bumper) {
                 linearSlide.open_close_outtake(0.925, 0.75);
                 telemetry.addData("CloawOutakeClaw", "testing servo CLOSE");
                 telemetry.update();
