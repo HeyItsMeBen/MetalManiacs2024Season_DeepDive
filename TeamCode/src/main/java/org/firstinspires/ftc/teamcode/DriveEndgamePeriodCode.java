@@ -20,6 +20,12 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private DcMotor backRightDrive = null;
     private float POWER_REDUCTION = 2;
     private static final int LINEAR_ENCODER_COUNTS_PER_INCH = 43;
+    private double theta;
+    private double power;
+    private double sine;
+    private double cosine;
+    private double max;
+    private double turn;
     int linearencoderCountsToMove = (int) (48 * LINEAR_ENCODER_COUNTS_PER_INCH);
     @Override
     public void runOpMode() {
@@ -27,13 +33,19 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         compLinearSlide linearSlide = new compLinearSlide(hardwareMap);
         compClaw claw = new compClaw(hardwareMap);
 
+        sine = Math.sin(theta - Math.PI/4);
+        cosine = Math.cos(theta - Math.PI/4);
+        max = Math.max(Math.abs(sine),
+        Math.abs(cosine));
+
+
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-        // set direction for motors
 
+        // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -45,6 +57,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
+            int intTestMode = 2;
+
 
             // Drive Code
             double max;
@@ -52,12 +66,23 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             double axial   =   gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x;
             double yaw     =   gamepad1.right_stick_x;
+
+            if (intTestMode > 1) {
+                double x = gamepad1.left_stick_x;
+                double y = -gamepad1.left_stick_y;
+                theta = Math.atan2(x, y);
+                turn = gamepad1.right_stick_x;
+                power = Math.hypot(x, y);
+            }
+
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower   = axial - lateral + yaw;
             double rightBackPower  = axial + lateral - yaw;
+
+
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -70,6 +95,22 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 leftBackPower   /= max;
                 rightBackPower  /= max;
             }
+
+            if (intTestMode > 1) {
+
+                leftFrontPower = power * cosine / max + turn;
+                rightFrontPower = power * sine / max - turn;
+                leftBackPower = power * sine / max + turn;
+                rightBackPower = power * cosine / max - turn;
+
+                if ((power + Math.abs(turn))>1) {
+                    leftFrontPower /= power + turn;
+                    rightFrontPower /= power + turn;
+                    leftBackPower /= power + turn;
+                    rightBackPower /= power + turn;
+                }
+            }
+
             // Send calculated power to wheels
             frontLeftDrive.setPower(leftFrontPower);
             frontRightDrive.setPower(rightFrontPower);
