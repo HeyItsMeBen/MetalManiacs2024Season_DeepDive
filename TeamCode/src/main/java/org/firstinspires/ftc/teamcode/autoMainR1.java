@@ -13,10 +13,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 //A lot of imports here
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.compDrive;
 import org.firstinspires.ftc.teamcode.compClaw;
 import org.firstinspires.ftc.teamcode.compLinearSlide;
-import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+/*import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;*/
 
 import java.util.ArrayList;
 
@@ -36,7 +39,7 @@ public class autoMainR1 extends LinearOpMode {
 
     public int testMode;
     public double tileLength=23.75;
-    public double fullCircle=12.959;
+    public double fullCircle=12.959*7.11111111;
     double[] dblPower={0.25, 0.25, 0.25, 0.25};
 
 
@@ -47,7 +50,8 @@ public class autoMainR1 extends LinearOpMode {
         compDrive drive1 = new compDrive(hardwareMap);
         compClaw claw = new compClaw(hardwareMap);
         compLinearSlide slides = new compLinearSlide(hardwareMap);
-        compCam camera = new compCam(hardwareMap);
+        //compCam camera1 = new compCam(hardwareMap);
+        //OpenCvCamera camera;
 
 
         //hardware mapping
@@ -59,6 +63,9 @@ public class autoMainR1 extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm"); //ADD this to hardware map IMP
         leftClaw = hardwareMap.get(Servo.class, "leftOuttake");
         rightClaw = hardwareMap.get(Servo.class, "rightOuttake");
+
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        //camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -81,22 +88,23 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.update();
             drive1.moveRight(tileLength*2, dblPower); //1.5-->1.75-->2
             sleep(1000);
+            slides.extendVertical(0.75);
+            sleep(50);          //100-->30-->
+            slides.extendVertical(0);
             drive1.moveForward(tileLength, dblPower); //2-->1.5-->1
             sleep(1000);
-            drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);
+            drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);   //0.5-->8*0.44444444-->0.5
             sleep(1000);
 
             //scores sample onto bar
             telemetry.addLine("Scoring specimen...");
             telemetry.update();
-            slides.extendVertical(0.25);
-            sleep(50);          //100-->30-->
-            slides.extendVertical(0);
-            slides.open_close_outtake(0.5, 0.5);            //0-->0.5
+            slides.open_close_outtake(0.925, 0.75);            //closes
             sleep(1000);
-            slides.extendVertical(-0.25);
+            slides.extendVertical(-0.75);
             sleep(50);
             slides.extendVertical(0);
+            slides.open_close_outtake(1.0, 0.625);            //opens
             sleep(1000);
 
 
@@ -107,11 +115,26 @@ public class autoMainR1 extends LinearOpMode {
             sleep(1000);
             drive1.moveBackward(tileLength*0.5, dblPower); //tileLength-9-->tileLength*0.5
             sleep(1000);
-            drive1.moveLeft(tileLength*3.33333, dblPower);  //1.5-->2-->3.33333
+            drive1.moveLeft(tileLength*3.33333-4, dblPower);  //1.5-->2-->3.33333-4
             sleep(1000);
 
+            //uses camera as sensor to see if it is in the right position
+            /*camera1.scan();
+            if (camera1.getTelemetry('x')>0){
+                drive1.moveLeft(camera1.getTelemetry('x'), dblPower);
+            }
+            else if (camera1.getTelemetry('x')<0){
+                drive1.moveRight(Math.abs(camera1.getTelemetry('x')), dblPower);
+            }
+            if (camera1.getTelemetry('y')>0){
+                drive1.moveLeft(camera1.getTelemetry('y'), dblPower);
+            }
+            else if (camera1.getTelemetry('y')<0){
+                drive1.moveRight(Math.abs(camera1.getTelemetry('y')), dblPower);
+            }*/
+
             //this  should loop thrice (scores to basket)
-            for (int i=0; i<1; i++) {
+            for (int i=0; i<3; i++) {
                 //moves to sample
                 telemetry.addLine("Moving to sample...");
                 telemetry.update();
@@ -128,15 +151,15 @@ public class autoMainR1 extends LinearOpMode {
                 //grab sample and transfer it
                 telemetry.addLine("Grabbing sample...");
                 telemetry.update();
-                claw.open_close(0.5,0.5);
+                claw.open_close(0.6,0.75);
                 sleep(1000);
                 claw.moveArm(-0.25);
                 sleep(1000);
-                claw.open_close(0.75, 0.75); //1-->0.75
+                claw.open_close(0.55, 0.8); //1-->0.75
                 sleep(1000);
                 claw.moveArm(0.25);     //also, arm doesn't get set to 0. W/o encoder, power will continoulsy be sent
                 sleep(1000);
-                claw.open_close(0.5, 0.5);   //0-->0.5
+                claw.open_close(0.6, 0.75);   //0-->0.5
                 sleep(1000);
                 claw.moveArm(0);
                 //end
@@ -161,19 +184,18 @@ public class autoMainR1 extends LinearOpMode {
                 /*score sample into basket*/
                 telemetry.addLine("Scoring sample...");
                 telemetry.update();
-                slides.open_close_outtake(0.75, 0.75);    //1-->0.75
+                slides.open_close_outtake(0.925, 0.75);    //1-->0.75
                 sleep(1000);
-                slides.extendVertical(0.25);
+                slides.extendVertical(0.75);
                 sleep(50);         //100-->50
                 slides.extendVertical(0);
-                slides.open_close_outtake(0.5, 0.5);    //0-->0.5
+                slides.open_close_outtake(1.0, 0.625);    //0-->0.5
                 sleep(1000);
-                slides.extendVertical(-0.25);
+                slides.extendVertical(-0.75);
                 sleep(50);
                 slides.extendVertical(0);
                 sleep(1000);
                 //end
-
 
                 //move back to modified start position (base)
                 telemetry.addLine("Scoring sample...");
@@ -198,24 +220,24 @@ public class autoMainR1 extends LinearOpMode {
             //'tagToId' gets the id of the april tag that it scanned earlier
             //'if tag is not found, tell the driver station'
             if (testMode==1) {
-                camera.scan();
+                //camera1.scan();
                 //if tag not found, do nothing except say tag is not found
-                if (camera.tagToId() == 0){
+                if (false){//camera1.tagToId() == 0){
                     telemetry.addLine("Tag not found...");
                     telemetry.update();
                     sleep(500);
                 }
                 //otherwise, if the tag is equal to what we want, run this code
-                else if (camera.tagToId() == 4) {
-                    telemetry.addLine("Tag of interest is found! Tag ID: "+camera.tagToId());
+                else if (false){//camera1.tagToId() == 4) {
+                    /*telemetry.addLine("Tag of interest is found! Tag ID: "+camera1.tagToId());
                     telemetry.addData("Op mode", "is active");
                     telemetry.update();
                     sleep(500);
-                    telemetry.addLine("X: "+camera.getTelemetry('x'));
-                    telemetry.addLine("Y: "+camera.getTelemetry('y'));
-                    telemetry.addLine("Y: "+camera.getTelemetry('z'));
+                    telemetry.addLine("X: "+camera1.getTelemetry('x'));
+                    telemetry.addLine("Y: "+camera1.getTelemetry('y'));
+                    telemetry.addLine("Y: "+camera1.getTelemetry('z'));
                     telemetry.update();
-                    sleep(1500);
+                    sleep(1500);*/
                 }
             }
         }
