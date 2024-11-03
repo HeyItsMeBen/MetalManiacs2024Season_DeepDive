@@ -20,7 +20,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private DcMotor backRightDrive = null;
     private float POWER_REDUCTION = 2;
     private static final int LINEAR_ENCODER_COUNTS_PER_INCH = 43;
-    private double theta;
+    private double theta    ;
     private double power;
     private double sine;
     private double cosine;
@@ -32,12 +32,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
 
         compLinearSlide linearSlide = new compLinearSlide(hardwareMap);
         compClaw claw = new compClaw(hardwareMap);
-
-        sine = Math.sin(theta - Math.PI/4);
-        cosine = Math.cos(theta - Math.PI/4);
-        max = Math.max(Math.abs(sine),
-        Math.abs(cosine));
-
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -57,22 +51,33 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
-            int intTestMode = 2;
 
+            //SET this 2 to use math theta, sine, cosine; otherwise SET to 0.
+            int intTestMode = 2;
 
             // Drive Code
             double max;
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   =   gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x;
-            double yaw     =   gamepad1.right_stick_x;
+            double yaw     =   -gamepad1.right_stick_x;
 
             if (intTestMode > 1) {
-                double x = gamepad1.left_stick_x;
-                double y = -gamepad1.left_stick_y;
-                theta = Math.atan2(x, y);
-                turn = gamepad1.right_stick_x;
+
+                double x = -gamepad1.left_stick_x;
+                double y = gamepad1.left_stick_y;
+                turn = -gamepad1.right_stick_x;
+                theta = Math.atan2(y, x);
                 power = Math.hypot(x, y);
+
+                sine = Math.sin(theta - Math.PI/4);
+                cosine = Math.cos(theta - Math.PI/4);
+
+            }
+            else
+            {
+                telemetry.addData("DriveEndgame Period", "TEST MODE 0");
+                telemetry.update();
             }
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -97,12 +102,17 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             }
 
             if (intTestMode > 1) {
+                telemetry.addData("DriveEndgame Period", "testing strafe :) 0");
+                telemetry.update();
+                max = Math.max(Math.abs(sine),
+                        Math.abs(cosine));
 
                 leftFrontPower = power * cosine / max + turn;
                 rightFrontPower = power * sine / max - turn;
                 leftBackPower = power * sine / max + turn;
                 rightBackPower = power * cosine / max - turn;
 
+                //Makes sure motor does NOT exceed more than 100% or else it will have bad behaviors >:(
                 if ((power + Math.abs(turn))>1) {
                     leftFrontPower /= power + turn;
                     rightFrontPower /= power + turn;
