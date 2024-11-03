@@ -1,6 +1,4 @@
-//note to self: the number should be 38.1971863 if you ever lose it again
 package org.firstinspires.ftc.teamcode;
-
 
 //basic imports like motors and opModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -39,7 +37,7 @@ public class autoMainR1 extends LinearOpMode {
 
     public int testMode;
     public double tileLength=23.75;
-    public double fullCircle=12.959*7.11111111;
+    public double fullCircle=12.959*7.11111111*0.125;
     double[] dblPower={0.25, 0.25, 0.25, 0.25};
 
 
@@ -138,7 +136,7 @@ public class autoMainR1 extends LinearOpMode {
                 //moves to sample
                 telemetry.addLine("Moving to sample...");
                 telemetry.update();
-                drive1.moveForward(10.625, dblPower); //7.75-->10.625
+                drive1.moveForward(tileLength*0.5-6, dblPower); //7.75-->10.625-->tileLength*0.5-6
                 sleep(1000);
                 if (i==0){
                     drive1.moveRight(tileLength*0.33333*1.33333, dblPower);
