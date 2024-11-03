@@ -11,7 +11,7 @@ public class compDrive {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-    private static final int ENCODER_COUNTS_PER_INCH = 43; // TEST value, replace with actual based on motor and wheel diameter
+    private static final double ENCODER_COUNTS_PER_INCH = 38.1971863; // TEST value, replace with actual based on motor and wheel diameter
 
     public compDrive(HardwareMap hardwareMap){
         /*construct a new compDrive object*/
