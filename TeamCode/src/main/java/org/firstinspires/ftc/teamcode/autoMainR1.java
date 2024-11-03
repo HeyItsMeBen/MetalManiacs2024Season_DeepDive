@@ -45,12 +45,12 @@ public class autoMainR1 extends LinearOpMode {
     @Override
     //This runs when the program is activated
     public void runOpMode() {
+        //creating objects
         compDrive drive1 = new compDrive(hardwareMap);
         compClaw claw = new compClaw(hardwareMap);
         compLinearSlide slides = new compLinearSlide(hardwareMap);
         //compCam camera1 = new compCam(hardwareMap);
         //OpenCvCamera camera;
-
 
         //hardware mapping
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -58,7 +58,7 @@ public class autoMainR1 extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
-        arm = hardwareMap.get(DcMotor.class, "arm"); //ADD this to hardware map IMP
+        arm = hardwareMap.get(DcMotor.class, "arm");
         leftClaw = hardwareMap.get(Servo.class, "leftOuttake");
         rightClaw = hardwareMap.get(Servo.class, "rightOuttake");
 
@@ -77,19 +77,20 @@ public class autoMainR1 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //sets test mode
         testMode=2;
 
         if (testMode==2){
-            //deliver preloaded specimen
+            //deliver preloaded specimen. It's currently commented
             //move to bar
-            telemetry.addLine("Moving to basket...");
+            /*telemetry.addLine("Moving to basket...");
             telemetry.update();
-            drive1.moveRight(tileLength*2, dblPower); //1.5-->1.75-->2
+            drive1.moveRight(tileLength*2, dblPower);
             sleep(1000);
             slides.extendVertical(-0.75);
-            sleep(500);          //100-->30-->50-->500
+            sleep(500);
             slides.extendVertical(0);
-            drive1.moveForward(tileLength, dblPower); //2-->1.5-->1
+            drive1.moveForward(tileLength, dblPower);
             sleep(1000);
             drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);   //0.5-->8*0.44444444-->0.5
             sleep(1000);
@@ -106,15 +107,15 @@ public class autoMainR1 extends LinearOpMode {
             sleep(1000);
 
 
-            //move back to modified start position
-            telemetry.addLine("Moving to modified 'start' position...");
+            //move back to 'critical point' (the start position for scoring each sample)
+            telemetry.addLine("Moving to 'critical point'...");
             telemetry.update();
             drive1.moveCounterClockwiseTurn(fullCircle*0.5, dblPower);
             sleep(1000);
-            drive1.moveBackward(tileLength*0.5, dblPower); //tileLength-9-->tileLength*0.5
+            drive1.moveBackward(tileLength*0.5, dblPower);
             sleep(1000);
-            drive1.moveLeft(tileLength*3.33333-4, dblPower);  //1.5-->2-->3.33333-4
-            sleep(1000);
+            drive1.moveLeft(tileLength*3.33333-4, dblPower);
+            sleep(1000);*/
 
             //uses camera as sensor to see if it is in the right position
             /*camera1.scan();
@@ -136,8 +137,9 @@ public class autoMainR1 extends LinearOpMode {
                 //moves to sample
                 telemetry.addLine("Moving to sample...");
                 telemetry.update();
-                drive1.moveForward(tileLength*0.5-6, dblPower); //7.75-->10.625-->tileLength*0.5-6
+                drive1.moveForward(tileLength*0.5-6, dblPower);
                 sleep(1000);
+                //this if statement determines which sample it is currently trying to score. There is another one like it a little later on
                 if (i==0){
                     drive1.moveRight(tileLength*0.33333*1.33333, dblPower);
                     sleep(1000);
@@ -149,19 +151,17 @@ public class autoMainR1 extends LinearOpMode {
                 //grab sample and transfer it
                 telemetry.addLine("Grabbing sample...");
                 telemetry.update();
-                claw.open_close(0.6,0.75);
+                claw.open_close(0.6,0.75);  //opens
                 sleep(1000);
                 claw.moveArm(-0.25);
                 sleep(5000);
-                claw.open_close(0.55, 0.8); //1-->0.75
+                claw.open_close(0.55, 0.8); //closes(grabs)
                 sleep(1000);
                 claw.moveArm(0.25);
                 sleep(1000);
-                claw.open_close(0.6, 0.75);   //0-->0.5
+                claw.open_close(0.6, 0.75); //opens
                 sleep(1000);
                 claw.moveArm(0);
-                //end
-
 
                 //move to basket
                 telemetry.addLine("Moving to basket...");
@@ -175,59 +175,58 @@ public class autoMainR1 extends LinearOpMode {
                     sleep(1000);
                 }
                 sleep(1000);
-                drive1.moveBackward(10.625, dblPower);    //7.25-->7.75-->10.625
+                drive1.moveBackward(tileLength*0.5-6, dblPower);    //10.625-->tileLength*0.5-6
                 sleep(1000);
-                drive1.moveClockwiseTurn(fullCircle * 0.125, dblPower);  //commented
+                drive1.moveClockwiseTurn(fullCircle * 0.125, dblPower);
                 sleep(1000);
-                /*score sample into basket*/
+
+                //score sample into basket
                 telemetry.addLine("Scoring sample...");
                 telemetry.update();
-                slides.open_close_outtake(0.925, 0.75);    //1-->0.75
-                sleep(1000);
-                slides.extendVertical(0.75);
-                sleep(50);         //100-->50
-                slides.extendVertical(0);
-                slides.open_close_outtake(1.0, 0.625);    //0-->0.5
+                slides.open_close_outtake(0.925, 0.75);
                 sleep(1000);
                 slides.extendVertical(-0.75);
-                sleep(50);
+                sleep(500);
+                slides.extendVertical(0);
+                slides.open_close_outtake(1.0, 0.625);
+                sleep(1000);
+                slides.extendVertical(0.75);
+                sleep(500);
                 slides.extendVertical(0);
                 sleep(1000);
-                //end
 
-                //move back to modified start position (base)
-                telemetry.addLine("Scoring sample...");
+                //move back to critical point
+                telemetry.addLine("Moving to start...");
                 telemetry.update();
-                drive1.moveCounterClockwiseTurn(fullCircle * 0.125, dblPower);  //commented
+                drive1.moveCounterClockwiseTurn(fullCircle * 0.125, dblPower);
                 sleep(1000);
             }
+
             //park
             drive1.moveRight(tileLength*5*1.33333, dblPower);
             sleep(1000);
-            drive1.moveBackward(tileLength*0.5, dblPower); //9-->tileLength*0.5
+            drive1.moveBackward(tileLength*0.5, dblPower);
             sleep(1000);
         }
 
         //this repeats the whole time while the program is running
         while (opModeIsActive()) {
-            telemetry.addLine("so far so good (opMode is active)");
+            telemetry.addLine("opMode is active");
             telemetry.update();
             sleep(1000);
-            //This scans for April Tags
-            //tagID.scan();
-            //'tagToId' gets the id of the april tag that it scanned earlier
-            //'if tag is not found, tell the driver station'
-            if (testMode==1) {
-                //camera1.scan();
-                //if tag not found, do nothing except say tag is not found
-                if (false){//camera1.tagToId() == 0){
+            //the code testing april tags is commented out
+            /*if (testMode==1) {
+                //This scans for April Tags
+                camera1.scan();
+                //if tag is not found, tell the driver station'
+                if (camera1.tagToId() == 0){ //'tagToId' gets the id of the april tag that it scanned earlier
                     telemetry.addLine("Tag not found...");
                     telemetry.update();
                     sleep(500);
                 }
                 //otherwise, if the tag is equal to what we want, run this code
-                else if (false){//camera1.tagToId() == 4) {
-                    /*telemetry.addLine("Tag of interest is found! Tag ID: "+camera1.tagToId());
+                else if (camera1.tagToId() == 4) {
+                    telemetry.addLine("Tag of interest is found! Tag ID: "+camera1.tagToId());
                     telemetry.addData("Op mode", "is active");
                     telemetry.update();
                     sleep(500);
@@ -235,84 +234,9 @@ public class autoMainR1 extends LinearOpMode {
                     telemetry.addLine("Y: "+camera1.getTelemetry('y'));
                     telemetry.addLine("Y: "+camera1.getTelemetry('z'));
                     telemetry.update();
-                    sleep(1500);*/
+                    sleep(1500);
                 }
-            }
+            }*/
         }
     }
-    /*public void scoreMainR1Specimen(compDrive drive1, compClaw claw, compLinearSlide slides){ //method is NOT used
-        //deliver preloaded specimen    ////this part copied from other method!!////
-        //move to bar
-        drive1.moveRight(tileLength*1.5, dblPower);
-        sleep(1000);
-        drive1.moveForward(tileLength*2, dblPower);
-        sleep(1000);
-        drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);
-        sleep(1000);
-        //Code for Claw and slides //needs to be 0.25 SPEED (i think)
-        //scores sample onto bar
-        slides.extendVertical(0.25);
-        sleep(100);
-        slides.extendVertical(0);
-        slides.open_close_outtake(0, 0);
-        sleep(1000);
-        //end
-
-
-        //move back to modified start position
-        drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);
-        sleep(1000);
-
-
-        //retract linear slides. IMPORTANT: does not rly belong here?
-        slides.extendVertical(-0.25);
-
-
-        //continuing... move back to modified start position
-        sleep(100);
-        drive1.moveBackward(tileLength*2-9, dblPower);
-        sleep(1000);
-        drive1.moveLeft(tileLength*1.5, dblPower);
-        sleep(1000);
-
-
-
-
-        //This should loop three times
-        //moves to sample
-        drive1.moveLeft(tileLength, dblPower);
-        sleep(1000);
-        drive1.moveForward(7.75, dblPower);
-        sleep(1000);
-        //grab sample and transfer it
-        claw.open_close(0, 0);
-        sleep(1000);
-        claw.moveArm(-0.25);    //does arm have encoder?
-        sleep(1000);
-        claw.open_close(1, 1);
-        sleep(1000);
-        claw.moveArm(0.25);
-        sleep(1000);
-        //end
-
-
-        drive1.moveBackward(7.25, dblPower);
-        sleep(1000);
-        drive1.moveRight(tileLength*4, dblPower);
-        sleep(1000);
-        drive1.moveClockwiseTurn(fullCircle*0.25, dblPower);
-        sleep(1000);
-
-
-        //place sample down to turn into specimen
-        claw.moveArm(-0.25);
-        sleep(1000);
-        claw.open_close(0, 0);
-        sleep(5000);
-        //pick it back up
-        claw.open_close(1, 1);
-        sleep(1000);
-        claw.moveArm(0.25);
-        sleep(1000);
-    }*/
 }
