@@ -52,6 +52,22 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        double optimalArmLeftServoOpen = 0.6;
+        double optimalArmRightServoOpen = 0.75;
+
+        double optimalArmLeftServoClose = 0.55;
+        double optimalArmRightServoClose = 0.8;
+
+        double optimalLinearSlideLeftServoOpen = 1.0;
+        double optimalLinearSlideRightServoOpen = 0.625;
+
+        double optimalLinearSlideLeftServoClose = 0.925;
+        double optimalLinearSlideRightServoClose = 0.725;
+
+        double ArmPower = 0.5;
+
+        double LinearSlidePower = 0.75;
+
         //Start Button Pushed
         while (opModeIsActive()) {
 
@@ -135,32 +151,32 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + 1
             //Activate by toggling the triggers
             if (gamepad1.left_trigger > 0){
-                claw.moveArm(-0.5);
+                claw.moveArm(-ArmPower);
             }
             if (gamepad1.right_trigger > 0) {
-                claw.moveArm(0.5);
+                claw.moveArm(ArmPower);
             }
             claw.moveArm(0);
 
             //Intake code: Servos
-            //To utilize, set the gamepad to start + 2
+            //To utilize, set the gamepad to start + a
             //Activate by toggling the triggers
             if (gamepad1.left_bumper){ //Open
-                claw.open_close(0.6,0.75);
+                claw.open_close(optimalArmLeftServoOpen,optimalArmRightServoOpen);
             }
             if (gamepad1.right_bumper) { //Close
-                claw.open_close(0.55, 0.8);
+                claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
             }
 
             //Outtake code: Linear Slides
             //To utilize, set the gamepad to start + 2
             //Activate by using the up/down right joystick
             if (gamepad2.right_stick_y > 0){
-                linearSlide.extendVertical(.75);
+                linearSlide.extendVertical(LinearSlidePower);
             }
             //changed it to less then to move slides down :) ev
             if (gamepad2.right_stick_y < 0){
-                linearSlide.extendVertical(-.75);
+                linearSlide.extendVertical(-LinearSlidePower);
             }
             linearSlide.extendVertical(0);
 
@@ -170,14 +186,14 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
 
            /*open*/
             if (gamepad2.left_bumper) {
-                linearSlide.open_close_outtake(1.0, 0.625);
-                telemetry.addData("OpenOutakeClaw", "testing servo OPEN");
+                linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
+                telemetry.addData("OpenOuttakeClaw", "testing servo OPEN");
                 telemetry.update();
             }
             /*close*/
             if (gamepad2.right_bumper) {
-                linearSlide.open_close_outtake(0.925, 0.75);
-                telemetry.addData("CloawOutakeClaw", "testing servo CLOSE");
+                linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
+                telemetry.addData("CloseOuttakeClaw", "testing servo CLOSE");
                 telemetry.update();
             }
 
