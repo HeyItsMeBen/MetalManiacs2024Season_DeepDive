@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.FinalDriveCode;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -99,18 +99,18 @@ public class DriveCode extends LinearOpMode {
             backRightDrive.setPower(rightBackPower);
 
             while (gamepad1.y) {
-                arm.setPower(0.25);
+                arm.setPower(0.75);
             }
             arm.setPower(0);
 
             while (gamepad1.a) {
-                arm.setPower(-0.25);
+                arm.setPower(-0.75);
             }
             arm.setPower(0);
 
             if (gamepad1.left_bumper) {
-                armLeftServo.setPosition(0.55);
-                armRightServo.setPosition(0.8);
+                armLeftServo.setPosition(0.5);
+                armRightServo.setPosition(0.85);
             }
             if (gamepad1.right_bumper) {
                 armLeftServo.setPosition(0.6);
@@ -118,25 +118,32 @@ public class DriveCode extends LinearOpMode {
             }
             // Slide move up for Rung Scoring
             if (gamepad2.x) {
-                slideMoveUpRung(0.5, 3);
+                slideMoveUpRung(0.7, 3);
             }
             if (gamepad2.b) {
-                slideMoveDownRung(0.5, 3);
+                slideMoveDownRung(0.7, 3);
             }
 
             if (gamepad2.a) {
-                basketScore(0.5, 5);
+                basketScore(0.7, 5);
+            }
+            while (gamepad2.left_trigger > 0){
+                leftSlide.setPower(0.7);
+                rightSlide.setPower(0.7);
+            }
+            while (gamepad2.right_trigger > 0){
+                leftSlide.setPower(-0.7);
+                rightSlide.setPower(-0.7);
             }
 
             if (gamepad2.left_bumper) {
-
-                telemetry.addData("Currently at", " at %7d :%7d",
-                        slideLeftServo.getPosition(), slideRightServo.getPosition());
-                telemetry.update();
+                slideLeftServo.setPosition(1.0);
+                slideRightServo.setPosition(0.625);
             }
+
             if (gamepad2.right_bumper) {
-                slideLeftServo.setPosition(0.5);
-                slideRightServo.setPosition(0.25);
+                slideLeftServo.setPosition(0.925);
+                slideRightServo.setPosition(0.75);
             }
         }
 
@@ -147,8 +154,8 @@ public class DriveCode extends LinearOpMode {
         int newRightSlideTarget;
 
         if (opModeIsActive()) {
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-22 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-22 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -180,7 +187,6 @@ public class DriveCode extends LinearOpMode {
             leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);
         }
     }
 
@@ -190,8 +196,8 @@ public class DriveCode extends LinearOpMode {
 
 
         if (opModeIsActive()) {
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (2.5 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (2.5 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (4 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (4 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -225,13 +231,13 @@ public class DriveCode extends LinearOpMode {
 
             sleep(250);
 
-            slideLeftServo.setPosition(0.0);
-            slideRightServo.setPosition(1.0);
+            slideLeftServo.setPosition(1.0);
+            slideRightServo.setPosition(0.625);
 
             sleep(250);
 
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (17.5 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (17.5 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (18 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = rightSlide.getCurrentPosition() + (int) (18 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -262,7 +268,6 @@ public class DriveCode extends LinearOpMode {
             // Turn off RUN_TO_POSITION
             leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            sleep(250);
         }
     }
     public void basketScore ( double speed2, double timeout2){
@@ -270,8 +275,8 @@ public class DriveCode extends LinearOpMode {
         int newRightSlideTarget;
 
         if (opModeIsActive()) {
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-20 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (-25.54 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (-25.54 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -305,13 +310,13 @@ public class DriveCode extends LinearOpMode {
 
             sleep(250);
 
-            slideLeftServo.setPosition(0.0);
-            slideRightServo.setPosition(1.0);
+            slideLeftServo.setPosition(1.0);
+            slideRightServo.setPosition(0.625);
 
             sleep(250);
 
-            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (20 * COUNTS_PER_INCH_SPOOL);
-            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (20 * COUNTS_PER_INCH_SPOOL);
+            newLeftSlideTarget = leftSlide.getCurrentPosition() + (int) (25.54 * COUNTS_PER_INCH_SPOOL);
+            newRightSlideTarget = leftSlide.getCurrentPosition() + (int) (25.54 * COUNTS_PER_INCH_SPOOL);
 
             leftSlide.setTargetPosition(newLeftSlideTarget);
             rightSlide.setTargetPosition(newRightSlideTarget);
@@ -343,7 +348,6 @@ public class DriveCode extends LinearOpMode {
             leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);
         }
     }
 }
