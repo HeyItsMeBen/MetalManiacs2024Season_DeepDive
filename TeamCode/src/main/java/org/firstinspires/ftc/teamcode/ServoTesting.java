@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.util.Range;
 public class ServoTesting extends LinearOpMode {
 
     private Servo Servo;
+    private Servo Servo2;
 
     //@Override
     public void runOpMode() {
@@ -32,57 +33,46 @@ public class ServoTesting extends LinearOpMode {
         telemetry.addData("Start+B ", "If running test 2 (experimental feature testing directly running servos instead of setting positions)");
         telemetry.update();
 
-        Servo = hardwareMap.get(Servo.class, "armRightServo");
+        Servo = hardwareMap.get(Servo.class, "leftOuttake");
+        Servo2 = hardwareMap.get(Servo.class, "rightOuttake");
 
         double servoPosition = 1;
+        double servoPosition2 = 1;
 
         waitForStart();
 
         //executing
         while (opModeIsActive()) {
-            if (gamepad1 != null) {
 
                 telemetry.addData("Gamepad 1", " Set");
                 telemetry.addData("Current servo position is: ", servoPosition);
-                telemetry.addData("To move servo to position, press", "gamepad1.a");
-                telemetry.addData("To change servo position by increments of 0.1, press", "gamepad2.left_bumper (the button on top)");
-                telemetry.addData("To change servo position by increments of -0.1, press", "gamepad2.right_bumper (the button on top)");
-
-                if (gamepad1.a) {
+                telemetry.addData("To change servo position by increments of 0.05, press", "gamepad1.left_bumper (the button on top)");
+                telemetry.addData("To change servo position by increments of -0.05, press", "gamepad1.right_bumper (the button on top)");
+                if (gamepad1.left_bumper) {
+                    servoPosition += 0.025;
                     Servo.setPosition(servoPosition);
-                    telemetry.addData("Servo Position set to: ", servoPosition);
-                } else if (gamepad1.left_bumper) {
-                    servoPosition += 0.05;
                     sleep(1000);
-                    telemetry.addData("Servo Position increased by 0.1", "Current Position: " + servoPosition);
+                    telemetry.addData("Servo Position increased by 0.05", "Current Position: " + servoPosition);
                 } else if (gamepad1.right_bumper) {
-                    servoPosition -= 0.05;
+                    servoPosition -= 0.025;
+                    Servo.setPosition(servoPosition);
                     sleep(1000);
-                    telemetry.addData("Servo Position decreased by 0.1", "Current Position: " + servoPosition);
-                }
+                    telemetry.addData("Servo Position decreased by 0.05", "Current Position: " + servoPosition);
+
+                } else if (gamepad2.left_bumper) {
+                        servoPosition2 += 0.025;
+                        Servo2.setPosition(servoPosition2);
+                        sleep(1000);
+                        telemetry.addData("Servo Position increased by 0.05", "Current Position: " + servoPosition2);
+                 } else if (gamepad2.right_bumper) {
+                        servoPosition2 -= 0.025;
+                        Servo2.setPosition(servoPosition2);
+                        sleep(1000);
+                        telemetry.addData("Servo Position decreased by 0.05", "Current Position: " + servoPosition2);
+                    }
 
                 telemetry.update();
-            }
-
-            else if (gamepad2 != null) {
-
-                telemetry.addData("This is a new experimental feature that will attempt to adjust the servo positions using a toggleable button", "");
-                telemetry.addData("To try it, press down on the left_trigger on gamepad1 to change positive, and press down on the right_trigger to change negative", "");
-                telemetry.update();
-
-
-                if (gamepad2.left_trigger > 0) {
-                    Servo.setPosition(servoPosition);
-                    servoPosition += 0.01;
-                    sleep(10);
-                }
-
-                if (gamepad2.right_trigger > 0) {
-                    Servo.setPosition(servoPosition);
-                    servoPosition -= 0.01;
-                    sleep(10);
-                }
             }
         }
     }
-}
+
