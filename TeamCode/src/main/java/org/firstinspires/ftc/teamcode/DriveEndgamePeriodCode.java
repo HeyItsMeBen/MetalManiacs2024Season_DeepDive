@@ -55,16 +55,17 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         double optimalArmLeftServoOpen = 0.6;
         double optimalArmRightServoOpen = 0.75;
 
-        double optimalArmLeftServoClose = 0.55;
-        double optimalArmRightServoClose = 0.8;
+        double optimalArmLeftServoClose = 0.525; //changed
+        double optimalArmRightServoClose = 0.825; //changed
 
         double optimalLinearSlideLeftServoOpen = 1.0;
         double optimalLinearSlideRightServoOpen = 0.625;
 
         double optimalLinearSlideLeftServoClose = 0.925;
-        double optimalLinearSlideRightServoClose = 0.725;
+        double optimalLinearSlideRightServoClose = 0.715; //0.725
 
-        double ArmPower = 0.5;
+        double ArmPowerDeploy = -0.5;
+        double ArmPowerIntake = 0.75;
 
         double LinearSlidePower = 0.75;
 
@@ -93,9 +94,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 sine = Math.sin(theta - Math.PI/4);
                 cosine = Math.cos(theta - Math.PI/4);
 
-            }
-            else
-            {
+            } else {
                 telemetry.addData("DriveEndgame Period", "TEST MODE 0");
                 telemetry.update();
             }
@@ -151,10 +150,10 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + 1
             //Activate by toggling the triggers
             if (gamepad1.left_trigger > 0){
-                claw.moveArm(-ArmPower);
+                claw.moveArm(ArmPowerDeploy);
             }
             if (gamepad1.right_trigger > 0) {
-                claw.moveArm(ArmPower);
+                claw.moveArm(ArmPowerIntake);
             }
             claw.moveArm(0);
 

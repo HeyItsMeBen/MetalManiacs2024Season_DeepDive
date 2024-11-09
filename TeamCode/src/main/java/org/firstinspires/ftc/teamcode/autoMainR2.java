@@ -1,256 +1,185 @@
-//
-//package org.firstinspires.ftc.teamcode;
-///* Copyright (c) 2017 FIRST. All rights reserved.
-// *
-// * Redistribution and use in source and binary forms, with or without modification,
-// * are permitted (subject to the limitations in the disclaimer below) provided that
-// * the following conditions are met:
-// *
-// * Redistributions of source code must retain the above copyright notice, this list
-// * of conditions and the following disclaimer.
-// *
-// * Redistributions in binary form must reproduce the above copyright notice, this
-// * list of conditions and the following disclaimer in the documentation and/or
-// * other materials provided with the distribution.
-// *
-// * Neither the name of FIRST nor the names of its contributors may be used to endorse or
-// * promote products derived from this software without specific prior written permission.
-// *
-// * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
-// * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-// * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-// * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-// * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-// * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-// * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// */
-//
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-//import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.util.ElapsedTime;
-////
-//
-///**
-// * This OpMode opens a claw when a is pressed, then closes when b is pressed
-// * The code is structured as a LinearOpMode
-// * INCREMENT sets how much to increase/decrease the servo position each cycle
-// * CYCLE_MS sets the update period.
-// *
-// * This code assumes a Servo configured with the name "left_hand" as is found on a Robot.
-// *
-// * NOTE: When any servo position is set, ALL attached servos are activated, so ensure that any other
-// * connected servos are able to move freely before running this test.
-// *
-// * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
-// * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
-// */
-////trigger code
-//@Autonomous(name = "autoMainR2", group = "Linear OpMode")
-////@Disabled
-//public class autoMainR2 extends LinearOpMode {
-//
-//    // Driver Code
-//    private ElapsedTime runtime = new ElapsedTime();
-//    private DcMotor frontLeftDrive = null;
-//    private DcMotor backLeftDrive = null;
-//    private DcMotor frontRightDrive = null;
-//    private DcMotor backRightDrive = null;
-//    private double[] dblPowerList={0.25, 0.25, 0.25, 0.25}; //MOTOR POWERS
-//
-//    @Override
-//    public void runOpMode() {
-//
-//        // Driver Code
-//        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-//        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
-//        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
-//        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-//        // set direction for motors
-//        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-//        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-//        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-//        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-//        //compCam compCam;
-//
-//        // Wait for the start button
-//        telemetry.addData(">", "Status: Initialized" );
-//        telemetry.update();
-//        waitForStart();
-//        runtime.reset();
-//        //option1
-//        //compCam tagID = new compCam(hardwareMap);
-//        compDrive drive1 = new compDrive(hardwareMap);
-//        int intTestMode = 0; //0 IS NOT IN TEST MODE
-//
-//        //*******THIS MUST BE CHANGED to 0, 1, 2, 3 *********//
-//        //*******Depending on what team wants to test *******//
-//        intTestMode = 2; //This must be changed depending on what team is testing
-//
-//        while (opModeIsActive()) {
-//            //if (tagID.tagToId()==4){
-//            //frontLeftDrive.setPower(0.5);
-//            //drive %50 power left
-//            //drive1.moveLeft(12, dblPowerList);//
-//            telemetry.addData("Op mode", "is active");
-//            telemetry.update();
-//            sleep(2500);
-//            if (intTestMode == 0) {
-//                //ACTUAL COMPETITION PATH
-//                telemetry.addData("COMP PATH", "TEST MODE 0. Sleep 1 seconds.");
-//                telemetry.update();
-//                sleep(1000);
-//            }
-//            if (intTestMode==1) {
-//                //Move Forward
-//                frontLeftDrive.setDirection(DcMotor.Direction.FORWARD); //should go inward (REVERSE)
-//                frontRightDrive.setDirection(DcMotor.Direction.FORWARD); //go outward (FORWARD)
-//                backLeftDrive.setDirection(DcMotor.Direction.REVERSE); //should go inward (FORWARD)
-//                backRightDrive.setDirection(DcMotor.Direction.REVERSE); //go outward (REVERSE)
-//
-//                telemetry.addData("Op mode", "Set Direction");
-//                telemetry.update();
-//                telemetry.addData("Op mode", "TEST MODE 1. Sleep 2 seconds.");
-//                telemetry.update();
-//                sleep(2000);
-//
-//                frontLeftDrive.setTargetPosition(100);
-//                backLeftDrive.setTargetPosition(100);
-//                frontRightDrive.setTargetPosition(100);
-//                backRightDrive.setTargetPosition(100);
-//
-//                frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//                frontLeftDrive.setTargetPosition(100);
-//                backLeftDrive.setTargetPosition(100);
-//                frontRightDrive.setTargetPosition(100);
-//                backRightDrive.setTargetPosition(100);
-//
-//                telemetry.addData("Op mode", "Set Target Position");
-//                telemetry.update();
-//                sleep(2000);
-//
-//                frontLeftDrive.setPower(0.5);
-//                frontRightDrive.setPower(0.5);
-//                backLeftDrive.setPower(0.5);
-//                backRightDrive.setPower(0.5);
-//
-//                sleep(2500);
-//
-//                frontLeftDrive.setPower(0);
-//                frontRightDrive.setPower(0);
-//                backLeftDrive.setPower(0);
-//                backRightDrive.setPower(0);
-//
-//            } else if (intTestMode == 2) {
-//                //TEST PATHS with Encoders using compDrive
-//                telemetry.addData("runCompDriveTest", "Set Target Position");
-//                telemetry.update();
-//                telemetry.addData("runCompDriveTest", "TEST MODE 2. Sleep 2 seconds.");
-//                telemetry.update();
-//                sleep(2000);
-//
-//
-//                //TEST 2 compDrive Code
-//                drive1.moveForward(10, dblPowerList); //Move Forward 1 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Forward");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveBackward(10, dblPowerList); //Move Backward 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Backward");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                //sleep(2000); //Pause for 2 seconds
-//                drive1.moveLeft(10, dblPowerList); //Strafe Left 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Left");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveRight(10,dblPowerList); //Strafe Right 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Right");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveLowerLeft(10, dblPowerList); //Diagonal LowerLeft 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Diagonal Left Down");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveLowerRight(10, dblPowerList); //Diagonal LowerRight 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Diagonal Right Down");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveUpperLeft(10, dblPowerList); //Diagonal UpperLeft 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Diagonal Left Up");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveUpperRight(10, dblPowerList); //Diagonal UpperRight 3 inches
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Move Diagonal Right Up");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveClockwiseTurn(10, dblPowerList); //Turn Clockwise for 3 inches long
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Turn CLockwise");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds
-//
-//                drive1.moveCounterClockwiseTurn(10, dblPowerList); //Turn CounterClockwise for 3 inches long
-//                drive1.stopDrive();
-//                telemetry.addData(">", "Turn CounterClockwise");
-//                telemetry.update();
-//                sleep(1000); //Pause for 2 seconds*/
-//            }
-//            else if (intTestMode == 3){
-//                //TEST PATHS with WITHOUT ENCODERS using compDrive
-//                telemetry.addData("runCompDriveWOEncoderTest", "NO ENCODERS USED");
-//                telemetry.update();
-//                sleep(1000);
-//
-////                drive1.moveForwardWOEncoders(dblPowerList); //(using time
-////                sleep(2000); //run 2 seconds
-////                drive1.stopMotorWOEncoders(); //STOP MOTORS
-////                drive1.moveBackwardWOEncoders(dblPowerList); //MOVE BACKWARDS (using time)
-////                sleep(2000);
-////                drive1.stopMotorWOEncoders();//STOP MOTORS
-//
-//
-//            }
-//        }
-//        /*compCam tagID = new compCam();
-//        while (opModeIsActive()) {f
-//            if (tagID==1){
-//                frontLeftDrive.setPower(0.1);}
-//        }*/
-//        // Send calculated power to wheels
-//
-//
-//        // Telemetry
-//        // Claw Code
-//        // Display the current value
-//
-//    }
-//
-//    // Signal done;
-//
-//
-//}
+package org.firstinspires.ftc.teamcode;
+
+//basic imports like motors and opModes
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+@Autonomous(name = "autoMainR2", group = "Linear OpMode")
+public class autoMainR2 extends LinearOpMode {
+    //defining variables
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor frontLeftDrive = null;
+    private DcMotor backLeftDrive = null;
+    private DcMotor frontRightDrive = null;
+    private DcMotor backRightDrive = null;
+    private DcMotor arm = null;
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
+
+    public double tileLength=23.75;
+    public double halfCircle=12.0208513*3.141592653589798293*1.5;
+    double[] dblPower={0.25, 0.25, 0.25, 0.25};
+
+    @Override
+    //This runs when the program is activated
+    public void runOpMode() {
+        //creating objects
+        compDrive drive1 = new compDrive(hardwareMap);
+        compClaw claw = new compClaw(hardwareMap);
+        compLinearSlide slides = new compLinearSlide(hardwareMap);
+
+        //hardware mapping
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        leftClaw = hardwareMap.get(Servo.class, "leftOuttake");
+        rightClaw = hardwareMap.get(Servo.class, "rightOuttake");
+
+        // set direction for motors
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        // Wait for the start button
+        telemetry.addData(">", "Status: Initialized" );
+        telemetry.update();
+        waitForStart();
+        runtime.reset();
+
+        //deliver preloaded specimen
+        //move to bar
+        telemetry.addLine("Moving to basket...");
+        telemetry.update();
+        slides.open_close_outtake(0.925, 0.725); //close
+        drive1.moveForward(tileLength*0.5, dblPower);
+
+        //This is the turning/extension part
+        drive1.moveClockwiseTurn(halfCircle, dblPower);
+        slides.extendVertical(-0.5);
+        sleep(2500);
+        slides.extendVertical(0);
+        drive1.moveBackward(tileLength, dblPower);
+
+        sleep(5000);
+
+        //scores sample onto bar
+        telemetry.addLine("Scoring specimen...");
+        telemetry.update();
+        slides.extendVertical(0.5);
+        sleep(500);
+        slides.open_close_outtake(1.0, 0.625);            //opens
+        sleep(1000);
+
+        //move back to 'critical point' (the start position for scoring each sample)
+        telemetry.addLine("Moving to 'critical point'...");
+        telemetry.update();
+        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
+        sleep(1000);
+        drive1.moveBackward(tileLength*0.5, dblPower);
+        sleep(1000);
+        drive1.moveRight(tileLength*3.33333-4, dblPower);
+        sleep(1000);
+
+        //Grabs outermost sample
+        telemetry.addLine("Grabbing sample...");
+        telemetry.update();
+        claw.open_close(0.6,0.75);  //opens
+        sleep(500);
+        claw.moveArm(-0.25);
+        sleep(500);
+        claw.open_close(0.55, 0.8); //close
+        sleep(500);
+        claw.moveArm(0.25);
+        sleep(500);
+        claw.open_close(0.6, 0.75); //opens
+        sleep(1000);
+        claw.moveArm(0);
+
+        sleep(5000);
+
+
+            //this  should loop thrice (scores to basket)
+            for (int i=0; i<3; i++) {
+                //moves to sample
+                telemetry.addLine("Moving to sample...");
+                telemetry.update();
+                drive1.moveForward(tileLength*0.5-6, dblPower);
+                sleep(1000);
+                //this if statement determines which sample it is currently trying to score. There is another one like it a little later on
+                if (i==0){
+                    drive1.moveRight(tileLength*0.33333*1.33333, dblPower);
+                    sleep(1000);
+                }
+                else if (i==2) {
+                    drive1.moveLeft(tileLength*0.33333*1.33333, dblPower);
+                    sleep(1000);
+                }
+                //grab sample and transfer it
+                telemetry.addLine("Grabbing sample...");
+                telemetry.update();
+                claw.open_close(0.6,0.75);  //opens
+                sleep(1000);
+                claw.moveArm(-0.25);
+                sleep(5000);
+                claw.open_close(0.55, 0.8); //closes(grabs)
+                sleep(1000);
+                claw.moveArm(0.25);
+                sleep(1000);
+                claw.open_close(0.6, 0.75); //opens
+                sleep(1000);
+                claw.moveArm(0);
+
+                //move to basket
+                telemetry.addLine("Moving to basket...");
+                telemetry.update();
+                if (i==0){
+                    drive1.moveLeft(tileLength*0.33333*1.33333, dblPower);
+                    sleep(1000);
+                }
+                else if (i==2) {
+                    drive1.moveRight(tileLength*0.33333*1.33333, dblPower);
+                    sleep(1000);
+                }
+                sleep(1000);
+                drive1.moveBackward(tileLength*0.5-6, dblPower);    //10.625-->tileLength*0.5-6
+                sleep(1000);
+                drive1.moveClockwiseTurn(halfCircle * 0.125, dblPower);
+                sleep(1000);
+
+                //score sample into basket
+                telemetry.addLine("Scoring sample...");
+                telemetry.update();
+                slides.open_close_outtake(0.925, 0.75);
+                sleep(1000);
+                slides.extendVertical(-0.75);
+                sleep(500);
+                slides.extendVertical(0);
+                slides.open_close_outtake(1.0, 0.625);
+                sleep(1000);
+                slides.extendVertical(0.75);
+                sleep(500);
+                slides.extendVertical(0);
+                sleep(1000);
+
+                //move back to critical point
+                telemetry.addLine("Moving to start...");
+                telemetry.update();
+                drive1.moveCounterClockwiseTurn(halfCircle * 0.125, dblPower);
+                sleep(1000);
+            }
+
+            //park
+            drive1.moveRight(tileLength*5*1.33333, dblPower);
+            sleep(1000);
+            drive1.moveBackward(tileLength*0.5, dblPower);
+            sleep(1000);
+        }
+    }
+
