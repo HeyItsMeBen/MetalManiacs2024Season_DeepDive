@@ -55,8 +55,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         double optimalArmLeftServoOpen = 0.6;
         double optimalArmRightServoOpen = 0.75;
 
-        double optimalArmLeftServoClose = 0.525; //changed
-        double optimalArmRightServoClose = 0.825; //changed
+        double optimalArmLeftServoClose = 0.562; //changed
+        double optimalArmRightServoClose = 0.813; //changed
 
         double optimalLinearSlideLeftServoOpen = 1.0;
         double optimalLinearSlideRightServoOpen = 0.625;

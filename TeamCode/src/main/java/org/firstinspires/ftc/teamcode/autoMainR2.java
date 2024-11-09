@@ -55,24 +55,25 @@ public class autoMainR2 extends LinearOpMode {
 
         //deliver preloaded specimen
         //move to bar
-        telemetry.addLine("Moving to basket...");
+        telemetry.addLine("Moving to bar...");
         telemetry.update();
         slides.open_close_outtake(0.925, 0.725); //close
+        drive1.moveLeft(tileLength*0.5, dblPower);
         drive1.moveForward(tileLength*0.5, dblPower);
 
         //This is the turning/extension part
         drive1.moveClockwiseTurn(halfCircle, dblPower);
-        slides.extendVertical(-0.5);
+        //slides.extendVertical(-0.5);
         sleep(2500);
-        slides.extendVertical(0);
-        drive1.moveBackward(tileLength, dblPower);
+        //slides.extendVertical(0);
+        drive1.moveBackward(tileLength*0.5, dblPower);
 
-        sleep(5000);
+        sleep(10000);
 
         //scores sample onto bar
         telemetry.addLine("Scoring specimen...");
         telemetry.update();
-        slides.extendVertical(0.5);
+        //slides.extendVertical(0.5);
         sleep(500);
         slides.open_close_outtake(1.0, 0.625);            //opens
         sleep(1000);
@@ -84,7 +85,7 @@ public class autoMainR2 extends LinearOpMode {
         sleep(1000);
         drive1.moveBackward(tileLength*0.5, dblPower);
         sleep(1000);
-        drive1.moveRight(tileLength*3.33333-4, dblPower);
+        drive1.moveRight(tileLength*2, dblPower);
         sleep(1000);
 
         //Grabs outermost sample
