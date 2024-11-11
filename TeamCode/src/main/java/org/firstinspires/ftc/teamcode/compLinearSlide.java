@@ -35,9 +35,6 @@ public class compLinearSlide {
 
     private static double Encoder_COUNTS_PER_INCH = 3.17;
 
-    //Linear slide: hardware, or hardware-software compliance, issues   //Linear slide servos: hardware
-    //Arm:  software                                                    //arm claw: hardware
-
 
     public compLinearSlide(HardwareMap hMap) {
 

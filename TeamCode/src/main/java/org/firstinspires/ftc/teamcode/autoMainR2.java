@@ -121,7 +121,7 @@ public class autoMainR2 extends LinearOpMode {
         sleep(500);
 
         //Turn robot back around
-        drive1.moveCounterClockwiseTurn(halfCircle*0.8, dblPower);
+        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
 
 
         }
