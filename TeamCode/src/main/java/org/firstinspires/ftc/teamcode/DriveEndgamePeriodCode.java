@@ -18,7 +18,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    private Servo winchServo;
+    private CRServo winchServo;
     private float POWER_REDUCTION = 2;
     private static final int LINEAR_ENCODER_COUNTS_PER_INCH = 43;
     private double theta    ;
@@ -41,7 +41,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         //Winch
-        winchServo = hardwareMap.get(Servo.class, "winchServo"); // change display name after we design
+        winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -57,13 +57,12 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         double optimalArmLeftServoOpen = 0.5825;
         double optimalArmRightServoOpen = 0.7625;
 
-<<<<<<< HEAD
-        double optimalArmLeftServoClose =0.568 ; //changed 0.562
-        double optimalArmRightServoClose =0.835; //changed 0.813
-=======
+
+        //double optimalArmLeftServoClose =0.568 ; //changed 0.562
+        //double optimalArmRightServoClose =0.835; //changed 0.813
         double optimalArmLeftServoClose = 0.54; //changed
         double optimalArmRightServoClose = 0.835; //changed
->>>>>>> 8c7ad8e45a0a3a7c17b293ccca28abee48451ae5
+
 
         double optimalLinearSlideLeftServoOpen = 1.0;
         double optimalLinearSlideRightServoOpen = 0.625;
@@ -128,8 +127,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             }
 
             if (intTestMode > 1) {
-                telemetry.addData("DriveEndgame Period", "testing strafe :)");
-                telemetry.update();
+
                 max = Math.max(Math.abs(sine),
                         Math.abs(cosine));
 
@@ -154,15 +152,31 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             backRightDrive.setPower(rightBackPower);
 
             //Winch
-            double winchPower = .5;
-            if (gamepad2.dpad_up > 0){
-                winchServo.setPosition(.5); //play around
+            double winchPower = .25;
+            winchServo.setPower(0);
+            telemetry.addData("winch", "testing servo  no power");
+            telemetry.update();
+            if (gamepad2.dpad_up == true){
+                winchServo.setPower(.25); //play around
+                telemetry.addData("winch", "testing servo up");
+                telemetry.update();
             }
-                winchServo(winchPower);
-            if (gamepad2.dpad_down > 0){
-                winchServo.setPosition(-.5); //unhook
+            else if (gamepad2.dpad_up == false){
+                winchServo.setPower(0); //no power
+                telemetry.addData("winch", "testing servo STOP");
+                telemetry.update();
             }
 
+            if (gamepad2.dpad_down == true){
+                winchServo.setPower(-.25); //unhook
+                telemetry.addData("winch", "testing servo down");
+                telemetry.update();
+            }
+            else if (gamepad2.dpad_down == false) {
+                winchServo.setPower(0); //no power
+                telemetry.addData("winch", "testing servo OFF down");
+                telemetry.update();
+            }
 
             //Intake code: Arm
             //To utilize, set the gamepad to start + 1
