@@ -23,6 +23,19 @@ public class autoMainR2 extends LinearOpMode {
     public double halfCircle=12.0208513*3.141592653589798293*1.5;
     double[] dblPower={0.25, 0.25, 0.25, 0.25};
 
+    double maxHeight = 30;
+    double armleftServoWideOpen = 0.65;
+    double armrightServoWideOpen = 0.725;
+
+    double armleftServoNarrowOpen = 0.6;
+    double armrightServoNarrowOpen = 0.75;
+
+    double armleftServoClose = 0.565;
+    double armrightServoClose = 0.815;
+
+    double LinearSlidePower = 0.5;
+    double armPower = -0.25;
+
     @Override
     //This runs when the program is activated
     public void runOpMode() {
@@ -55,132 +68,62 @@ public class autoMainR2 extends LinearOpMode {
 
         //deliver preloaded specimen
         //move to bar
-        telemetry.addLine("Moving to bar...");
-        telemetry.update();
         slides.open_close_outtake(0.925, 0.725); //close
+        drive1.moveForward(tileLength, dblPower);
         drive1.moveLeft(tileLength*0.5, dblPower);
-        drive1.moveForward(tileLength*0.5, dblPower);
 
         //This is the turning/extension part
         drive1.moveClockwiseTurn(halfCircle, dblPower);
-        //slides.extendVertical(-0.5);
-        sleep(2500);
-        //slides.extendVertical(0);
-        drive1.moveBackward(tileLength*0.5, dblPower);
+        slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight, "up");
+        drive1.moveBackward(tileLength*0.355, dblPower);
 
-        sleep(10000);
+        sleep(500);
 
         //scores sample onto bar
-        telemetry.addLine("Scoring specimen...");
-        telemetry.update();
-        //slides.extendVertical(0.5);
-        sleep(500);
+        slides.extendVerticalUsingEncoder(LinearSlidePower, 5, "down"); //Descend
         slides.open_close_outtake(1.0, 0.625);            //opens
-        sleep(1000);
+        slides.extendVerticalUsingEncoder(LinearSlidePower, 25, "down"); //Return to original position
+
+        sleep(500);
 
         //move back to 'critical point' (the start position for scoring each sample)
-        telemetry.addLine("Moving to 'critical point'...");
-        telemetry.update();
         drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
-        sleep(1000);
-        drive1.moveBackward(tileLength*0.5, dblPower);
-        sleep(1000);
-        drive1.moveRight(tileLength*2, dblPower);
-        sleep(1000);
+        drive1.moveBackward(tileLength*0.7, dblPower);
+        drive1.moveRight(tileLength*2 + tileLength*0.5, dblPower);
 
-        //Grabs outermost sample
-        telemetry.addLine("Grabbing sample...");
-        telemetry.update();
-        claw.open_close(0.6,0.75);  //opens
         sleep(500);
-        claw.moveArm(-0.25);
+
+        //moves in to grab outermost sample
+        claw.open_close(armleftServoClose, armrightServoClose);  //close to get it past the linear slides
+        claw.moveArm(armPower); //deploy arm out
+        sleep(1000);
+        claw.moveArm(0);
+        claw.open_close(armleftServoWideOpen, armrightServoWideOpen); //opens wider to grab sample
         sleep(500);
-        claw.open_close(0.55, 0.8); //close
-        sleep(500);
-        claw.moveArm(0.25);
-        sleep(500);
-        claw.open_close(0.6, 0.75); //opens
+        drive1.moveForward(tileLength*0.3, dblPower);
+        claw.open_close(armleftServoClose, armrightServoClose); //closes on the sample
+        claw.moveArm(-armPower); //intake arm
         sleep(1000);
         claw.moveArm(0);
 
-        sleep(5000);
+        sleep(500);
+
+        //Now the robot will spin around and drop the sample in the observation station to convert it to a sample
+        drive1.moveBackward(tileLength*0.3, dblPower);
+        drive1.moveClockwiseTurn(halfCircle, dblPower);
+        claw.moveArm(armPower); //deploy claw
+        sleep(500);
+        claw.moveArm(0);
+        claw.open_close(armleftServoNarrowOpen, armrightServoNarrowOpen); //open claw to release sample
+        claw.moveArm(-armPower); //move arm back in place
+        sleep(800);
+        claw.moveArm(0);
+        sleep(500);
+
+        //Turn robot back around
+        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
 
 
-            //this  should loop thrice (scores to basket)
-            for (int i=0; i<3; i++) {
-                //moves to sample
-                telemetry.addLine("Moving to sample...");
-                telemetry.update();
-                drive1.moveForward(tileLength*0.5-6, dblPower);
-                sleep(1000);
-                //this if statement determines which sample it is currently trying to score. There is another one like it a little later on
-                if (i==0){
-                    drive1.moveRight(tileLength*0.33333*1.33333, dblPower);
-                    sleep(1000);
-                }
-                else if (i==2) {
-                    drive1.moveLeft(tileLength*0.33333*1.33333, dblPower);
-                    sleep(1000);
-                }
-                //grab sample and transfer it
-                telemetry.addLine("Grabbing sample...");
-                telemetry.update();
-                claw.open_close(0.6,0.75);  //opens
-                sleep(1000);
-                claw.moveArm(-0.25);
-                sleep(5000);
-                claw.open_close(0.55, 0.8); //closes(grabs)
-                sleep(1000);
-                claw.moveArm(0.25);
-                sleep(1000);
-                claw.open_close(0.6, 0.75); //opens
-                sleep(1000);
-                claw.moveArm(0);
-
-                //move to basket
-                telemetry.addLine("Moving to basket...");
-                telemetry.update();
-                if (i==0){
-                    drive1.moveLeft(tileLength*0.33333*1.33333, dblPower);
-                    sleep(1000);
-                }
-                else if (i==2) {
-                    drive1.moveRight(tileLength*0.33333*1.33333, dblPower);
-                    sleep(1000);
-                }
-                sleep(1000);
-                drive1.moveBackward(tileLength*0.5-6, dblPower);    //10.625-->tileLength*0.5-6
-                sleep(1000);
-                drive1.moveClockwiseTurn(halfCircle * 0.125, dblPower);
-                sleep(1000);
-
-                //score sample into basket
-                telemetry.addLine("Scoring sample...");
-                telemetry.update();
-                slides.open_close_outtake(0.925, 0.75);
-                sleep(1000);
-                slides.extendVertical(-0.75);
-                sleep(500);
-                slides.extendVertical(0);
-                slides.open_close_outtake(1.0, 0.625);
-                sleep(1000);
-                slides.extendVertical(0.75);
-                sleep(500);
-                slides.extendVertical(0);
-                sleep(1000);
-
-                //move back to critical point
-                telemetry.addLine("Moving to start...");
-                telemetry.update();
-                drive1.moveCounterClockwiseTurn(halfCircle * 0.125, dblPower);
-                sleep(1000);
-            }
-
-            //park
-            drive1.moveRight(tileLength*5*1.33333, dblPower);
-            sleep(1000);
-            drive1.moveBackward(tileLength*0.5, dblPower);
-            sleep(1000);
         }
     }
 
