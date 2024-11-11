@@ -12,8 +12,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 // IMPORTANT: As of 11/10 compLinearSlide has now been modified to also run on encoders.
+//
 // Even if your code does not use them, it shouldn't have any effect
+//
 // The method used to call the encoders is [extendVerticalUsingEncoder]. All others remain the same or are private
+//
 // Here is the proper syntax:
 //
 // [Linear slide variable name]
@@ -62,6 +65,8 @@ public class compLinearSlide {
 
         LinearSlideL.setPower(0);
         LinearSlideR.setPower(0);
+
+        resetEncoderCount();
     }
 
     public void extendVertical (double vertPower) {
