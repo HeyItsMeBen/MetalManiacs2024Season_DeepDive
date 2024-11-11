@@ -18,6 +18,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    private Servo winchServo;
     private float POWER_REDUCTION = 2;
     private static final int LINEAR_ENCODER_COUNTS_PER_INCH = 43;
     private double theta    ;
@@ -39,7 +40,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-
+        //Winch
+        winchServo = hardwareMap.get(Servo.class, "winchServo"); // change display name after we design
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -55,8 +57,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         double optimalArmLeftServoOpen = 0.6;
         double optimalArmRightServoOpen = 0.75;
 
-        double optimalArmLeftServoClose = 0.562; //changed
-        double optimalArmRightServoClose = 0.813; //changed
+        double optimalArmLeftServoClose =0.568 ; //changed 0.562
+        double optimalArmRightServoClose =0.835; //changed 0.813
 
         double optimalLinearSlideLeftServoOpen = 1.0;
         double optimalLinearSlideRightServoOpen = 0.625;
@@ -145,6 +147,17 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             frontRightDrive.setPower(rightFrontPower);
             backLeftDrive.setPower(leftBackPower);
             backRightDrive.setPower(rightBackPower);
+
+            //Winch
+            double winchPower = .5;
+            if (gamepad2.dpad_up > 0){
+                winchServo.setPosition(.5); //play around
+            }
+                winchServo(winchPower);
+            if (gamepad2.dpad_down > 0){
+                winchServo.setPosition(-.5); //unhook
+            }
+
 
             //Intake code: Arm
             //To utilize, set the gamepad to start + 1
