@@ -21,9 +21,7 @@ public class compLinearSlide {
     private Servo ServoSpecimanDeployR;
 
 
-
-
-    private static final int ENCODER_COUNTS_PER_INCH = 8;   //added from Comp_Drive
+    private static double Encoder_COUNTS_PER_INCH = 3.17;
 
     //Linear slide: hardware, or hardware-software compliance, issues   //Linear slide servos: hardware
     //Arm:  software                                                    //arm claw: hardware
@@ -31,23 +29,30 @@ public class compLinearSlide {
 
     public compLinearSlide(HardwareMap hMap) {
 
-
-
-
         //LinearSlide
         LinearSlideL = hMap.get(DcMotor.class, "leftSlide"); //added 7/24/24
         LinearSlideR = hMap.get(DcMotor.class, "rightSlide"); // change display name after we design
-
-
 
 
         //Deploy the bucket for the servos
         ServoSpecimanDeployL = hMap.get(Servo.class, "leftOuttake");
         ServoSpecimanDeployR = hMap.get(Servo.class, "rightOuttake");
 
+        LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        LinearSlideL.setDirection(DcMotorSimple.Direction.FORWARD);
-        LinearSlideR.setDirection(DcMotorSimple.Direction.FORWARD);
+    private void resetEncoderCount() {
+        LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    private void stopLinearSlides () {
+        LinearSlideL.setTargetPosition(0);
+        LinearSlideR.setTargetPosition(0);
+
+        LinearSlideL.setPower(0);
+        LinearSlideR.setPower(0);
     }
 
     public void extendVertical (double vertPower) {
@@ -58,5 +63,33 @@ public class compLinearSlide {
     public void open_close_outtake (double left, double right) {
         ServoSpecimanDeployL.setPosition(left);
         ServoSpecimanDeployR.setPosition(right);
+    }
+
+    public void extendVerticalUsingEncoder (double vertPower, double dblInches, String direction) {
+
+        if (direction == "up" || direction == "Up" || direction == "UP") {
+            LinearSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
+            LinearSlideR.setDirection(DcMotorSimple.Direction.REVERSE);
+        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
+            LinearSlideL.setDirection(DcMotorSimple.Direction.FORWARD);
+            LinearSlideR.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+
+        int encoderCountsToMove = (int) (dblInches * Encoder_COUNTS_PER_INCH);
+
+        LinearSlideL.setTargetPosition(encoderCountsToMove);
+        LinearSlideR.setTargetPosition(encoderCountsToMove);
+
+        LinearSlideL.setPower(vertPower);
+        LinearSlideR.setPower(vertPower);
+
+        LinearSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LinearSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (LinearSlideL.isBusy() && LinearSlideR.isBusy()) {
+
+        }
+        // Stop the motors and reset the power to 0 and also reset encoder count
+        stopLinearSlides(); //End Drive Reset Encoders
     }
 }
