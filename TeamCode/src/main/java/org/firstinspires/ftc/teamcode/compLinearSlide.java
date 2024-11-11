@@ -67,6 +67,9 @@ public class compLinearSlide {
     }
 
     public void extendVertical (double vertPower) {
+        LinearSlideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LinearSlideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         LinearSlideL.setPower(vertPower);
         LinearSlideR.setPower(vertPower);
     }
@@ -77,6 +80,8 @@ public class compLinearSlide {
     }
 
     public void extendVerticalUsingEncoder (double vertPower, double dblInches, String direction) {
+        LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (direction == "up" || direction == "Up" || direction == "UP") {
             LinearSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
