@@ -1,73 +1,4 @@
-//note to self: the number should be 38.1971863 if you ever lose it again
-//be happy
-//keep Him first (priorities) the whole time
 package org.firstinspires.ftc.teamcode;
-/*
-Goals:
-   make sure individual 'blocks' are running
-       compLinearSlide
-       compClaw
-       compDrive
-       compCam?
-   construct paths
-       follow plan
-       use working blocks
-       make sure it's accurate. If not, problem can be in path or individual 'blocks'
-       advanced:
-           make it perfectly accurate
-           deduct time taken and increase speed
-               multitask(do multiple things at once. Eg: retract slides and move back at the same time)
-               start facing backwards instead of forward
-               diagonals(compDrive) rather than just sideways and up/down
-               quick scan and processing (sensors)
-           Add sensors to compensate for field change
-               webcam (april tags) distance
-*/
-/*Notes from Nov 2
-   compDrive:
-   rotation rotated about 7 eights of a half rotation(needed to be half rotation). Maybe a little more (7/8-15/16).
-   left and right movements were pretty accurate
-   When the robot reached the sample, it was 4-5 (prob 4) inches more forward than it was supposed to be
-
-
-   slides:
-   slides didn't extend/retract (some ctx next:)
-   when i extended slides, they retracted a bit instead. Extending(when i tried to retract. Cuz it's reverse) may have happened a little bit, but i didn't notice much
-   One of the slide servos was disconnected :(
-   Once, the servo went to the right position, but in a wierd direction. What I mean by this is: say you wanted to set it to position 90. The current position is 91. When you set it to go to 90, it rotates 359 degrees forward, rather than one degree backward
-
-
-   Claw:
-   By the time the arm finished dropping to grab the sample, the claw already closed, so I couldn't grab it.
-
-
-   Success stuff:
-   arm (down and up) worked
-   Servos moved, and seemed to be working (and seemed to be going to the right position)
-   sideways compDrive seems to be accurate
-*/
-/*To Do (Nov 5)
-1. make sure individual parts work (specifically slides)
-    1. CompDrive: accurate?
-    2. Claw/arm: working?
-    3. Slides/servos: working/functional?
-    4. Check hardware AND software for errors
-2. Combine em in a path
-    1. grab sample
-    2. transfer sample
-    3. outtake sample
-3. Soft
-    1. Convos
-        1. occasional off-topic stuff. Eg: how u doing? hw?
-        2. Mostly focus and be productive/efficient
-    2. 'Start Caring'
- */
-/*
-Goals:
-1. add tape behind fuse box to mark specific start position
-2. y not accurate? battery? encoders? natural error? fixable by sensors?
-
- */
 
 //basic imports like motors and opModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -240,9 +171,9 @@ public class autoMainR1 extends LinearOpMode {
 
             slides.open_close_outtake(0.925, 0.725);
             sleep(1000);
-            //slides.extendVertical(-0.75);
-            //sleep(1500);    //500-->1800
-            //slides.extendVertical(0);
+            slides.extendVertical(-0.75);
+            sleep(1500);    //500-->1800
+            slides.extendVertical(0);
 
             drive1.moveBackward(tileLength * 0.5 -2, dblPower);    //10.625-->tileLength*0.5+2.5
             //sleep(1000);
