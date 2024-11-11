@@ -54,8 +54,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double optimalArmLeftServoOpen = 0.6;
-        double optimalArmRightServoOpen = 0.75;
         double optimalArmLeftServoOpen = 0.5825;
         double optimalArmRightServoOpen = 0.7625;
 
@@ -73,12 +71,9 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         double optimalLinearSlideLeftServoClose = 0.925;
         double optimalLinearSlideRightServoClose = 0.715; //0.725
 
-        double ArmPowerDeploy = -0.5;
-        double ArmPowerIntake = 0.75;
         double ArmPowerDeploy = -0.55;
         double ArmPowerIntake = 0.7;
 
-        double LinearSlidePower = 0.75;
         double LinearSlidePower = 0.5;
 
         //Start Button Pushed

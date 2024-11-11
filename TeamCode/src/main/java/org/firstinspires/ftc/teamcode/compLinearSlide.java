@@ -75,4 +75,32 @@ public class compLinearSlide {
         ServoSpecimanDeployL.setPosition(left);
         ServoSpecimanDeployR.setPosition(right);
     }
+
+    public void extendVerticalUsingEncoder (double vertPower, double dblInches, String direction) {
+
+        if (direction == "up" || direction == "Up" || direction == "UP") {
+            LinearSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
+            LinearSlideR.setDirection(DcMotorSimple.Direction.REVERSE);
+        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
+            LinearSlideL.setDirection(DcMotorSimple.Direction.FORWARD);
+            LinearSlideR.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+
+        int encoderCountsToMove = (int) (dblInches * Encoder_COUNTS_PER_INCH);
+
+        LinearSlideL.setTargetPosition(encoderCountsToMove);
+        LinearSlideR.setTargetPosition(encoderCountsToMove);
+
+        LinearSlideL.setPower(vertPower);
+        LinearSlideR.setPower(vertPower);
+
+        LinearSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LinearSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (LinearSlideL.isBusy() && LinearSlideR.isBusy()) {
+
+        }
+        // Stop the motors and reset the power to 0 and also reset encoder count
+        stopLinearSlides(); //End Drive Reset Encoders
+    }
 }
