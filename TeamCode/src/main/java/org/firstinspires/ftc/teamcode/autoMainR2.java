@@ -23,18 +23,25 @@ public class autoMainR2 extends LinearOpMode {
     public double halfCircle=12.0208513*3.141592653589798293*1.5;
     double[] dblPower={0.25, 0.25, 0.25, 0.25};
 
-    double maxHeight = 30;
+    double maxHeight = 40;
+    double hookheight = 24.5;
     double armleftServoWideOpen = 0.65;
     double armrightServoWideOpen = 0.725;
 
     double armleftServoNarrowOpen = 0.6;
     double armrightServoNarrowOpen = 0.75;
 
-    double armleftServoClose = 0.565;
-    double armrightServoClose = 0.815;
+    double armleftServoClose = 0.5415;
+    double armrightServoClose = 0.8135;
+
+    double LinearSlideLeftServoOpen = 0.68;
+    double LinearSlideRightServoOpen = 0.63;
+
+    double LinearSlideLeftServoClose = 0.58;
+    double LinearSlideRightServoClose = 0.74;
 
     double LinearSlidePower = 0.5;
-    double armPower = -0.25;
+    double armPower = -0.5;
 
     @Override
     //This runs when the program is activated
@@ -51,8 +58,6 @@ public class autoMainR2 extends LinearOpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
         arm = hardwareMap.get(DcMotor.class, "arm");
-        leftClaw = hardwareMap.get(Servo.class, "leftOuttake");
-        rightClaw = hardwareMap.get(Servo.class, "rightOuttake");
 
         // set direction for motors
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -66,32 +71,38 @@ public class autoMainR2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //start the robot turned 180 degrees
+
         //deliver preloaded specimen
-        //move to bar
-        slides.open_close_outtake(0.925, 0.725); //close
-        drive1.moveForward(tileLength, dblPower);
-        drive1.moveLeft(tileLength*0.5, dblPower);
+
+        slides.open_close_outtake(LinearSlideLeftServoClose, LinearSlideRightServoClose); //close
+
+        telemetry.addData("Running Linear Slides now", "");
+        telemetry.update();
 
         //This is the turning/extension part
-        drive1.moveClockwiseTurn(halfCircle, dblPower);
-        slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight, "up");
-        drive1.moveBackward(tileLength*0.355, dblPower);
+        slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight, "up"); //uses encoders
 
-        sleep(500);
+        telemetry.addData("Running Linear Slides now", "");
+        telemetry.update();
+
+        //move to bar
+        drive1.moveBackward(tileLength*1.6, dblPower);
+        drive1.moveRight(tileLength*0.5, dblPower);
 
         //scores sample onto bar
-        slides.extendVerticalUsingEncoder(LinearSlidePower, 5, "down"); //Descend
-        slides.open_close_outtake(1.0, 0.625);            //opens
-        slides.extendVerticalUsingEncoder(LinearSlidePower, 25, "down"); //Return to original position
+        slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight-hookheight, "down"); //Descend
+        sleep(500);
+        slides.open_close_outtake(LinearSlideLeftServoOpen, LinearSlideRightServoOpen);            //opens
+        sleep(500);
+        slides.extendVerticalUsingEncoder(LinearSlidePower, hookheight, "down"); //Return to original position
 
         sleep(500);
 
         //move back to 'critical point' (the start position for scoring each sample)
         drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
-        drive1.moveBackward(tileLength*0.7, dblPower);
-        drive1.moveRight(tileLength*2 + tileLength*0.5, dblPower);
-
-        sleep(500);
+        drive1.moveBackward(tileLength, dblPower);
+        drive1.moveRight(tileLength*2 + tileLength*0.55, dblPower);
 
         //moves in to grab outermost sample
         claw.open_close(armleftServoClose, armrightServoClose);  //close to get it past the linear slides
@@ -102,21 +113,20 @@ public class autoMainR2 extends LinearOpMode {
         sleep(500);
         drive1.moveForward(tileLength*0.3, dblPower);
         claw.open_close(armleftServoClose, armrightServoClose); //closes on the sample
+        sleep(500);
         claw.moveArm(-armPower); //intake arm
-        sleep(1000);
+        sleep(500);
         claw.moveArm(0);
 
-        sleep(500);
-
         //Now the robot will spin around and drop the sample in the observation station to convert it to a sample
-        drive1.moveBackward(tileLength*0.3, dblPower);
+        drive1.moveBackward(tileLength*0.15, dblPower);
         drive1.moveClockwiseTurn(halfCircle, dblPower);
         claw.moveArm(armPower); //deploy claw
         sleep(500);
         claw.moveArm(0);
         claw.open_close(armleftServoNarrowOpen, armrightServoNarrowOpen); //open claw to release sample
         claw.moveArm(-armPower); //move arm back in place
-        sleep(800);
+        sleep(500);
         claw.moveArm(0);
         sleep(500);
 

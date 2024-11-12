@@ -33,7 +33,7 @@ public class compLinearSlide {
     private Servo ServoSpecimanDeployR;
 
 
-    private static double Encoder_COUNTS_PER_INCH = 3.17;
+    private static double Encoder_COUNTS_PER_INCH = 31.7 * 2;
 
 
     public compLinearSlide(HardwareMap hMap) {
@@ -80,6 +80,9 @@ public class compLinearSlide {
     }
 
     public void extendVerticalUsingEncoder (double vertPower, double dblInches, String direction) {
+
+        stopLinearSlides();
+
         LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

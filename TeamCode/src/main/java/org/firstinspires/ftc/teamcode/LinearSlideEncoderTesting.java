@@ -19,7 +19,8 @@ public class LinearSlideEncoderTesting extends LinearOpMode {
 
 
     public void runOpMode(){
-        LinearSlideOne = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        LinearSlideOne = hardwareMap.get(DcMotor.class, "leftSlide");
+        LinearSlideTwo = hardwareMap.get(DcMotor.class, "rightSlide");
 
     }
 

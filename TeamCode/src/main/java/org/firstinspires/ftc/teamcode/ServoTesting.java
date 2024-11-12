@@ -32,12 +32,12 @@ public class ServoTesting extends LinearOpMode {
         telemetry.addData("Servo Testing", "");
         telemetry.update();
 
-        Servo = hardwareMap.get(Servo.class, "armLeftServo");
-        Servo2 = hardwareMap.get(Servo.class, "armRightServo");
+        Servo = hardwareMap.get(Servo.class, "leftOuttake");
+        Servo2 = hardwareMap.get(Servo.class, "rightOuttake");
         Arm = hardwareMap.get(DcMotor.class, "arm");
 
-        double servoPosition = 0.53;
-        double servoPosition2 = 0.82;
+        double servoPosition = 0.95;
+        double servoPosition2 = 0.74;
 
         waitForStart();
 
@@ -47,23 +47,31 @@ public class ServoTesting extends LinearOpMode {
             Servo.setPosition(servoPosition);
             Servo2.setPosition(servoPosition2);
 
-            if (gamepad1 != null) {
-                telemetry.addData("Gamepad 1", " Set");
-                telemetry.addData("Current left servo position is: ", servoPosition);
-                telemetry.addData("To change servo position by increments of 0.01, press", "gamepad1.left_bumper (the button on top)");
-                telemetry.addData("To change servo position by increments of -0.01, press", "gamepad1.right_bumper (the button on top)");
+//            if (gamepad1 != null) {
+//                telemetry.addData("Gamepad 1", " Set");
+//                telemetry.addData("Current left servo position is: ", servoPosition);
+//                telemetry.addData("To change servo position by increments of 0.01, press", "gamepad1.left_bumper (the button on top)");
+//                telemetry.addData("To change servo position by increments of -0.01, press", "gamepad1.right_bumper (the button on top)");
+//                telemetry.update();
+//
+//            } else if (gamepad2 != null) {
+//                telemetry.addData("Gamepad 2", " Set");
+//                telemetry.addData("Current right servo position is: ", servoPosition2);
+//                telemetry.addData("To change servo position by increments of 0.01, press", "gamepad2.left_bumper (the button on top)");
+//                telemetry.addData("To change servo position by increments of -0.01, press", "gamepad2.right_bumper (the button on top)");
+//                telemetry.update();
+
+            if (gamepad1.a) {
+                telemetry.addData("Left servo position: ", servoPosition);
                 telemetry.update();
+                sleep(1000);
 
-            } else if (gamepad2 != null) {
-                telemetry.addData("Gamepad 2", " Set");
-                telemetry.addData("Current right servo position is: ", servoPosition2);
-                telemetry.addData("To change servo position by increments of 0.01, press", "gamepad2.left_bumper (the button on top)");
-                telemetry.addData("To change servo position by increments of -0.01, press", "gamepad2.right_bumper (the button on top)");
+            } else if (gamepad2.a) {
+                telemetry.addData("Right servo position: ", servoPosition2);
                 telemetry.update();
+                sleep(1000);
 
-            }
-
-            if (gamepad1.left_bumper) {
+            } else if (gamepad1.left_bumper) {
                 servoPosition += 0.01;
                 Servo.setPosition(servoPosition);
                 sleep(1000);

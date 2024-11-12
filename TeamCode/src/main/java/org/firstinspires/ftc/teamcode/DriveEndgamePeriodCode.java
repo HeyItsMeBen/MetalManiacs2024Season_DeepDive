@@ -60,26 +60,26 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
 
         //double optimalArmLeftServoClose =0.568 ; //changed 0.562
         //double optimalArmRightServoClose =0.835; //changed 0.813
-        double optimalArmLeftServoClose = 0.54; //changed
-        double optimalArmRightServoClose = 0.835; //changed
+        double optimalArmLeftServoClose = 0.5415; //changed
+        double optimalArmRightServoClose = 0.8135; //changed
 
 
-        double optimalLinearSlideLeftServoOpen = 1.0;
-        double optimalLinearSlideRightServoOpen = 0.625;
+        double optimalLinearSlideLeftServoOpen = 0.68;
+        double optimalLinearSlideRightServoOpen = 0.63;
 
-        double optimalLinearSlideLeftServoClose = 0.925;
-        double optimalLinearSlideRightServoClose = 0.715; //0.725
+        double optimalLinearSlideLeftServoClose = 0.58;
+        double optimalLinearSlideRightServoClose = 0.74;
 
         double ArmPowerDeploy = -0.55;
         double ArmPowerIntake = 0.7;
 
-        double LinearSlidePower = 0.5;
+        double LinearSlidePower = 0.65;
 
         //Start Button Pushed
         while (opModeIsActive()) {
 
             //SET this 2 to use math theta, sine, cosine; otherwise SET to 0.
-            int intTestMode = 2;
+
 
             // Drive Code
             double max; //variable to define maximum motor values never > 100%
@@ -89,21 +89,13 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             double lateral =  -gamepad1.left_stick_x;
             double yaw     =  -gamepad1.right_stick_x;
 
-            if (intTestMode > 1) {
-
-                double x = -gamepad1.left_stick_x;
-                double y = gamepad1.left_stick_y;
-                turn = -gamepad1.right_stick_x;
-                theta = Math.atan2(y, x);
-                power = Math.hypot(x, y);
-
-                sine = Math.sin(theta - Math.PI/4);
-                cosine = Math.cos(theta - Math.PI/4);
-
-            } else {
-                telemetry.addData("DriveEndgame Period", "TEST MODE 0");
-                telemetry.update();
-            }
+            double x = -gamepad1.left_stick_x;
+            double y = gamepad1.left_stick_y;
+            turn = -gamepad1.right_stick_x;
+            theta = Math.atan2(y, x);
+            power = Math.hypot(x, y);
+            sine = Math.sin(theta - Math.PI/4);
+            cosine = Math.cos(theta - Math.PI/4);
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -126,24 +118,22 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 rightBackPower  /= max;
             }
 
-            if (intTestMode > 1) {
+            max = Math.max(Math.abs(sine),
+                    Math.abs(cosine));
 
-                max = Math.max(Math.abs(sine),
-                        Math.abs(cosine));
-
-                leftFrontPower = power * cosine / max + turn;
-                rightFrontPower = power * sine / max - turn;
-                leftBackPower = power * sine / max + turn;
-                rightBackPower = power * cosine / max - turn;
+            leftFrontPower = power * cosine / max + turn;
+            rightFrontPower = power * sine / max - turn;
+            leftBackPower = power * sine / max + turn;
+            rightBackPower = power * cosine / max - turn;
 
                 //Makes sure motor does NOT exceed more than 100% or else it will have bad behaviors >:(
-                if ((power + Math.abs(turn))>1) {
-                    leftFrontPower /= power + turn;
-                    rightFrontPower /= power + turn;
-                    leftBackPower /= power + turn;
-                    rightBackPower /= power + turn;
-                }
+            if ((power + Math.abs(turn))>1) {
+                leftFrontPower /= power + turn;
+                rightFrontPower /= power + turn;
+                leftBackPower /= power + turn;
+                rightBackPower /= power + turn;
             }
+
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(leftFrontPower);
@@ -200,29 +190,26 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             }
 
             //Outtake code: Linear Slides
-            //To utilize, set the gamepad to start + 2
+            //To utilize, set the gamepad to start + b
             //Activate by using the up/down right joystick
             if (gamepad2.right_stick_y > 0){
                 linearSlide.extendVertical(LinearSlidePower);
             }
-            //changed it to less then to move slides down :) ev
+            //changed it to less then to move slides down :) EV
             if (gamepad2.right_stick_y < 0){
                 linearSlide.extendVertical(-LinearSlidePower);
             }
             linearSlide.extendVertical(0);
 
             //Outtake code: Servos
-            //To utilize, set the gamepad to start + 2
+            //To utilize, set the gamepad to start + b
             //Activate by pressing the bumpers
-
-           /*open*/
-            if (gamepad2.left_bumper) {
+            if (gamepad2.left_bumper) { /*open*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
                 telemetry.addData("OpenOuttakeClaw", "testing servo OPEN");
                 telemetry.update();
             }
-            /*close*/
-            if (gamepad2.right_bumper) {
+            if (gamepad2.right_bumper) { /*close*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
                 telemetry.addData("CloseOuttakeClaw", "testing servo CLOSE");
                 telemetry.update();
