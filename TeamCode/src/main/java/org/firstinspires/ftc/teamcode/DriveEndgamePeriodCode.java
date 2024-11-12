@@ -27,7 +27,23 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double cosine;
     private double max;
     private double turn;
-    int linearencoderCountsToMove = (int) (48 * LINEAR_ENCODER_COUNTS_PER_INCH);
+    double optimalArmLeftServoNarrowOpen = 0.5825;
+    double optimalArmRightServoNarrowOpen = 0.7625;
+    double optimalArmLeftServoWideOpen = 0.7;
+    double optimalArmRightServoWideOpen = 0.65;
+    double optimalArmLeftServoClose = 0.5415; //changed
+    double optimalArmRightServoClose = 0.8135; //changed
+    double optimalLinearSlideLeftServoOpen = 0.68;
+    double optimalLinearSlideRightServoOpen = 0.63;
+    double optimalLinearSlideLeftServoClose = 0.58;
+    double optimalLinearSlideRightServoClose = 0.74;
+    double ArmPowerDeploy = -0.55;
+    double ArmPowerIntake = 0.7;
+    double LinearSlidePower = 0.65;
+    private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
+    //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
+    //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
+
     @Override
     public void runOpMode() {
 
@@ -53,27 +69,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         telemetry.update();
         waitForStart();
         runtime.reset();
-
-        double optimalArmLeftServoOpen = 0.5825;
-        double optimalArmRightServoOpen = 0.7625;
-
-
-        //double optimalArmLeftServoClose =0.568 ; //changed 0.562
-        //double optimalArmRightServoClose =0.835; //changed 0.813
-        double optimalArmLeftServoClose = 0.5415; //changed
-        double optimalArmRightServoClose = 0.8135; //changed
-
-
-        double optimalLinearSlideLeftServoOpen = 0.68;
-        double optimalLinearSlideRightServoOpen = 0.63;
-
-        double optimalLinearSlideLeftServoClose = 0.58;
-        double optimalLinearSlideRightServoClose = 0.74;
-
-        double ArmPowerDeploy = -0.55;
-        double ArmPowerIntake = 0.7;
-
-        double LinearSlidePower = 0.65;
 
         //Start Button Pushed
         while (opModeIsActive()) {
@@ -173,9 +168,11 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //Activate by toggling the triggers
             if (gamepad1.left_trigger > 0){
                 claw.moveArm(ArmPowerDeploy);
+                narrowOpen = false;
             }
             if (gamepad1.right_trigger > 0) {
                 claw.moveArm(ArmPowerIntake);
+                narrowOpen = true;
             }
             claw.moveArm(0);
 
@@ -183,7 +180,11 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + a
             //Activate by toggling the triggers
             if (gamepad1.left_bumper){ //Open
-                claw.open_close(optimalArmLeftServoOpen,optimalArmRightServoOpen);
+                if (narrowOpen == true) {
+                    claw.open_close(optimalArmLeftServoNarrowOpen, optimalArmRightServoNarrowOpen);
+                } else {
+                    claw.open_close(optimalArmLeftServoWideOpen, optimalArmRightServoWideOpen);
+                }
             }
             if (gamepad1.right_bumper) { //Close
                 claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
@@ -206,13 +207,9 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //Activate by pressing the bumpers
             if (gamepad2.left_bumper) { /*open*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
-                telemetry.addData("OpenOuttakeClaw", "testing servo OPEN");
-                telemetry.update();
             }
             if (gamepad2.right_bumper) { /*close*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
-                telemetry.addData("CloseOuttakeClaw", "testing servo CLOSE");
-                telemetry.update();
             }
 
             idle();
