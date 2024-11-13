@@ -248,7 +248,7 @@ public class autoMainR1 extends LinearOpMode {
             /*slides.extendVertical(-0.75);
             sleep(1500);    //500-->1800
             slides.extendVertical(0);*/
-            slides.extendVerticalUsingEncoder(0.4, 34, "UP");
+            //slides.extendVerticalUsingEncoder(0.4, 34, "UP");
             sleep(1000);
 
             drive1.moveBackward(tileLength * 0.5 +1, dblPower);    //10.625-->tileLength*0.5+2.5-->tileLength * 0.5 -2
@@ -286,7 +286,7 @@ public class autoMainR1 extends LinearOpMode {
             sleep(1000);
             slides.extendVertical(0);*/
             //slides.extendVerticalUsingEncoder(0.75,19, "DOWN");
-            slides.extendVerticalUsingEncoder(0.4, 34, "DOWN");
+            //slides.extendVerticalUsingEncoder(0.4, 34, "DOWN");
             sleep(1000);
 
             //grab sample and transfer it
@@ -371,15 +371,17 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.update();
             slides.open_close_outtake(0.925, 0.75);
             sleep(1000);
-            slides.extendVertical(-0.75);
+            /*slides.extendVertical(-0.75);
             sleep(500);
             slides.extendVertical(0);
+            */
             slides.open_close_outtake(1.0, 0.625);
             sleep(1000);
+            /*
             slides.extendVertical(0.75);
             sleep(500);
             slides.extendVertical(0);
-            sleep(1000);
+            sleep(1000);*/
 
             //move back to critical point
             telemetry.addLine("Moving to start...");
