@@ -18,6 +18,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    private CRServo winchServo;
     private float POWER_REDUCTION = 2;
     private static final int LINEAR_ENCODER_COUNTS_PER_INCH = 43;
     private double theta    ;
@@ -26,7 +27,23 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double cosine;
     private double max;
     private double turn;
-    int linearencoderCountsToMove = (int) (48 * LINEAR_ENCODER_COUNTS_PER_INCH);
+    double optimalArmLeftServoNarrowOpen = 0.5825;
+    double optimalArmRightServoNarrowOpen = 0.7625;
+    double optimalArmLeftServoWideOpen = 0.7;
+    double optimalArmRightServoWideOpen = 0.65;
+    double optimalArmLeftServoClose = 0.5415; //changed
+    double optimalArmRightServoClose = 0.8135; //changed
+    double optimalLinearSlideLeftServoOpen = 0.68;
+    double optimalLinearSlideRightServoOpen = 0.63;
+    double optimalLinearSlideLeftServoClose = 0.58;
+    double optimalLinearSlideRightServoClose = 0.74;
+    double ArmPowerDeploy = -0.55;
+    double ArmPowerIntake = 0.7;
+    double LinearSlidePower = 0.65;
+    private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
+    //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
+    //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
+
     @Override
     public void runOpMode() {
 
@@ -39,7 +56,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-
+        //Winch
+        winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -52,27 +70,11 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double optimalArmLeftServoOpen = 0.6;
-        double optimalArmRightServoOpen = 0.75;
-
-        double optimalArmLeftServoClose = 0.55;
-        double optimalArmRightServoClose = 0.8;
-
-        double optimalLinearSlideLeftServoOpen = 1.0;
-        double optimalLinearSlideRightServoOpen = 0.625;
-
-        double optimalLinearSlideLeftServoClose = 0.925;
-        double optimalLinearSlideRightServoClose = 0.725;
-
-        double ArmPower = 0.5;
-
-        double LinearSlidePower = 0.75;
-
         //Start Button Pushed
         while (opModeIsActive()) {
 
             //SET this 2 to use math theta, sine, cosine; otherwise SET to 0.
-            int intTestMode = 2;
+
 
             // Drive Code
             double max; //variable to define maximum motor values never > 100%
@@ -82,23 +84,13 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             double lateral =  -gamepad1.left_stick_x;
             double yaw     =  -gamepad1.right_stick_x;
 
-            if (intTestMode > 1) {
-
-                double x = -gamepad1.left_stick_x;
-                double y = gamepad1.left_stick_y;
-                turn = -gamepad1.right_stick_x;
-                theta = Math.atan2(y, x);
-                power = Math.hypot(x, y);
-
-                sine = Math.sin(theta - Math.PI/4);
-                cosine = Math.cos(theta - Math.PI/4);
-
-            }
-            else
-            {
-                telemetry.addData("DriveEndgame Period", "TEST MODE 0");
-                telemetry.update();
-            }
+            double x = -gamepad1.left_stick_x;
+            double y = gamepad1.left_stick_y;
+            turn = -gamepad1.right_stick_x;
+            theta = Math.atan2(y, x);
+            power = Math.hypot(x, y);
+            sine = Math.sin(theta - Math.PI/4);
+            cosine = Math.cos(theta - Math.PI/4);
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -121,25 +113,22 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 rightBackPower  /= max;
             }
 
-            if (intTestMode > 1) {
-                telemetry.addData("DriveEndgame Period", "testing strafe :)");
-                telemetry.update();
-                max = Math.max(Math.abs(sine),
-                        Math.abs(cosine));
+            max = Math.max(Math.abs(sine),
+                    Math.abs(cosine));
 
-                leftFrontPower = power * cosine / max + turn;
-                rightFrontPower = power * sine / max - turn;
-                leftBackPower = power * sine / max + turn;
-                rightBackPower = power * cosine / max - turn;
+            leftFrontPower = power * cosine / max + turn;
+            rightFrontPower = power * sine / max - turn;
+            leftBackPower = power * sine / max + turn;
+            rightBackPower = power * cosine / max - turn;
 
                 //Makes sure motor does NOT exceed more than 100% or else it will have bad behaviors >:(
-                if ((power + Math.abs(turn))>1) {
-                    leftFrontPower /= power + turn;
-                    rightFrontPower /= power + turn;
-                    leftBackPower /= power + turn;
-                    rightBackPower /= power + turn;
-                }
+            if ((power + Math.abs(turn))>1) {
+                leftFrontPower /= power + turn;
+                rightFrontPower /= power + turn;
+                leftBackPower /= power + turn;
+                rightBackPower /= power + turn;
             }
+
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(leftFrontPower);
@@ -147,14 +136,43 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             backLeftDrive.setPower(leftBackPower);
             backRightDrive.setPower(rightBackPower);
 
+            //Winch
+            double winchPower = .25;
+            winchServo.setPower(0);
+            telemetry.addData("winch", "testing servo  no power");
+            telemetry.update();
+            if (gamepad2.dpad_up == true){
+                winchServo.setPower(.25); //play around
+                telemetry.addData("winch", "testing servo up");
+                telemetry.update();
+            }
+            else if (gamepad2.dpad_up == false){
+                winchServo.setPower(0); //no power
+                telemetry.addData("winch", "testing servo STOP");
+                telemetry.update();
+            }
+
+            if (gamepad2.dpad_down == true){
+                winchServo.setPower(-.25); //unhook
+                telemetry.addData("winch", "testing servo down");
+                telemetry.update();
+            }
+            else if (gamepad2.dpad_down == false) {
+                winchServo.setPower(0); //no power
+                telemetry.addData("winch", "testing servo OFF down");
+                telemetry.update();
+            }
+
             //Intake code: Arm
             //To utilize, set the gamepad to start + 1
             //Activate by toggling the triggers
             if (gamepad1.left_trigger > 0){
-                claw.moveArm(-ArmPower);
+                claw.moveArm(ArmPowerDeploy);
+                narrowOpen = false;
             }
             if (gamepad1.right_trigger > 0) {
-                claw.moveArm(ArmPower);
+                claw.moveArm(ArmPowerIntake);
+                narrowOpen = true;
             }
             claw.moveArm(0);
 
@@ -162,39 +180,36 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + a
             //Activate by toggling the triggers
             if (gamepad1.left_bumper){ //Open
-                claw.open_close(optimalArmLeftServoOpen,optimalArmRightServoOpen);
+                if (narrowOpen == true) {
+                    claw.open_close(optimalArmLeftServoNarrowOpen, optimalArmRightServoNarrowOpen);
+                } else {
+                    claw.open_close(optimalArmLeftServoWideOpen, optimalArmRightServoWideOpen);
+                }
             }
             if (gamepad1.right_bumper) { //Close
                 claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
             }
 
             //Outtake code: Linear Slides
-            //To utilize, set the gamepad to start + 2
+            //To utilize, set the gamepad to start + b
             //Activate by using the up/down right joystick
             if (gamepad2.right_stick_y > 0){
                 linearSlide.extendVertical(LinearSlidePower);
             }
-            //changed it to less then to move slides down :) ev
+            //changed it to less then to move slides down :) EV
             if (gamepad2.right_stick_y < 0){
                 linearSlide.extendVertical(-LinearSlidePower);
             }
             linearSlide.extendVertical(0);
 
             //Outtake code: Servos
-            //To utilize, set the gamepad to start + 2
+            //To utilize, set the gamepad to start + b
             //Activate by pressing the bumpers
-
-           /*open*/
-            if (gamepad2.left_bumper) {
+            if (gamepad2.left_bumper) { /*open*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
-                telemetry.addData("OpenOuttakeClaw", "testing servo OPEN");
-                telemetry.update();
             }
-            /*close*/
-            if (gamepad2.right_bumper) {
+            if (gamepad2.right_bumper) { /*close*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
-                telemetry.addData("CloseOuttakeClaw", "testing servo CLOSE");
-                telemetry.update();
             }
 
             idle();
