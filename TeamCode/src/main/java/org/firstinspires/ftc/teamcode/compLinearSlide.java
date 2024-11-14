@@ -29,7 +29,7 @@ public class compLinearSlide {
     private Servo ServoSpecimanDeployL;
     private Servo ServoSpecimanDeployR;
     
-    private static double Encoder_COUNTS_PER_INCH = 108.857143;
+    private static double Encoder_COUNTS_PER_INCH =  121.942679; //Originally 108.857143;
 
 
     public compLinearSlide(HardwareMap hMap) {
