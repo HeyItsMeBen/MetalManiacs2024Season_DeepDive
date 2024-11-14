@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
-import static android.os.SystemClock.sleep;
 
-
-
-
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -23,12 +22,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 //          .extendVerticalUsingEncoder( [Input power] , [number of inches to travel] , "[direction up/down]")
 
 public class compLinearSlide {
+    int maxHeight = 3265; //Max height for linear slides, based this by rounding ENCODER_COUNTS_PER_INCH * 30 inches (max height)
+    int minHeight = 0; //Number of encoder rotations to reach min height, this is to prevent motor from being overstretched
     private DcMotor LinearSlideL;
     private DcMotor LinearSlideR;
-
-
-
-
     private Servo ServoSpecimanDeployL;
     private Servo ServoSpecimanDeployR;
     
@@ -50,11 +47,6 @@ public class compLinearSlide {
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    private void resetEncoderCount() {
-        LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
     private void stopLinearSlides () {
         LinearSlideL.setTargetPosition(0);
         LinearSlideR.setTargetPosition(0);
@@ -62,12 +54,19 @@ public class compLinearSlide {
         LinearSlideL.setPower(0);
         LinearSlideR.setPower(0);
 
-        resetEncoderCount();
+        LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void extendVertical (double vertPower) {
-        LinearSlideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        LinearSlideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        int currentSlidePositionL = LinearSlideL.getCurrentPosition();
+        int currentSlidePositionR = LinearSlideR.getCurrentPosition();
+
+        if (0 > currentSlidePositionL || currentSlidePositionL >= maxHeight) {
+            LinearSlideL.setPower(0);
+        } else if (0 > currentSlidePositionR || currentSlidePositionR >= maxHeight) {
+            LinearSlideR.setPower(0);
+        }
 
         LinearSlideL.setPower(vertPower);
         LinearSlideR.setPower(vertPower);

@@ -39,7 +39,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     double optimalLinearSlideRightServoClose = 0.74;
     double ArmPowerDeploy = -0.55;
     double ArmPowerIntake = 0.7;
-    double LinearSlidePower = 0.65;
+    double LinearSlidePower = 0; //This is set directly by the joystick inputs
+    double LinearSlideMaxPower = 0.65;
     private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
     //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
     //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
@@ -141,6 +142,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             winchServo.setPower(0);
             telemetry.addData("winch", "testing servo  no power");
             telemetry.update();
+
             if (gamepad2.dpad_up == true){
                 winchServo.setPower(.25); //play around
                 telemetry.addData("winch", "testing servo up");
@@ -194,11 +196,19 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //To utilize, set the gamepad to start + b
             //Activate by using the up/down right joystick
             if (gamepad2.right_stick_y > 0){
+                LinearSlidePower = gamepad2.right_stick_y;
+                if (LinearSlidePower >= LinearSlideMaxPower) { //Prevents it from going too fast
+                    LinearSlidePower = LinearSlideMaxPower;
+                }
                 linearSlide.extendVertical(LinearSlidePower);
             }
             //changed it to less then to move slides down :) EV
             if (gamepad2.right_stick_y < 0){
-                linearSlide.extendVertical(-LinearSlidePower);
+                LinearSlidePower = -gamepad2.right_stick_y;
+                if (LinearSlidePower >= LinearSlideMaxPower) { //Prevents it from going too fast
+                    LinearSlidePower = LinearSlideMaxPower;
+                }
+                linearSlide.extendVertical(LinearSlidePower);
             }
             linearSlide.extendVertical(0);
 
