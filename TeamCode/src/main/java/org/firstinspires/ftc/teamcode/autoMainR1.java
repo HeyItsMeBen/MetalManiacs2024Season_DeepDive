@@ -1,5 +1,31 @@
 package org.firstinspires.ftc.teamcode;
+/*To Do (Nov 5)
+1. make sure individual parts work (specifically slides)
+    1. CompDrive: accurate?
+    2. Claw/arm: working?
+    3. Slides/servos: working/functional?
+    4. Check hardware AND software for errors
+2. Combine em in a path
+    1. grab sample
+    2. transfer sample
+    3. outtake sample
+3. Soft
+    1. Convos
+        1. occasional off-topic stuff. Eg: how u doing? hw?
+        2. Mostly focus and be productive/efficient
+    2. 'Start Caring'
+ */
+/*
+Goals:
+1. add tape behind fuse box to mark specific start position
+2. y not accurate? battery? encoders? natural error? fixable by sensors?
 
+ */
+/*Notes from Nov 13
+For second sample, claw didint' make it all the way to the ground
+Fro second sample, claw didn't release after delivering sample to transfer
+Second sample: Left wheel 6.5 inches behind line, right wheel 4.75 inches behind
+ */
 
 //basic imports like motors and opModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -16,9 +42,9 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.compDrive;
 import org.firstinspires.ftc.teamcode.compClaw;
 import org.firstinspires.ftc.teamcode.compLinearSlide;
-/*import org.firstinspires.ftc.teamcode.OpenCV.compCam;
+import org.firstinspires.ftc.teamcode.OpenCV.compCam;
 import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;*/
+import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import java.util.ArrayList;
 
@@ -54,8 +80,8 @@ public class autoMainR1 extends LinearOpMode {
         compDrive drive1 = new compDrive(hardwareMap);
         compClaw claw = new compClaw(hardwareMap);
         compLinearSlide slides = new compLinearSlide(hardwareMap);
-        //compCam camera1 = new compCam(hardwareMap);
-        //OpenCvCamera camera;
+        compCam camera1 = new compCam(hardwareMap);
+        OpenCvCamera camera;
 
         //hardware mapping
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -86,7 +112,7 @@ public class autoMainR1 extends LinearOpMode {
         runtime.reset();
 
         //sets test mode
-        testMode=2;
+        testMode=1;
 
         if (testMode==2) {
             //deliver preloaded specimen. It's currently commented
@@ -211,7 +237,7 @@ public class autoMainR1 extends LinearOpMode {
             //moves to sample
             telemetry.addLine("Moving to sample...");
             telemetry.update();
-            drive1.moveLeft((2.5+2.486+DiagonalToSide)*1.33333, dblPower);      //-->(added sqrt(2) stuff)
+            drive1.moveLeft((2+2.486+DiagonalToSide)*1.33333, dblPower);      //-->(added sqrt(2) stuff)    2.5-->2
             claw.moveArm(-0.25);
             sleep(1000);
             claw.moveArm(0);
@@ -245,7 +271,7 @@ public class autoMainR1 extends LinearOpMode {
             sleep(1000);
             //slides.extendVerticalUsingEncoder(0.6, 12, "UP");   //19-->12(to be safe. Can change after testing)
             drive1.moveBackward(tileLength * 0.5 +1-2.486-DiagonalToSide, dblPower);    //10.625-->tileLength*0.5+2.5-->tileLength * 0.5 -2-->(added sqrt(2) stuff)
-            drive1.moveRight((2.5+2.486+DiagonalToSide)*1.33333, dblPower); //-->(added sqrt(2) stuff)
+            drive1.moveRight((2+2.486+DiagonalToSide)*1.33333, dblPower); //-->(added sqrt(2) stuff). 2.5-->2
             drive1.moveClockwiseTurn(fullCircle * 0.125, dblPower);     //CRIT POINT
             drive1.moveBackward(3.9*Math.sqrt(2), dblPower);
 
@@ -335,7 +361,7 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.update();
             sleep(1000);
             //the code testing april tags is commented out
-            /*if (testMode==1) {
+            if (testMode==1) {
                 //This scans for April Tags
                 camera1.scan();
                 //if tag is not found, tell the driver station'
@@ -356,7 +382,7 @@ public class autoMainR1 extends LinearOpMode {
                     telemetry.update();
                     sleep(1500);
                 }
-            }*/
+            }
         }
     }
 }

@@ -28,8 +28,9 @@ public class compLinearSlide {
     private DcMotor LinearSlideR;
     private Servo ServoSpecimanDeployL;
     private Servo ServoSpecimanDeployR;
-    
-    private static double Encoder_COUNTS_PER_INCH =  121.942679; //Originally 108.857143;
+
+    //private static double Encoder_COUNTS_PER_INCH = 108.857143;
+    private static double Encoder_COUNTS_PER_INCH =121.942679;  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
 
 
     public compLinearSlide(HardwareMap hMap) {
