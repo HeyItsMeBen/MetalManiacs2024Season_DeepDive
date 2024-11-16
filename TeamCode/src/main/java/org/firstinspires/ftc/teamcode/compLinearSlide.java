@@ -60,14 +60,18 @@ public class compLinearSlide {
     }
 
     public void extendVertical (double vertPower) {
-        int currentSlidePositionL = LinearSlideL.getCurrentPosition();
-        int currentSlidePositionR = LinearSlideR.getCurrentPosition();
-
-        if (0 > currentSlidePositionL || currentSlidePositionL >= maxHeight) {
-            LinearSlideL.setPower(0);
-        } else if (0 > currentSlidePositionR || currentSlidePositionR >= maxHeight) {
-            LinearSlideR.setPower(0);
-        }
+        LinearSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
+        LinearSlideR.setDirection(DcMotorSimple.Direction.REVERSE);
+//        int currentSlidePositionL = LinearSlideL.getCurrentPosition();
+//        int currentSlidePositionR = LinearSlideR.getCurrentPosition();
+//
+//        if (0 > currentSlidePositionL || currentSlidePositionL >= maxHeight) {
+//            LinearSlideL.setPower(0);
+//        } else if (0 > currentSlidePositionR || currentSlidePositionR >= maxHeight) {
+//            LinearSlideR.setPower(0);
+//        }
+        LinearSlideL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LinearSlideR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         LinearSlideL.setPower(vertPower);
         LinearSlideR.setPower(vertPower);
@@ -98,8 +102,8 @@ public class compLinearSlide {
         LinearSlideL.setTargetPosition(encoderCountsToMove);
         LinearSlideR.setTargetPosition(encoderCountsToMove);
 
-        LinearSlideL.setPower(vertPower);
-        LinearSlideR.setPower(vertPower);
+        LinearSlideL.setPower(Math.abs(vertPower));
+        LinearSlideR.setPower(Math.abs(vertPower));
 
         LinearSlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         LinearSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
