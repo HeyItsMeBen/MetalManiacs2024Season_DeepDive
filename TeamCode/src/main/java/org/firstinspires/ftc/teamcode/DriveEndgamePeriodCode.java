@@ -167,9 +167,9 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             }
             linearSlide.extendVertical(0);
             //Pre-set Positions
-            if (gamepad2.dpad_up) { //quick cycle to basket
+            if (gamepad2.x) { //quick cycle to basket
                 linearSlide.extendVerticalUsingEncoder(0.75, 30, "up"); //set for basket height
-            } else if (gamepad2.dpad_down) {
+            } else if (gamepad2.b) {
                 linearSlide.extendVerticalUsingEncoder(0.25, 30, "down"); //set for initial position
             } //else if (gamepad2.x)
 
