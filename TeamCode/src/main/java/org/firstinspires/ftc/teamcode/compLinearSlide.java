@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 // IMPORTANT: As of 11/10 compLinearSlide has now been modified to also run on encoders.
 //
 // Even if your code does not use them, it shouldn't have any effect
@@ -29,8 +28,8 @@ public class compLinearSlide {
     private Servo ServoSpecimanDeployL;
     private Servo ServoSpecimanDeployR;
 
-    //private static double Encoder_COUNTS_PER_INCH = 108.857143;
-    private static double Encoder_COUNTS_PER_INCH =121.942679;  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
+    //private static double Encoder_COUNTS_PER_INCH = 108.857143 + 10.8757143 + 1.08757143;
+    private static double Encoder_COUNTS_PER_INCH =121.942679 + 12.1942679;  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
 
 
     public compLinearSlide(HardwareMap hMap) {
@@ -38,7 +37,6 @@ public class compLinearSlide {
         //LinearSlide
         LinearSlideL = hMap.get(DcMotor.class, "leftSlide"); //added 7/24/24
         LinearSlideR = hMap.get(DcMotor.class, "rightSlide"); // change display name after we design
-
 
         //Deploy the bucket for the servos
         ServoSpecimanDeployL = hMap.get(Servo.class, "leftOuttake");
@@ -48,20 +46,28 @@ public class compLinearSlide {
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    private void stopLinearSlides () {
-        LinearSlideL.setTargetPosition(0);
-        LinearSlideR.setTargetPosition(0);
-
-        LinearSlideL.setPower(0);
-        LinearSlideR.setPower(0);
-
+    public void resetEncoders () {
         LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    private void stopLinearSlides () {
+        LinearSlideL.setPower(0);
+        LinearSlideR.setPower(0);
+    }
+
+    public double getEncoderPositions (String Slide) {
+        if (Slide == "Left" || Slide == "left") {
+            return LinearSlideL.getCurrentPosition();
+        } else if (Slide == "Right" || Slide == "right") {
+            return LinearSlideR.getCurrentPosition();
+        }
+        return -1;
+    }
+
     public void extendVertical (double vertPower) {
-        LinearSlideL.setDirection(DcMotorSimple.Direction.REVERSE);
-        LinearSlideR.setDirection(DcMotorSimple.Direction.REVERSE);
+        LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
+        LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
 //        int currentSlidePositionL = LinearSlideL.getCurrentPosition();
 //        int currentSlidePositionR = LinearSlideR.getCurrentPosition();
 //
