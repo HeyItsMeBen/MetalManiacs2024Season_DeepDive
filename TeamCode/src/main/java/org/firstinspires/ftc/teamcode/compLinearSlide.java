@@ -21,15 +21,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 //          .extendVerticalUsingEncoder( [Input power] , [number of inches to travel] , "[direction up/down]")
 
 public class compLinearSlide {
-    int maxHeight = 3265; //Max height for linear slides, based this by rounding ENCODER_COUNTS_PER_INCH * 30 inches (max height)
-    int minHeight = 0; //Number of encoder rotations to reach min height, this is to prevent motor from being overstretched
+
     private DcMotor LinearSlideL;
     private DcMotor LinearSlideR;
     private Servo ServoSpecimanDeployL;
     private Servo ServoSpecimanDeployR;
 
-    //private static double Encoder_COUNTS_PER_INCH = 108.857143 + 10.8757143 + 1.08757143;
-    private static double Encoder_COUNTS_PER_INCH =121.942679 + 12.1942679;  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
+    private static double Encoder_COUNTS_PER_INCH = 134.136947;  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
 
 
     public compLinearSlide(HardwareMap hMap) {
