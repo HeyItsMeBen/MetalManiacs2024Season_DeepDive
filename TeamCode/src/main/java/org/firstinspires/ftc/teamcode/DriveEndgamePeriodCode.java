@@ -38,7 +38,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double optimalLinearSlideRightServoClose = 0.71;
     private double ArmPowerDeploy = -0.55;
     private double ArmPowerIntake = 0.9;
-    private double LinearSlidePower = 0.65; //Power for when it goes down, trust me this is right
+    private double LinearSlidePower = 0.65;
     private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
     //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
     //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
