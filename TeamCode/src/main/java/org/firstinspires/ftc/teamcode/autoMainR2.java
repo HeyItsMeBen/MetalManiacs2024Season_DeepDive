@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-//basic imports like motors and opModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,16 +20,13 @@ public class autoMainR2 extends LinearOpMode {
 
     public double tileLength=23.75;
     public double halfCircle=12.0208513*3.141592653589798293*1.5;
-    double[] dblPower={0.25, 0.25, 0.25, 0.25};
-
-    double maxHeight = 40;
-    double hookheight = 24.5;
+    double[] dblPower={0.4, 0.4, 0.4, 0.4};
+    double maxHeight = 30; //inches
+    double hookheight = 24.5; //height to hook sample on the bar
     double armleftServoWideOpen = 0.65;
     double armrightServoWideOpen = 0.725;
-
     double armleftServoNarrowOpen = 0.6;
     double armrightServoNarrowOpen = 0.75;
-
     double armleftServoClose = 0.5415;
     double armrightServoClose = 0.8135;
 
@@ -74,7 +70,7 @@ public class autoMainR2 extends LinearOpMode {
         //start the robot turned 180 degrees
 
         //deliver preloaded specimen
-
+        claw.open_close(armleftServoNarrowOpen, armrightServoNarrowOpen);
         slides.open_close_outtake(LinearSlideLeftServoClose, LinearSlideRightServoClose); //close
 
         telemetry.addData("Running Linear Slides now", "");
@@ -88,7 +84,6 @@ public class autoMainR2 extends LinearOpMode {
 
         //move to bar
         drive1.moveBackward(tileLength*1.6, dblPower);
-        drive1.moveRight(tileLength*0.5, dblPower);
 
         //scores sample onto bar
         slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight-hookheight, "down"); //Descend
@@ -100,8 +95,8 @@ public class autoMainR2 extends LinearOpMode {
         sleep(500);
 
         //move back to 'critical point' (the start position for scoring each sample)
+        drive1.moveForward(tileLength, dblPower);
         drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
-        drive1.moveBackward(tileLength, dblPower);
         drive1.moveRight(tileLength*2 + tileLength*0.55, dblPower);
 
         //moves in to grab outermost sample
@@ -110,17 +105,17 @@ public class autoMainR2 extends LinearOpMode {
         sleep(1000);
         claw.moveArm(0);
         claw.open_close(armleftServoWideOpen, armrightServoWideOpen); //opens wider to grab sample
-        sleep(500);
+        sleep(250);
         drive1.moveForward(tileLength*0.3, dblPower);
         claw.open_close(armleftServoClose, armrightServoClose); //closes on the sample
-        sleep(500);
+        sleep(250);
         claw.moveArm(-armPower); //intake arm
-        sleep(500);
+        sleep(100);
         claw.moveArm(0);
 
         //Now the robot will spin around and drop the sample in the observation station to convert it to a sample
         drive1.moveBackward(tileLength*0.15, dblPower);
-        drive1.moveClockwiseTurn(halfCircle, dblPower);
+        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
         claw.moveArm(armPower); //deploy claw
         sleep(500);
         claw.moveArm(0);
@@ -128,11 +123,32 @@ public class autoMainR2 extends LinearOpMode {
         claw.moveArm(-armPower); //move arm back in place
         sleep(500);
         claw.moveArm(0);
-        sleep(500);
 
         //Turn robot back around
         drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
 
+        //grab second sample
+        drive1.moveBackward(tileLength*0.5, dblPower);
+        drive1.moveRight(tileLength*0.6, dblPower);
+        claw.moveArm(armPower); //deploy claw
+        sleep(300);
+        claw.moveArm(0);
+        claw.open_close(armleftServoWideOpen, armrightServoWideOpen);
+        drive1.moveForward(tileLength*0.6, dblPower);
+        claw.open_close(armleftServoClose, armrightServoClose);
+        claw.moveArm(-armPower);
+        sleep(250);
+        claw.moveArm(0);
+
+        //turn to deploy sample
+        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
+        drive1.moveForward(tileLength*0.2, dblPower);
+        claw.open_close(armleftServoNarrowOpen, armleftServoNarrowOpen);
+        claw.moveArm(-armPower);
+        sleep(500);
+
+        //park
+        drive1.moveForward(tileLength*0.25, dblPower);
 
         }
     }
