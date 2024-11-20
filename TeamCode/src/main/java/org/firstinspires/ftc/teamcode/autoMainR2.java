@@ -20,7 +20,7 @@ public class autoMainR2 extends LinearOpMode {
 
     public double tileLength=23.75;
     public double halfCircle=12.0208513*3.141592653589798293*1.5;
-    double[] dblPower={0.4, 0.4, 0.4, 0.4};
+    double[] dblPower = {0, 0, 0, 0};
     double maxHeight = 30; //inches
     double hookheight = 24.5; //height to hook sample on the bar
     double armleftServoWideOpen = 0.65;
@@ -76,11 +76,15 @@ public class autoMainR2 extends LinearOpMode {
         telemetry.addData("Running Linear Slides now", "");
         telemetry.update();
 
-        //This is the turning/extension part
+        slides.resetEncoderCount();
+
+        //This is the extension part
         slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight, "up"); //uses encoders
 
-        telemetry.addData("Running Linear Slides now", "");
-        telemetry.update();
+        dblPower[0] = 0.25; //set motor powers to 0.25 for wheels
+        dblPower[1] = 0.25;
+        dblPower[2] = 0.25;
+        dblPower[3] = 0.25;
 
         //move to bar
         drive1.moveBackward(tileLength*1.6, dblPower);
@@ -90,9 +94,14 @@ public class autoMainR2 extends LinearOpMode {
         sleep(500);
         slides.open_close_outtake(LinearSlideLeftServoOpen, LinearSlideRightServoOpen);            //opens
         sleep(500);
-        slides.extendVerticalUsingEncoder(LinearSlidePower, hookheight, "down"); //Return to original position
+        slides.extendVerticalUsingEncoder(LinearSlidePower, 0, "down"); //Return to original position
 
         sleep(500);
+
+        dblPower[0] = 0.4; //robot can go a little faster now
+        dblPower[1] = 0.4;
+        dblPower[2] = 0.4;
+        dblPower[3] = 0.4;
 
         //move back to 'critical point' (the start position for scoring each sample)
         drive1.moveForward(tileLength, dblPower);
