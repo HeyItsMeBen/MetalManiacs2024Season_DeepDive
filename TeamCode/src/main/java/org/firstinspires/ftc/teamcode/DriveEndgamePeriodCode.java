@@ -26,45 +26,26 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double sine;
     private double cosine;
     private double turn;
-<<<<<<< Updated upstream
     private double optimalArmLeftServoNarrowOpen = 0.5825;
     private double optimalArmRightServoNarrowOpen = 0.7625;
     private double optimalArmLeftServoWideOpen = 0.64;
     private double optimalArmRightServoWideOpen = 0.7;
-    private double optimalArmLeftServoClose = 0.5415; //changed
-    private double optimalArmRightServoClose = 0.8135; //changed
+    private double optimalArmLeftServoClose = 0.5375; //changed
+    private double optimalArmRightServoClose = 0.8625; //changed
     private double optimalLinearSlideLeftServoOpen = 0.68;
     private double optimalLinearSlideRightServoOpen = 0.63;
     private double optimalLinearSlideLeftServoClose = 0.6;
     private double optimalLinearSlideRightServoClose = 0.71;
     private double ArmPowerDeploy = -0.55;
     private double ArmPowerIntake = 0.9;
-    private double LinearSlidePower = 0.65;
+    private double LinearSlidePower = 1;
     private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
     //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
     //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
-
-=======
-    double optimalArmLeftServoNarrowOpen = 0.5825;
-    double optimalArmRightServoNarrowOpen = 0.7625;
-    double optimalArmLeftServoWideOpen = 0.7;
-    double optimalArmRightServoWideOpen = 0.65;
-    double optimalArmLeftServoClose = 0.5415; //changed
-    double optimalArmRightServoClose = 0.8135; //changed
-    double optimalLinearSlideLeftServoOpen = 0.68;
-    double optimalLinearSlideRightServoOpen = 0.63;
-    double optimalLinearSlideLeftServoClose = 0.58;
-    double optimalLinearSlideRightServoClose = 0.74;
-    double ArmPowerDeploy = -0.55;
-    double ArmPowerIntake = 0.7;
-    double LinearSlidePower = 0.65;
-    boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
     double winchServoPower = .25;
     double winchMotorPower = 0.5;
 
-    //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
-    //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
->>>>>>> Stashed changes
+
     @Override
     public void runOpMode() {
 
@@ -79,11 +60,11 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         //Winch
         winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
-<<<<<<< Updated upstream
+
         winchMotor = hardwareMap.get(DcMotor.class, "winch"); //placeholder
-=======
+
         winchMotor = hardwareMap.get(DcMotor.class, "winch");
->>>>>>> Stashed changes
+
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -200,7 +181,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
             }
 
-<<<<<<< Updated upstream
             //Outtake code: Linear Slide & servos
             //To utilize, set the gamepad to start + b
             //Activate by pressing the bumpers
@@ -211,49 +191,25 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             }
             //Activate by using the up/down right joystick for fine tuning
             if (gamepad2.right_stick_y > 0) {
-                linearSlide.extendVertical(LinearSlidePower/2);
+                linearSlide.extendVertical(LinearSlidePower / 2);
             } else if (gamepad2.right_stick_y < 0) {
-=======
-            //Outtake code: Linear Slides
-            //Activate by using the up/down right joystick
-            if (gamepad2.right_stick_y > 0) {
-                linearSlide.extendVertical(LinearSlidePower);
-            }
-            //changed it to less then to move slides down :) EV
-            if (gamepad2.right_stick_y < 0) {
->>>>>>> Stashed changes
                 linearSlide.extendVertical(-LinearSlidePower);
             }
             linearSlide.extendVertical(0);
 
-<<<<<<< Updated upstream
             //Winch
             winchServo.setPower(0);
-            if (gamepad2.dpad_up){
+            if (gamepad2.dpad_up) {
                 winchServo.setPower(.25); //up
-            } else if (gamepad2.dpad_down){
+            } else if (gamepad2.dpad_down) {
                 winchServo.setPower(-.25); //down
-=======
-            //Outtake code: Servos
-            //Activate by pressing the bumpers
-            if (gamepad2.left_bumper) { /*open*/
-                linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
-                telemetry.addData("OpenOuttakeClaw", "testing servo OPEN");
-                telemetry.update();
->>>>>>> Stashed changes
-            }
-            if (gamepad2.right_bumper) { /*close*/
-                linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
-                telemetry.addData("CloseOuttakeClaw", "testing servo CLOSE");
-                telemetry.update();
+
             }
 
             idle();
+            telemetry.addData(">", "Done");
+            telemetry.update();
+
         }
-
-        // Signal done;
-
-        telemetry.addData(">", "Done");
-        telemetry.update();
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.transition.Slide;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,13 +24,7 @@ public class compLinearSlide {
     private DcMotor LinearSlideR;
     private Servo ServoSpecimanDeployL;
     private Servo ServoSpecimanDeployR;
-
-<<<<<<< Updated upstream
     private static double Encoder_COUNTS_PER_INCH = 134.136947;  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
-=======
-    private static double Encoder_COUNTS_PER_INCH =537.7/(112/25.4);  //NEW VALUE (according to Ram. Also, the new CountsPerMotorRev is now 537.7)
->>>>>>> Stashed changes
-
 
     public compLinearSlide(HardwareMap hMap) {
 
@@ -48,40 +44,21 @@ public class compLinearSlide {
 
     }
 
-<<<<<<< Updated upstream
-    public void resetEncoders () {
-=======
     public void resetEncoderCount() {
->>>>>>> Stashed changes
         LinearSlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearSlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    private void stopLinearSlides () {
+    public void stopLinearSlides() {
         LinearSlideL.setPower(0);
         LinearSlideR.setPower(0);
     }
 
-<<<<<<< Updated upstream
-    public double getEncoderPositions (String Slide) {
-        if (Slide == "Left" || Slide == "left") {
-            return LinearSlideL.getCurrentPosition();
-        } else if (Slide == "Right" || Slide == "right") {
-            return LinearSlideR.getCurrentPosition();
-        }
-        return -1;
-    }
-
-    public void extendVertical (double vertPower) {
-        LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
-        LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
-=======
-    public void extendVertical (double vertPower) {
+    public void extendVertical(double vertPower) {
 
         LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
         LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
 
->>>>>>> Stashed changes
 //        int currentSlidePositionL = LinearSlideL.getCurrentPosition();
 //        int currentSlidePositionR = LinearSlideR.getCurrentPosition();
 //
@@ -99,12 +76,12 @@ public class compLinearSlide {
 
     }
 
-    public void open_close_outtake (double left, double right) {
+    public void open_close_outtake(double left, double right) {
         ServoSpecimanDeployL.setPosition(left);
         ServoSpecimanDeployR.setPosition(right);
     }
 
-    public void extendVerticalUsingEncoder (double vertPower, double dblInches, String direction) {
+    public void extendVerticalUsingEncoder(double vertPower, double dblInches, String direction) {
         stopLinearSlides();
 
         LinearSlideL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -132,16 +109,16 @@ public class compLinearSlide {
         while (LinearSlideL.isBusy() && LinearSlideR.isBusy()) {
 
         }
-        stopLinearSlides(); //End Drive
+        stopLinearSlides();
     }
 
-    public double getLinearSlidePositions(String Which_Motor) {
-        if (Which_Motor == "Left" || Which_Motor == "Left Motor" || Which_Motor == "LinearSlideL" || Which_Motor == "LeftMotor" || Which_Motor == "left") {
+    public double getLinearSlidePositions(String Which_Motor_ASCIIVALUE63) {
+        if (Which_Motor_ASCIIVALUE63 == "Left" || Which_Motor_ASCIIVALUE63 == "Left Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideL" || Which_Motor_ASCIIVALUE63 == "LeftMotor" || Which_Motor_ASCIIVALUE63 == "left") {
             return LinearSlideL.getCurrentPosition();
-        } else if (Which_Motor == "Right" || Which_Motor == "Right Motor" || Which_Motor == "LinearSlideR" || Which_Motor == "RightMotor" || Which_Motor == "right") {
+        } else if (Which_Motor_ASCIIVALUE63 == "Right" || Which_Motor_ASCIIVALUE63 == "Right Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideR" || Which_Motor_ASCIIVALUE63 == "RightMotor" || Which_Motor_ASCIIVALUE63 == "right") {
             return LinearSlideR.getCurrentPosition();
         }
-        return -1; //Can't set it to null, so I had to set it to a different value
-        }
+        return -1000000; //Couldn't set it to null, so figured this would be easiest way to display return value
     }
+}
 
