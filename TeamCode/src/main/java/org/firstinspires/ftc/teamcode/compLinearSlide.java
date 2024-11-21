@@ -88,14 +88,18 @@ public class compLinearSlide {
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (direction == "up" || direction == "Up" || direction == "UP") {
-            LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
-            LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
-        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
             LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
             LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
+        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
+            LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
+            LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
         }
 
         int encoderCountsToMove = (int) (dblInches * Encoder_COUNTS_PER_INCH);
+
+        if (encoderCountsToMove > 0) {
+            encoderCountsToMove = 0;
+        }
 
         LinearSlideL.setTargetPosition(encoderCountsToMove);
         LinearSlideR.setTargetPosition(encoderCountsToMove);
@@ -107,6 +111,7 @@ public class compLinearSlide {
         LinearSlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (LinearSlideL.isBusy() && LinearSlideR.isBusy()) {
+
 
         }
         stopLinearSlides();

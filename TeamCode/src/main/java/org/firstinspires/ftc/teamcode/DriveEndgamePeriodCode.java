@@ -30,8 +30,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double optimalArmRightServoNarrowOpen = 0.7625;
     private double optimalArmLeftServoWideOpen = 0.64;
     private double optimalArmRightServoWideOpen = 0.7;
-    private double optimalArmLeftServoClose = 0.5375; //changed
-    private double optimalArmRightServoClose = 0.8625; //changed
+    private double optimalArmLeftServoClose = 0.541; //changed from 0.5415
+    private double optimalArmRightServoClose = 0.813; //changed from 0.8135
     private double optimalLinearSlideLeftServoOpen = 0.68;
     private double optimalLinearSlideRightServoOpen = 0.63;
     private double optimalLinearSlideLeftServoClose = 0.6;
@@ -44,7 +44,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
     double winchServoPower = .25;
     double winchMotorPower = 0.5;
-
 
     @Override
     public void runOpMode() {
@@ -60,16 +59,15 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         //Winch
         winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
-
         winchMotor = hardwareMap.get(DcMotor.class, "winch"); //placeholder
-
-        winchMotor = hardwareMap.get(DcMotor.class, "winch");
-
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        winchServo.setDirection(DcMotor.Direction.FORWARD);
+        winchMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the start button
         telemetry.addData(">", "Status: Initialized");
@@ -81,7 +79,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         while (opModeIsActive()) {
 
             //SET this 2 to use math theta, sine, cosine; otherwise SET to 0.
-
 
             // Drive Code
             double max; //variable to define maximum motor values never > 100%
@@ -105,7 +102,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower = axial - lateral + yaw;
             double rightBackPower = axial + lateral - yaw;
-
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -136,12 +132,46 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 rightBackPower /= power + turn;
             }
 
-
             // Send calculated power to wheels
             frontLeftDrive.setPower(leftFrontPower);
             frontRightDrive.setPower(rightFrontPower);
             backLeftDrive.setPower(leftBackPower);
             backRightDrive.setPower(rightBackPower);
+
+            //Intake code: Arm & servos
+            //Activate by toggling the triggers
+            if (gamepad1.left_bumper) { //Open
+                if (narrowOpen == true) {
+                    claw.open_close(optimalArmLeftServoNarrowOpen, optimalArmRightServoNarrowOpen);
+                } else {
+                    claw.open_close(optimalArmLeftServoWideOpen, optimalArmRightServoWideOpen);
+                }
+            } else if (gamepad1.right_bumper) { //Close
+                claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
+            }
+            if (gamepad1.left_trigger > 0) {
+                claw.moveArm(ArmPowerDeploy);
+                narrowOpen = false;
+            } else if (gamepad1.right_trigger > 0) {
+                claw.moveArm(ArmPowerIntake);
+                narrowOpen = true;
+            }
+            claw.moveArm(0);
+
+            //Outtake code: Linear Slide & servos
+            //To utilize, set the gamepad to start + b
+            //Activate by pressing the bumpers
+            if (gamepad2.left_bumper) { /*open*/
+                linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
+            } else if (gamepad2.right_bumper) { /*close*/
+                linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
+            }
+            if (gamepad2.right_stick_y > 0) { //Activate by using the up/down right joystick for fine tuning
+                linearSlide.extendVertical(LinearSlidePower/2);
+            } else if (gamepad2.right_stick_y < 0) {
+                linearSlide.extendVertical(-LinearSlidePower);
+            }
+            linearSlide.extendVertical(0);
 
             //Winch
             if (gamepad2.dpad_up) {
@@ -155,56 +185,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 winchMotor.setPower(-winchMotorPower);
             }
             winchServo.setPower(0);
-
-            //Intake code: Arm
-            //Activate by toggling the triggers
-            if (gamepad1.left_trigger > 0) {
-                claw.moveArm(ArmPowerDeploy);
-                narrowOpen = false;
-            }
-            if (gamepad1.right_trigger > 0) {
-                claw.moveArm(ArmPowerIntake);
-                narrowOpen = true;
-            }
-            claw.moveArm(0);
-
-            //Intake code: Servos
-            //Activate by toggling the triggers
-            if (gamepad1.left_bumper) { //Open
-                if (narrowOpen == true) {
-                    claw.open_close(optimalArmLeftServoNarrowOpen, optimalArmRightServoNarrowOpen);
-                } else {
-                    claw.open_close(optimalArmLeftServoWideOpen, optimalArmRightServoWideOpen);
-                }
-            }
-            if (gamepad1.right_bumper) { //Close
-                claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
-            }
-
-            //Outtake code: Linear Slide & servos
-            //To utilize, set the gamepad to start + b
-            //Activate by pressing the bumpers
-            if (gamepad2.left_bumper) { /*open*/
-                linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
-            } else if (gamepad2.right_bumper) { /*close*/
-                linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
-            }
-            //Activate by using the up/down right joystick for fine tuning
-            if (gamepad2.right_stick_y > 0) {
-                linearSlide.extendVertical(LinearSlidePower / 2);
-            } else if (gamepad2.right_stick_y < 0) {
-                linearSlide.extendVertical(-LinearSlidePower);
-            }
-            linearSlide.extendVertical(0);
-
-            //Winch
-            winchServo.setPower(0);
-            if (gamepad2.dpad_up) {
-                winchServo.setPower(.25); //up
-            } else if (gamepad2.dpad_down) {
-                winchServo.setPower(-.25); //down
-
-            }
+            winchMotor.setPower(0);
 
             idle();
             telemetry.addData(">", "Done");
