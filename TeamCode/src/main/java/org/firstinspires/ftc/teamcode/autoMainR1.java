@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+/*
+Notes:
+ voltage was 13.48V when robot worked well(while running) and 13.52 when stopped,
+ */
+
 //basic imports like motors and opModes
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -86,58 +91,19 @@ public class autoMainR1 extends LinearOpMode {
         //sets test mode
         testMode=2;
 
+        if (testMode==3){
+
+            claw.moveArmUsingEncoder(1,0.25, "down");
+            sleep(1300);
+
+            claw.moveArmUsingEncoder(0.333333333,0.4, "up");
+            claw.moveArmUsingEncoder(0,0.20, "up");
+            sleep(1300);    //+300
+        }
         if (testMode==2) {
-            //deliver preloaded specimen. It's currently commented
-            //move to bar
-            /*telemetry.addLine("Moving to basket...");
-            telemetry.update();
-            drive1.moveRight(tileLength*2, dblPower);
-            sleep(1000);
-            slides.extendVertical(-0.75);
-            sleep(500);
-            slides.extendVertical(0);
-            drive1.moveForward(tileLength, dblPower);
-            sleep(1000);
-            drive1.moveClockwiseTurn(fullCircle*0.5, dblPower);   //0.5-->8*0.44444444-->0.5
-            sleep(1000);
-
-            //scores sample onto bar
-            telemetry.addLine("Scoring specimen...");
-            telemetry.update();
-            slides.open_close_outtake(0.925, 0.75);            //closes
-            sleep(1000);
-            slides.extendVertical(0.75);
-            sleep(500);
-            slides.extendVertical(0);
-            slides.open_close_outtake(1.0, 0.625);            //opens
-            sleep(1000);
-
-
-            //move back to 'critical point' (the start position for scoring each sample)
-            telemetry.addLine("Moving to 'critical point'...");
-            telemetry.update();
-            drive1.moveCounterClockwiseTurn(fullCircle*0.5, dblPower);
-            sleep(1000);
-            drive1.moveBackward(tileLength*0.5, dblPower);
-            sleep(1000);
-            drive1.moveLeft(tileLength*3.33333-4, dblPower);
-            sleep(1000);*/
-
-            //uses camera as sensor to see if it is in the right position
-            /*camera1.scan();
-            if (camera1.getTelemetry('x')>0){
-                drive1.moveLeft(camera1.getTelemetry('x'), dblPower);
-            }
-            else if (camera1.getTelemetry('x')<0){
-                drive1.moveRight(Math.abs(camera1.getTelemetry('x')), dblPower);
-            }
-            if (camera1.getTelemetry('y')>0){
-                drive1.moveLeft(camera1.getTelemetry('y'), dblPower);
-            }
-            else if (camera1.getTelemetry('y')<0){
-                drive1.moveRight(Math.abs(camera1.getTelemetry('y')), dblPower);
-            }*/
             //this part moves the robot to critical point. The specimen code above also does this, so the two lines below are a temporary replacement of the specimen code
+            slides.resetEncoders();
+
             drive1.moveForward(5, dblPower);
             //sleep(1000);
             drive1.moveLeft((tileLength - 11) * 1.33333333, dblPower);
@@ -151,24 +117,24 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.addLine("Moving to sample...");
             telemetry.update();
 
-            claw.moveArm(-0.25);
-            sleep(1000);
-            claw.moveArm(0);
+            //claw.moveArm(-0.25);
+            claw.moveArmUsingEncoder(0.444444444,0.5, "down");
+            //claw.moveArm(0);
             claw.open_close(0.7, 0.65);  //opens. Prepares to "plow"
             sleep(3000);
 
             drive1.moveForward(tileLength * 0.5+3.5, dblPower); //-6-->-1
             //sleep(1000);
 
-            //grab sample and transfer it
+            //grab sample and transfer it 140+20
             telemetry.addLine("Grabbing sample...");
             telemetry.update();
-            claw.open_close(0.5415, 0.8135); //closes(grabs) //to open left one: increase //to open Right one: decrease
+            claw.open_close(0.5405, 0.8145); //closes(grabs) //to open left one: increase //to open Right one: decrease //0.5415 && 0.8135 --> +0.0005
             sleep(1000);
-            claw.moveArm(0.4);
-            sleep(1000);
-            claw.moveArm(0);
-            sleep(400);
+            //claw.moveArm(0.325); //0.4-->0.325
+            claw.moveArmUsingEncoder(0.305555556,0.4, "up");   //0.138888888
+            //claw.moveArmUsingEncoder(0.138888888,0.1,"up");
+            sleep(1300);    //+300
             claw.open_close(0.6, 0.75); //opens(releases)
             sleep(2000);
 
@@ -180,10 +146,7 @@ public class autoMainR1 extends LinearOpMode {
 
             slides.open_close_outtake(0.58, 0.74);  //closes
             sleep(1000);
-            /*slides.extendVertical(-0.75);
-            sleep(1500);    //500-->1800
-            slides.extendVertical(0);*/
-            //slides.extendVerticalUsingEncoder(0.6, 20.75, "UP"); //19-->12(to be safe. Can change after testing)
+            slides.extendVerticalUsingEncoder(0.6, 20, "up");     //MISUS 3 for going down
             sleep(1000);
 
             drive1.moveBackward(tileLength * 0.5 +1-2.486-DiagonalToSide, dblPower);    //10.625-->tileLength*0.5+2.5-->tileLength * 0.5 -2-->(added sqrt(2) stuff)
@@ -210,28 +173,27 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.addLine("Moving to sample...");
             telemetry.update();
             drive1.moveLeft((1.75+2.486+DiagonalToSide)*1.33333, dblPower);      //-->(added sqrt(2) stuff)    2.5-->2
-            claw.moveArm(-0.25);
+            //claw.moveArm(-0.25);
+            claw.moveArmUsingEncoder(0.444444444,0.25, "down");
             sleep(1000);
-            claw.moveArm(0);
+            //claw.moveArm(0);
             claw.open_close(0.7, 0.65);  //opens. Prepares to "plow"
             sleep(3000);
             drive1.moveForward(tileLength * 0.5 +1 -2.486-DiagonalToSide, dblPower); //-6-->-1-->+2.5-->-1-->(added sqrt(2) stuff)
-            //sleep(1000);
-
-            /*slides.extendVertical(0.75);
             sleep(1000);
-            slides.extendVertical(0);*/
-            //slides.extendVerticalUsingEncoder(0.6, 20.75, "DOWN");   //19-->12(to be safe. Can change after testing)
-            //slides.extendVerticalUsingEncoder(0.4, 34, "DOWN");
+
+            slides.extendVerticalUsingEncoder(0.4, 0+3, "down"); //MISUS 3 for going down
             sleep(1000);
 
             //grab sample and transfer it
             telemetry.addLine("Grabbing sample...");
             telemetry.update();
-            claw.open_close(0.5415, 0.8135); //closes(grabs) //to open left one: increase //to open Right one: decrease
+            claw.open_close(0.541, 0.814); //closes(grabs) //to open left one: increase //to open Right one: decrease //0.5415 && 0.8135 --> +0.0005
             sleep(1000);
-            claw.moveArm(0.4);
-            sleep(1000);
+            //claw.moveArm(0.325);  //0.4-->0.325
+            claw.moveArmUsingEncoder(0.333333333,0.4, "up");
+            claw.moveArmUsingEncoder(0,0.25, "up");
+            sleep(1300);    //+600
             claw.moveArm(0);
             sleep(400);
             claw.open_close(0.6, 0.75); //opens(releases)
