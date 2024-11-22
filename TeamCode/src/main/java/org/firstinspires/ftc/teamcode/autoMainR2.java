@@ -120,8 +120,8 @@ public class autoMainR2 extends LinearOpMode {
 
         //cycles again
         drive1.moveForward(tileLength*2.5, dblPower);
-        drive1.moveRight(tileLength*0.55, dblPower);
-        drive1.moveBackward(tileLength*2.6, dblPower);
+        drive1.moveRight(tileLength*0.6, dblPower);
+        drive1.moveBackward(tileLength*2.5, dblPower);
 
         dblPower[0] = 0.25; //slows the robot down a bit
         dblPower[1] = 0.25;

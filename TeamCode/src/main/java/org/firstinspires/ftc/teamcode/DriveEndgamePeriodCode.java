@@ -31,7 +31,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double optimalArmLeftServoWideOpen = 0.64;
     private double optimalArmRightServoWideOpen = 0.7;
     private double optimalArmLeftServoClose = 0.541; //changed from 0.5415
-    private double optimalArmRightServoClose = 0.813; //changed from 0.8135
+    private double optimalArmRightServoClose = 0.814; //changed from 0.8135
     private double optimalLinearSlideLeftServoOpen = 0.68;
     private double optimalLinearSlideRightServoOpen = 0.63;
     private double optimalLinearSlideLeftServoClose = 0.6;
@@ -60,6 +60,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         //Winch
         winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
         winchMotor = hardwareMap.get(DcMotor.class, "winch"); //placeholder
+
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -166,12 +167,28 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             } else if (gamepad2.right_bumper) { /*close*/
                 linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
             }
-            if (gamepad2.right_stick_y > 0) { //Activate by using the up/down right joystick for fine tuning
-                linearSlide.extendVertical(LinearSlidePower/2);
-            } else if (gamepad2.right_stick_y < 0) {
-                linearSlide.extendVertical(-LinearSlidePower);
+            if (gamepad2.right_stick_y > 0) { //Down
+                if ((linearSlide.getLinearSlidePositions("left", "encoder") < 50 || linearSlide.getLinearSlidePositions("right", "encoder") < 50)) {
+
+                    linearSlide.stopLinearSlides();
+                    linearSlide.extendVerticalUsingEncoder(0.5, 0, "up");
+
+                    telemetry.addData("Too low", "!");
+                    telemetry.addData("Left Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("left", "encoder"));
+                    telemetry.addData("Right Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("right", "encoder"));
+                    telemetry.addData(" ", " ");
+                    telemetry.addData("Left Slide Position (Inches): ", linearSlide.getLinearSlidePositions("left", "inches"));
+                    telemetry.addData("Right Slide Position (Inches): ", linearSlide.getLinearSlidePositions("right", "inches"));
+                    telemetry.update();
+                }
+                linearSlide.extendVertical(-LinearSlidePower/2);
+            } else if (gamepad2.right_stick_y < 0) { //Up
+                linearSlide.extendVertical(LinearSlidePower);
             }
             linearSlide.extendVertical(0);
+            //
+            // Cycle code for linear slides written here
+            //
 
             //Winch
             if (gamepad2.dpad_up) {
@@ -188,8 +205,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             winchMotor.setPower(0);
 
             idle();
-            telemetry.addData(">", "Done");
-            telemetry.update();
 
         }
     }

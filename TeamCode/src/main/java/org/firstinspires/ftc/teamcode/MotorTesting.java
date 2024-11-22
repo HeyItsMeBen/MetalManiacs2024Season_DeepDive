@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.MotorAlertLevelParameters;
 
 
-@TeleOp (name="Limit Testing", group="test")
+@TeleOp (name="Encoder Directional Determination", group="test")
 public class MotorTesting extends LinearOpMode {
 
     // Driver Code: Variables
@@ -23,8 +23,11 @@ public class MotorTesting extends LinearOpMode {
 
         compLinearSlide linearslide = new compLinearSlide(hardwareMap);
 
-        //notify the driver to tell them that the code is ready to be ran
-        telemetry.addData("Motor Testing - Test Code", "Testing: Intake");
+        telemetry.addData("Left Slide Position (Encoder): ", linearslide.getLinearSlidePositions("left", "encoder"));
+        telemetry.addData("Right Slide Position (Encoder): ", linearslide.getLinearSlidePositions("right", "encoder"));
+        telemetry.addData(" ", " ");
+        telemetry.addData("Left Slide Position (Inches): ", linearslide.getLinearSlidePositions("left", "inches"));
+        telemetry.addData("Right Slide Position (Inches): ", linearslide.getLinearSlidePositions("right", "inches"));
         telemetry.update();
 
         waitForStart();
@@ -32,43 +35,56 @@ public class MotorTesting extends LinearOpMode {
         //executing
         while (opModeIsActive()) {
             if (gamepad1.left_stick_y > 0) {
-                telemetry.addData("Left Slide Position: ", linearslide.getLinearSlidePositions("left"));
-                telemetry.addData("Right Slide Position: ", linearslide.getLinearSlidePositions("right"));
+                telemetry.addData("Down", "");
                 telemetry.update();
-                if ((linearslide.getLinearSlidePositions("left") > 50 || linearslide.getLinearSlidePositions("right") > 50)) {
+                if ((linearslide.getLinearSlidePositions("left", "encoder") < 50 || linearslide.getLinearSlidePositions("right", "encoder") < 50)) {
 
                     linearslide.stopLinearSlides();
                     linearslide.extendVerticalUsingEncoder(0.5, 0, "up");
 
                     telemetry.addData("Too low", "!");
-                    telemetry.addData("Left Slide Position: ", linearslide.getLinearSlidePositions("left"));
-                    telemetry.addData("Right Slide Position: ", linearslide.getLinearSlidePositions("right"));
+                    telemetry.addData("Left Slide Position (Encoder): ", linearslide.getLinearSlidePositions("left", "encoder"));
+                    telemetry.addData("Right Slide Position (Encoder): ", linearslide.getLinearSlidePositions("right", "encoder"));
                     telemetry.update();
                 }
-                linearslide.extendVertical(0.5);
-            } else if (gamepad1.left_stick_y < 0) {
                 linearslide.extendVertical(-0.5);
-                telemetry.addData("Left Slide Position: ", linearslide.getLinearSlidePositions("left"));
-                telemetry.addData("Right Slide Position: ", linearslide.getLinearSlidePositions("right"));
+            } else if (gamepad1.left_stick_y < 0) {
+                telemetry.addData("Up", "");
                 telemetry.update();
+                if ((linearslide.getLinearSlidePositions("left", "inches") > 38 || linearslide.getLinearSlidePositions("right", "inches") > 38)) {
 
+                    linearslide.stopLinearSlides();
+                    linearslide.extendVerticalUsingEncoder(0.5, 38, "down");
+
+                    telemetry.addData("Too high", "!");
+                    telemetry.addData("Left Slide Position (Encoder): ", linearslide.getLinearSlidePositions("left", "encoder"));
+                    telemetry.addData("Right Slide Position (Encoder): ", linearslide.getLinearSlidePositions("right", "encoder"));
+                    telemetry.update();
+
+                }
+                linearslide.extendVertical(0.5);
             }
 
             if (gamepad1.a) {
-                telemetry.addData("Left Motor: ", linearslide.getLinearSlidePositions("Left"));
-                telemetry.addData("Right Motor: ", linearslide.getLinearSlidePositions("Right"));
+                telemetry.addData("Left Slide Position (Encoder): ", linearslide.getLinearSlidePositions("left", "encoder"));
+                telemetry.addData("Right Slide Position (Encoder): ", linearslide.getLinearSlidePositions("right", "encoder"));
+                telemetry.addData(" ", " ");
+                telemetry.addData("Left Slide Position (Inches): ", linearslide.getLinearSlidePositions("left", "inches"));
+                telemetry.addData("Right Slide Position (Inches): ", linearslide.getLinearSlidePositions("right", "inches"));
                 telemetry.update();
             } else if (gamepad1.b) {
-                linearslide.extendVerticalUsingEncoder(0.5, -1, "down");
+                linearslide.extendVerticalUsingEncoder(0.4, 0, "down");
             } else if (gamepad1.x) {
                 linearslide.resetEncoderCount();
-            } else if (gamepad1.y) {
-                linearslide.extendVerticalUsingEncoder(0.4, 18, "up");
 //                    double LeftPosition = linearslide.getEncoderPositions("left");
 //                    double RightPosition = linearslide.getEncoderPositions("right");
 //                    telemetry.addData("LeftPosition: ", LeftPosition);
 //                    telemetry.addData("RightPosition: ", RightPosition);
-//                    telemetry.update();
+//                    telemetry.update(
+            } else if (gamepad1.dpad_up) {
+                linearslide.extendVerticalUsingEncoder(0.4, 5, "up");
+            } else if (gamepad1.dpad_down) {
+                linearslide.extendVerticalUsingEncoder(0.1, 5, "down");
             }
             linearslide.stopLinearSlides();
 

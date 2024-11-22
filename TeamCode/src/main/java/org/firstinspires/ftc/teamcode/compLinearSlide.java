@@ -88,21 +88,17 @@ public class compLinearSlide {
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (direction == "up" || direction == "Up" || direction == "UP") {
-            LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
-            LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
-        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
             LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
             LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
+        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
+            LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
+            LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
         }
 
         int encoderCountsToMove = (int) (dblInches * Encoder_COUNTS_PER_INCH);
 
-        if (encoderCountsToMove > 0) {
-            encoderCountsToMove = 0;
-        }
-
-        LinearSlideL.setTargetPosition(encoderCountsToMove);
-        LinearSlideR.setTargetPosition(encoderCountsToMove);
+        LinearSlideL.setTargetPosition(Math.abs(encoderCountsToMove)); //This way, does not go below position 0
+        LinearSlideR.setTargetPosition(Math.abs(encoderCountsToMove)); //This way, does not go below position 0
 
         LinearSlideL.setPower(Math.abs(vertPower));
         LinearSlideR.setPower(Math.abs(vertPower));
@@ -117,13 +113,22 @@ public class compLinearSlide {
         stopLinearSlides();
     }
 
-    public double getLinearSlidePositions(String Which_Motor_ASCIIVALUE63) {
-        if (Which_Motor_ASCIIVALUE63 == "Left" || Which_Motor_ASCIIVALUE63 == "Left Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideL" || Which_Motor_ASCIIVALUE63 == "LeftMotor" || Which_Motor_ASCIIVALUE63 == "left") {
-            return LinearSlideL.getCurrentPosition();
-        } else if (Which_Motor_ASCIIVALUE63 == "Right" || Which_Motor_ASCIIVALUE63 == "Right Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideR" || Which_Motor_ASCIIVALUE63 == "RightMotor" || Which_Motor_ASCIIVALUE63 == "right") {
-            return LinearSlideR.getCurrentPosition();
+    public double getLinearSlidePositions(String Which_Motor_ASCIIVALUE63, String format) {
+        if (format == "encoder counts" || format == "encoder" || format == "Encoder counts" || format == "Encoders" || format == "Encoders count") {
+            if (Which_Motor_ASCIIVALUE63 == "Left" || Which_Motor_ASCIIVALUE63 == "Left Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideL" || Which_Motor_ASCIIVALUE63 == "LeftMotor" || Which_Motor_ASCIIVALUE63 == "left") {
+                return LinearSlideL.getCurrentPosition();
+            } else if (Which_Motor_ASCIIVALUE63 == "Right" || Which_Motor_ASCIIVALUE63 == "Right Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideR" || Which_Motor_ASCIIVALUE63 == "RightMotor" || Which_Motor_ASCIIVALUE63 == "right") {
+                return LinearSlideR.getCurrentPosition();
+            }
+        } else if (format == "Inches" || format == "inch" || format == "inch counts" || format == "Inch" || format == "inches") {
+            if (Which_Motor_ASCIIVALUE63 == "Left" || Which_Motor_ASCIIVALUE63 == "Left Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideL" || Which_Motor_ASCIIVALUE63 == "LeftMotor" || Which_Motor_ASCIIVALUE63 == "left") {
+                return (LinearSlideL.getCurrentPosition() / 134.136947);
+            } else if (Which_Motor_ASCIIVALUE63 == "Right" || Which_Motor_ASCIIVALUE63 == "Right Motor" || Which_Motor_ASCIIVALUE63 == "LinearSlideR" || Which_Motor_ASCIIVALUE63 == "RightMotor" || Which_Motor_ASCIIVALUE63 == "right") {
+                return (LinearSlideR.getCurrentPosition() / 134.136947);
+            }
         }
         return -1000000; //Couldn't set it to null, so figured this would be easiest way to display return value
     }
+
 }
 
