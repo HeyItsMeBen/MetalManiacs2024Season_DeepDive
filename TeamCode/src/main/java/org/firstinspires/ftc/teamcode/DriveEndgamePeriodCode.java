@@ -12,99 +12,221 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "Drive & Endgame Period Code", group = "Linear OpMode")
 public class DriveEndgamePeriodCode extends LinearOpMode {
 
-    // Driver Code
+    // Driver Code: Variables
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    private CRServo winchServo;
+    private DcMotor winchMotor;
     private float POWER_REDUCTION = 2;
-
-    compLinearSlide ls = new compLinearSlide(hardwareMap);
-    compClaw c = new compClaw(hardwareMap);
+    private static double REDUCE_SPEED = 0.8;
+    private double theta;
+    private double power;
+    private double sine;
+    private double cosine;
+    private double turn;
+    private double optimalArmLeftServoNarrowOpen = 0.5825;
+    private double optimalArmRightServoNarrowOpen = 0.7625;
+    private double optimalArmLeftServoWideOpen = 0.64;
+    private double optimalArmRightServoWideOpen = 0.7;
+    private double optimalArmLeftServoClose = 0.541; //changed from 0.5415
+    private double optimalArmRightServoClose = 0.814; //changed from 0.8135
+    private double optimalLinearSlideLeftServoOpen = 0.68;
+    private double optimalLinearSlideRightServoOpen = 0.63;
+    private double optimalLinearSlideLeftServoClose = 0.6;
+    private double optimalLinearSlideRightServoClose = 0.71;
+    private double ArmPowerDeploy = -0.55;
+    private double ArmPowerIntake = 0.9;
+    private double LinearSlidePower = 1;
+    private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
+    //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
+    //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
+    double winchServoPower = .5;
+    double winchMotorPower = 1;
 
     @Override
     public void runOpMode() {
 
-        // Driver Code
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "FrontLeftWheel");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BackLeftWheel");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "FrontRightWheel");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BackRightWheel");
-        // set direction for motors
+        //Declare using Linear Slide object and Claw (Intake Arm and claws) object
+        compLinearSlide linearSlide = new compLinearSlide(hardwareMap);
+        compClaw claw = new compClaw(hardwareMap);
 
+        // Driver Code: Map the 4 motors based off of Driver Station
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        //Winch
+        winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
+        winchMotor = hardwareMap.get(DcMotor.class, "winch"); //placeholder
+
+        // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        winchServo.setDirection(DcMotor.Direction.FORWARD);
+        winchMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Wait for the start button
-        telemetry.addData(">", "Status: Initialized" );
+        telemetry.addData(">", "Status: Initialized");
         telemetry.update();
         waitForStart();
         runtime.reset();
+
+        //Start Button Pushed
         while (opModeIsActive()) {
+
+            //SET this 2 to use math theta, sine, cosine; otherwise SET to 0.
+
             // Drive Code
-            double max;
+            double max; //variable to define maximum motor values never > 100%
+
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial = gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = -gamepad1.left_stick_x;
+            double yaw = -gamepad1.right_stick_x;
+
+            double x = -gamepad1.left_stick_x;
+            double y = gamepad1.left_stick_y;
+            turn = -gamepad1.right_stick_x;
+            theta = Math.atan2(y, x);
+            power = Math.hypot(x, y);
+            sine = Math.sin(theta - Math.PI / 4);
+            cosine = Math.cos(theta - Math.PI / 4);
+
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral + yaw;
+            double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
+
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
             max = Math.max(max, Math.abs(rightBackPower));
-            max = POWER_REDUCTION*max; //Reduces power to slow down robot. This can be modified to increase or reduce robot speed by will.
+            max = POWER_REDUCTION * max;
+
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
+            }
+
+            max = Math.max(Math.abs(sine),
+                    Math.abs(cosine));
+
+            leftFrontPower = power * cosine / max + turn;
+            rightFrontPower = power * sine / max - turn;
+            leftBackPower = power * sine / max + turn;
+            rightBackPower = power * cosine / max - turn;
+
+            //Makes sure motor does NOT exceed more than 100% or else it will have bad behaviors >:(
+            if ((power + Math.abs(turn)) > 1) {
+                leftFrontPower /= power + turn;
+                rightFrontPower /= power + turn;
+                leftBackPower /= power + turn;
+                rightBackPower /= power + turn;
+            }
+
+            if (gamepad1.dpad_up) {
+                REDUCE_SPEED = 0.8;
+            } else if (gamepad1.dpad_down) {
+                REDUCE_SPEED = 0.4;
             }
             // Send calculated power to wheels
-            frontLeftDrive.setPower(leftFrontPower);
-            frontRightDrive.setPower(rightFrontPower);
-            backLeftDrive.setPower(leftBackPower);
-            backRightDrive.setPower(rightBackPower);
+            frontLeftDrive.setPower(leftFrontPower * REDUCE_SPEED);
+            frontRightDrive.setPower(rightFrontPower * REDUCE_SPEED);
+            backLeftDrive.setPower(leftBackPower * REDUCE_SPEED);
+            backRightDrive.setPower(rightBackPower * REDUCE_SPEED);
 
-            //Intake and Outtake code for linear slides
-            if (gamepad2.right_stick_y > 0){
-                ls.extendVertical(1);
+            //Intake code: Arm & servos
+            //Activate by toggling the triggers
+            if (gamepad1.left_bumper) { //Open
+                if (narrowOpen == true) {
+                    claw.open_close(optimalArmLeftServoNarrowOpen, optimalArmRightServoNarrowOpen);
+                } else {
+                    claw.open_close(optimalArmLeftServoWideOpen, optimalArmRightServoWideOpen);
+                }
+            } else if (gamepad1.right_bumper) { //Close
+                claw.open_close(optimalArmLeftServoClose, optimalArmRightServoClose);
             }
-            if (gamepad2.right_stick_y > 0){
-                ls.extendVertical(-1);
+            if (gamepad1.left_trigger > 0) {
+                claw.moveArm(ArmPowerDeploy);
+                narrowOpen = false;
+            } else if (gamepad1.right_trigger > 0) {
+                claw.moveArm(ArmPowerIntake);
+                narrowOpen = true;
             }
-            ls.extendVertical(0);
+            claw.moveArm(0);
 
-            //Add claw code here later
-            if (gamepad2.left_trigger > 0){
-                c.open_close(-1,1);
+            //Outtake code: Linear Slide & servos
+            //To utilize, set the gamepad to start + b
+            //Activate by pressing the bumpers
+            if (gamepad2.left_bumper) { /*open*/
+                linearSlide.open_close_outtake(optimalLinearSlideLeftServoOpen, optimalLinearSlideRightServoOpen);
+            } else if (gamepad2.right_bumper) { /*close*/
+                linearSlide.open_close_outtake(optimalLinearSlideLeftServoClose, optimalLinearSlideRightServoClose);
             }
-            if (gamepad2.right_trigger > 0) {
-                 c.open_close(1, -1);
+            if (gamepad2.right_stick_y > 0) { //Down
+                if ((linearSlide.getLinearSlidePositions("left", "encoder") < 50 || linearSlide.getLinearSlidePositions("right", "encoder") < 50)) {
+
+                    linearSlide.stopLinearSlides();
+                    linearSlide.extendVerticalUsingEncoder(0.5, 0, "up");
+
+                    telemetry.addData("Too low", "!");
+                    telemetry.addData("Left Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("left", "encoder"));
+                    telemetry.addData("Right Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("right", "encoder"));
+                    telemetry.update();
+
+                }
+                linearSlide.extendVertical(-LinearSlidePower*0.6);
+            } else if (gamepad2.right_stick_y < 0) { //Up
+                if ((linearSlide.getLinearSlidePositions("left", "inches") > 23 || linearSlide.getLinearSlidePositions("right", "inches") > 23)) {
+
+                    linearSlide.stopLinearSlides();
+                    linearSlide.extendVerticalUsingEncoder(0.1, 23, "down");
+
+                    telemetry.addData("Too high", "!");
+                    telemetry.addData("Left Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("left", "encoder"));
+                    telemetry.addData("Right Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("right", "encoder"));
+                    telemetry.update();
+
+                }
+                linearSlide.extendVertical(LinearSlidePower);
+            }
+            linearSlide.extendVertical(0);
+            // Cycle code for linear slides
+            if (gamepad2.dpad_up) {
+                linearSlide.extendVerticalUsingEncoder(0.6, 18, "up"); //basket and bar height
+            } else if (gamepad2.dpad_down) {
+                linearSlide.extendVerticalUsingEncoder(0.3, 0, "down"); // return to original position
             }
 
-            if (gamepad1.left_trigger > 0){
-                c.moveArm(1);
+            //Winch
+            if (gamepad2.y) {
+                winchServo.setPower(winchServoPower);
+            } else if (gamepad2.a) {
+                winchServo.setPower(-winchServoPower);
             }
-            if (gamepad1.right_trigger > 0) {
-                c.moveArm(-1);
+            if (gamepad2.left_stick_y > 0) {
+                winchMotor.setPower(winchMotorPower);
+            } else if (gamepad2.left_stick_y < 0) {
+                winchMotor.setPower(-winchMotorPower);
             }
-            c.moveArm(0);
+            winchServo.setPower(0);
+            winchMotor.setPower(0);
 
             idle();
+
         }
-
-        // Signal done;
-
-        telemetry.addData(">", "Done");
-        telemetry.update();
     }
 }
