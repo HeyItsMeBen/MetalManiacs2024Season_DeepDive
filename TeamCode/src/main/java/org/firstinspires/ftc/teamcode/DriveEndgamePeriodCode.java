@@ -33,10 +33,10 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double optimalArmRightServoNarrowOpen = 0.7625;
     private double optimalArmLeftServoWideOpen = 0.64;
     private double optimalArmRightServoWideOpen = 0.7;
-    private double optimalArmLeftServoClose = 0.541 - 2.5 ; //changed from 0.5415
-    private double optimalArmRightServoClose = 0.814 + 2.5; //changed from 0.8135
-    private double optimalLinearSlideLeftServoOpen = 0.68;
-    private double optimalLinearSlideRightServoOpen = 0.63;
+    private double optimalArmLeftServoClose = 0.541; //changed from 0.5415
+    private double optimalArmRightServoClose = 0.814; //changed from 0.8135
+    private double optimalLinearSlideLeftServoOpen = 0.71;
+    private double optimalLinearSlideRightServoOpen = 0.6;
     private double optimalLinearSlideLeftServoClose = 0.6;
     private double optimalLinearSlideRightServoClose = 0.71;
     private double ArmPowerDeploy = -0.55;
@@ -60,20 +60,12 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
-        //Winch
-        winchServo = hardwareMap.get(CRServo.class, "winchServo"); // change display name after we design
-        winchMotor = hardwareMap.get(DcMotor.class, "winch"); //placeholder
 
         // set direction for motors by default
         frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        winchServo.setDirection(DcMotor.Direction.FORWARD);
-        winchMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the start button
         telemetry.addData(">", "Status: Initialized");
@@ -122,7 +114,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 REDUCE_SPEED = 0.7;
             } else if (gamepad1.dpad_down) {
-                REDUCE_SPEED = REDUCE_SPEED/2;
+                REDUCE_SPEED = 0.35;
             }
             // Send calculated power to wheels
             frontLeftDrive.setPower(leftFrontPower * REDUCE_SPEED);
@@ -181,26 +173,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             } else if (gamepad2.dpad_down) {
                 linearSlide.extendVerticalUsingEncoder(0.4, 0, "down"); // return to original position
             }
-
-            //Winch
-            if (gamepad2.y) {
-                winchServo.setPower(winchServoPower);
-                winchMotor.setPower(winchMotorPower);
-            } else if (gamepad2.a) {
-                winchServo.setPower(-winchServoPower);
-                winchMotor.setPower(-winchMotorPower);
-            } else if (gamepad2.x) {
-                winchServo.setPower(winchServoPower);
-            } else if (gamepad2.b) {
-                winchServo.setPower(-winchServoPower);
-            }
-            if (gamepad2.left_stick_y > 0) {
-                winchMotor.setPower(winchMotorPower);
-            } else if (gamepad2.left_stick_y < 0) {
-                winchMotor.setPower(-winchMotorPower);
-            }
-            winchServo.setPower(0);
-            winchMotor.setPower(0);
 
             idle();
 
