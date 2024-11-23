@@ -141,7 +141,6 @@ public class autoMainR1 extends LinearOpMode {
             //moves to sample
             telemetry.addLine("Moving to sample...");
             telemetry.update();
-
             drive1.moveLeft((1.75+2.486-0.75)*tileCompensation*1.33333, dblPower); //sets the robot up so it can plow
 
             claw.moveArmUsingEncoder(0.464444444,0.3, "down");
@@ -149,7 +148,7 @@ public class autoMainR1 extends LinearOpMode {
 
             drive1.moveForward(tileLength * 0.5 +(1 -2.486)*tileCompensation, dblPower);
 
-            slides.extendVerticalUsingEncoder(0.5, 0, "down");
+            slides.extendVerticalUsingEncoder(0.5, 0, "down");  //brings slides down for later use
 
 
             //grab sample and transfer it
@@ -159,23 +158,19 @@ public class autoMainR1 extends LinearOpMode {
             sleep(500);
             claw.moveArmUsingEncoder(0.305555556,0.35, "up");
             claw.moveArmUsingEncoder(0.138888888,0.1,"up");
-            sleep(200);
             claw.open_close(0.6, 0.75); //opens(releases)
-            //sleep(2000);
 
             //prepares slides to score (grabs sample and brings it up)
             slides.open_close_outtake(0.58, 0.74);  //closes
-            //sleep(1000);
             slides.extendVerticalUsingEncoder(0.6, 18.5, "up");
-            //sleep(1000);
 
             //move to basket
             telemetry.addLine("Moving to basket...");
             telemetry.update();
-            drive1.moveBackward(tileLength * 0.5 +(1-2.486)*tileCompensation, dblPower);    //10.625-->tileLength*0.5+2.5-->tileLength * 0.5 -2-->(added sqrt(2) stuff)
-            drive1.moveRight((2+2.486)*tileCompensation*1.33333, dblPower); //-->(added sqrt(2) stuff). 2.5-->2
+            drive1.moveBackward(tileLength * 0.5 +(1-2.486)*tileCompensation, dblPower);
+            drive1.moveRight((2+2.486)*tileCompensation*1.33333, dblPower);
 
-            drive1.moveClockwiseTurn(fullCircle * 0.125, dblPower);     //CRIT POINT
+            drive1.moveClockwiseTurn(fullCircle * 0.125, dblPower);     //critical point
             drive1.moveBackward((3.9*Math.sqrt(2)+0.5)*tileCompensation, dblPower);
 
             //score sample into basket
@@ -188,13 +183,7 @@ public class autoMainR1 extends LinearOpMode {
             telemetry.addLine("Moving to start...");
             telemetry.update();
             drive1.moveForward((3.9*Math.sqrt(2)+0.5)*tileCompensation, dblPower);
-            drive1.moveCounterClockwiseTurn(fullCircle * 0.125, dblPower);     //CRIT POINT
-
-            //park
-            /*drive1.moveRight(tileLength * 5 * 1.33333, dblPower);
-            sleep(1000);
-            drive1.moveBackward(tileLength * 0.5, dblPower);
-            sleep(1000);*/
+            drive1.moveCounterClockwiseTurn(fullCircle * 0.125, dblPower);     //critical point
         }
 
         //this repeats the whole time while the program is running
