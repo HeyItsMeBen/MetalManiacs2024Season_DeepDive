@@ -20,24 +20,14 @@ public class autoMainR2 extends LinearOpMode {
 
     public double tileLength=23.75;
     public double halfCircle=12.0208513*3.141592653589798293*1.5;
-    double[] dblPower={0.4, 0.4, 0.4, 0.4};
-    double maxHeight = 30; //inches
-    double hookheight = 24.5; //height to hook sample on the bar
-    double armleftServoWideOpen = 0.65;
-    double armrightServoWideOpen = 0.725;
+    double[] dblPower = {0, 0, 0, 0};
     double armleftServoNarrowOpen = 0.6;
     double armrightServoNarrowOpen = 0.75;
-    double armleftServoClose = 0.5415;
-    double armrightServoClose = 0.8135;
-
     double LinearSlideLeftServoOpen = 0.68;
     double LinearSlideRightServoOpen = 0.63;
-
-    double LinearSlideLeftServoClose = 0.58;
-    double LinearSlideRightServoClose = 0.74;
-
+    double LinearSlideLeftServoClose = 0.6;
+    double LinearSlideRightServoClose = 0.71;
     double LinearSlidePower = 0.5;
-    double armPower = -0.5;
 
     @Override
     //This runs when the program is activated
@@ -76,79 +66,76 @@ public class autoMainR2 extends LinearOpMode {
         telemetry.addData("Running Linear Slides now", "");
         telemetry.update();
 
-        //This is the turning/extension part
-        slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight, "up"); //uses encoders
+        slides.resetEncoderCount();
 
-        telemetry.addData("Running Linear Slides now", "");
-        telemetry.update();
+        //This is the extension part
+        //slides.extendVerticalUsingEncoder(LinearSlidePower, 25, "up"); //uses encoders
+
+        dblPower[0] = 0.25; //set motor powers to 0.25 for wheels
+        dblPower[1] = 0.25;
+        dblPower[2] = 0.25;
+        dblPower[3] = 0.25;
 
         //move to bar
-        drive1.moveBackward(tileLength*1.6, dblPower);
+        drive1.moveBackward(tileLength, dblPower);
+        drive1.moveRight(tileLength*0.5, dblPower);
+
+        //slides.extendVerticalUsingEncoder(0.25, 23, "up"); //test
+
+        dblPower[0] = 0.125; //slow robot down to approach bar
+        dblPower[1] = 0.125;
+        dblPower[2] = 0.125;
+        dblPower[3] = 0.125;
+
+        drive1.moveBackward(tileLength*0.35, dblPower);
+
+        sleep(250);
 
         //scores sample onto bar
-        slides.extendVerticalUsingEncoder(LinearSlidePower, maxHeight-hookheight, "down"); //Descend
+        //slides.extendVerticalUsingEncoder(LinearSlidePower, 21, "down"); //Descend
         sleep(500);
         slides.open_close_outtake(LinearSlideLeftServoOpen, LinearSlideRightServoOpen);            //opens
         sleep(500);
-        slides.extendVerticalUsingEncoder(LinearSlidePower, hookheight, "down"); //Return to original position
+        //slides.extendVerticalUsingEncoder(LinearSlidePower, 0, "down"); //Return to original position
 
         sleep(500);
 
-        //move back to 'critical point' (the start position for scoring each sample)
-        drive1.moveForward(tileLength, dblPower);
-        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
-        drive1.moveRight(tileLength*2 + tileLength*0.55, dblPower);
+        dblPower[0] = 0.5; //robot can go a little faster now
+        dblPower[1] = 0.5;
+        dblPower[2] = 0.5;
+        dblPower[3] = 0.5;
 
-        //moves in to grab outermost sample
-        claw.open_close(armleftServoClose, armrightServoClose);  //close to get it past the linear slides
-        claw.moveArm(armPower); //deploy arm out
-        sleep(1000);
-        claw.moveArm(0);
-        claw.open_close(armleftServoWideOpen, armrightServoWideOpen); //opens wider to grab sample
-        sleep(250);
-        drive1.moveForward(tileLength*0.3, dblPower);
-        claw.open_close(armleftServoClose, armrightServoClose); //closes on the sample
-        sleep(250);
-        claw.moveArm(-armPower); //intake arm
+        //prepares to move forward and push samples
+        drive1.moveCounterClockwiseTurn(halfCircle, dblPower); //turns
+        drive1.moveRight(tileLength*1.8, dblPower); //moves right
+
         sleep(100);
-        claw.moveArm(0);
 
-        //Now the robot will spin around and drop the sample in the observation station to convert it to a sample
-        drive1.moveBackward(tileLength*0.15, dblPower);
-        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
-        claw.moveArm(armPower); //deploy claw
-        sleep(500);
-        claw.moveArm(0);
-        claw.open_close(armleftServoNarrowOpen, armrightServoNarrowOpen); //open claw to release sample
-        claw.moveArm(-armPower); //move arm back in place
-        sleep(500);
-        claw.moveArm(0);
+        //moves into position behind samples to push them
+        drive1.moveForward(tileLength*1.5, dblPower);
+        drive1.moveRight(tileLength*0.4, dblPower);
+        drive1.moveBackward(tileLength*2.5, dblPower); //pushes samples into observatory
 
-        //Turn robot back around
-        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
+        sleep(100);
 
-        //grab second sample
-        drive1.moveBackward(tileLength*0.5, dblPower);
+        //cycles again
+        drive1.moveForward(tileLength*2.5, dblPower);
         drive1.moveRight(tileLength*0.6, dblPower);
-        claw.moveArm(armPower); //deploy claw
-        sleep(300);
-        claw.moveArm(0);
-        claw.open_close(armleftServoWideOpen, armrightServoWideOpen);
-        drive1.moveForward(tileLength*0.6, dblPower);
-        claw.open_close(armleftServoClose, armrightServoClose);
-        claw.moveArm(-armPower);
-        sleep(250);
-        claw.moveArm(0);
+        drive1.moveBackward(tileLength*2.5, dblPower);
 
-        //turn to deploy sample
-        drive1.moveCounterClockwiseTurn(halfCircle, dblPower);
+        dblPower[0] = 0.25; //slows the robot down a bit
+        dblPower[1] = 0.25;
+        dblPower[2] = 0.25;
+        dblPower[3] = 0.25;
+
+        //give human player some time to hook specimen on
         drive1.moveForward(tileLength*0.2, dblPower);
-        claw.open_close(armleftServoNarrowOpen, armleftServoNarrowOpen);
-        claw.moveArm(-armPower);
-        sleep(500);
 
-        //park
-        drive1.moveForward(tileLength*0.25, dblPower);
+        sleep(1000);
+
+        //turn around and park
+        drive1.moveClockwiseTurn(halfCircle, dblPower);
+        drive1.moveForward(tileLength*0.225, dblPower);
 
         }
     }
