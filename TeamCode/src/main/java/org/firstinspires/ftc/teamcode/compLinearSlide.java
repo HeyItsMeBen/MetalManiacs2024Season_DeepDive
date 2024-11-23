@@ -56,8 +56,8 @@ public class compLinearSlide {
 
     public void extendVertical(double vertPower) {
 
-        LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
-        LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
+        LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
+        LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
 
 //        int currentSlidePositionL = LinearSlideL.getCurrentPosition();
 //        int currentSlidePositionR = LinearSlideR.getCurrentPosition();
@@ -88,11 +88,11 @@ public class compLinearSlide {
         LinearSlideR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (direction == "up" || direction == "Up" || direction == "UP") {
-            LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
-            LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
-        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
             LinearSlideL.setDirection(DcMotor.Direction.FORWARD);
             LinearSlideR.setDirection(DcMotor.Direction.FORWARD);
+        } else if (direction == "down" || direction == "Down" || direction == "DOWN") {
+            LinearSlideL.setDirection(DcMotor.Direction.REVERSE);
+            LinearSlideR.setDirection(DcMotor.Direction.REVERSE);
         }
 
         if (dblInches > 23) {
