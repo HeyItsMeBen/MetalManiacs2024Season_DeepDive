@@ -21,7 +21,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private CRServo winchServo;
     private DcMotor winchMotor;
     private float POWER_REDUCTION = 2;
-    private static double REDUCE_SPEED = 0.8;
+    private static double REDUCE_SPEED = 0.7;
     private double theta;
     private double power;
     private double sine;
@@ -31,8 +31,8 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private double optimalArmRightServoNarrowOpen = 0.7625;
     private double optimalArmLeftServoWideOpen = 0.64;
     private double optimalArmRightServoWideOpen = 0.7;
-    private double optimalArmLeftServoClose = 0.541; //changed from 0.5415
-    private double optimalArmRightServoClose = 0.814; //changed from 0.8135
+    private double optimalArmLeftServoClose = 0.541 - 2.5 ; //changed from 0.5415
+    private double optimalArmRightServoClose = 0.814 + 2.5; //changed from 0.8135
     private double optimalLinearSlideLeftServoOpen = 0.68;
     private double optimalLinearSlideRightServoOpen = 0.63;
     private double optimalLinearSlideLeftServoClose = 0.6;
@@ -118,9 +118,9 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             rightBackPower = power * cosine / max - turn;
 
             if (gamepad1.dpad_up) {
-                REDUCE_SPEED = 0.8;
+                REDUCE_SPEED = 0.7;
             } else if (gamepad1.dpad_down) {
-                REDUCE_SPEED = 0.4;
+                REDUCE_SPEED = REDUCE_SPEED/2;
             }
             // Send calculated power to wheels
             frontLeftDrive.setPower(leftFrontPower * REDUCE_SPEED);
@@ -175,9 +175,9 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             linearSlide.extendVertical(0);
             // Cycle code for linear slides
             if (gamepad2.dpad_up) {
-                linearSlide.extendVerticalUsingEncoder(0.6, 18, "up"); //basket and bar height
+                linearSlide.extendVerticalUsingEncoder(0.7, 18, "up"); //basket and bar height
             } else if (gamepad2.dpad_down) {
-                linearSlide.extendVerticalUsingEncoder(0.3, 0, "down"); // return to original position
+                linearSlide.extendVerticalUsingEncoder(0.4, 0, "down"); // return to original position
             }
 
             //Winch
