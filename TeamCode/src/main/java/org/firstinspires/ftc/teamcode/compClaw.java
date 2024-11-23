@@ -39,6 +39,8 @@ public class compClaw {
     }
 
     public void moveArm(double power) {
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setPower(power);
     }
     /*public void moveArmUsingEncoder(double dblInches, double dblPower, String direction){
