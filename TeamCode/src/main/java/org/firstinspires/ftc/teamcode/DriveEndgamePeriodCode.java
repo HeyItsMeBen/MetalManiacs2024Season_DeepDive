@@ -43,7 +43,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
     private boolean narrowOpen = true; //This is a new variable that serves the purpose to check if the arm servos are to open narrow or wide
     //If the arm has been moved upwards into the release area of the intake, it will open narrow. This is to prevent collision with the linear slides
     //If the arm has been moved downwards onto the ground, it will open wide. This way, there is more room to pick the sample up
-    double winchServoPower = .5;
+    double winchServoPower = .25;
     double winchMotorPower = 1;
 
     @Override
@@ -69,7 +69,7 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
         winchServo.setDirection(DcMotor.Direction.FORWARD);
-        winchMotor.setDirection(DcMotor.Direction.FORWARD);
+        winchMotor.setDirection(DcMotor.Direction.REVERSE);
 
         winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -87,11 +87,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             // Drive Code
             double max; //variable to define maximum motor values never > 100%
 
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial = gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = -gamepad1.left_stick_x;
-            double yaw = -gamepad1.right_stick_x;
-
             double x = -gamepad1.left_stick_x;
             double y = gamepad1.left_stick_y;
             turn = -gamepad1.right_stick_x;
@@ -102,10 +97,10 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower = axial - lateral + yaw;
-            double rightBackPower = axial + lateral - yaw;
+            double leftFrontPower = x + y + turn;
+            double rightFrontPower = x - y - turn;
+            double leftBackPower = x - y + turn;
+            double rightBackPower = x + y - turn;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -114,13 +109,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             max = Math.max(max, Math.abs(rightBackPower));
             max = POWER_REDUCTION * max;
 
-            if (max > 1.0) {
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftBackPower /= max;
-                rightBackPower /= max;
-            }
-
             max = Math.max(Math.abs(sine),
                     Math.abs(cosine));
 
@@ -128,14 +116,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             rightFrontPower = power * sine / max - turn;
             leftBackPower = power * sine / max + turn;
             rightBackPower = power * cosine / max - turn;
-
-            //Makes sure motor does NOT exceed more than 100% or else it will have bad behaviors >:(
-            if ((power + Math.abs(turn)) > 1) {
-                leftFrontPower /= power + turn;
-                rightFrontPower /= power + turn;
-                leftBackPower /= power + turn;
-                rightBackPower /= power + turn;
-            }
 
             if (gamepad1.dpad_up) {
                 REDUCE_SPEED = 0.8;
@@ -190,17 +170,6 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
                 }
                 linearSlide.extendVertical(-LinearSlidePower*0.6);
             } else if (gamepad2.right_stick_y < 0) { //Up
-                if ((linearSlide.getLinearSlidePositions("left", "inches") > 23 || linearSlide.getLinearSlidePositions("right", "inches") > 23)) {
-
-                    linearSlide.stopLinearSlides();
-                    linearSlide.extendVerticalUsingEncoder(0.1, 23, "down");
-
-                    telemetry.addData("Too high", "!");
-                    telemetry.addData("Left Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("left", "encoder"));
-                    telemetry.addData("Right Slide Position (Encoder): ", linearSlide.getLinearSlidePositions("right", "encoder"));
-                    telemetry.update();
-
-                }
                 linearSlide.extendVertical(LinearSlidePower);
             }
             linearSlide.extendVertical(0);
@@ -214,7 +183,13 @@ public class DriveEndgamePeriodCode extends LinearOpMode {
             //Winch
             if (gamepad2.y) {
                 winchServo.setPower(winchServoPower);
+                winchMotor.setPower(winchMotorPower);
             } else if (gamepad2.a) {
+                winchServo.setPower(-winchServoPower);
+                winchMotor.setPower(-winchMotorPower);
+            } else if (gamepad2.x) {
+                winchServo.setPower(winchServoPower);
+            } else if (gamepad2.b) {
                 winchServo.setPower(-winchServoPower);
             }
             if (gamepad2.left_stick_y > 0) {
