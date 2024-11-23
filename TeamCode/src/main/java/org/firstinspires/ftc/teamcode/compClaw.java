@@ -64,7 +64,7 @@ public class compClaw {
         arm.setPower(0);
     }*/
 
-    private void resetEncoderCount() {
+    public void resetEncoderCount() {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     private void setMotorPower(double dblPower){
@@ -73,6 +73,7 @@ public class compClaw {
         arm.setPower(dblPower);
     }
     public void moveArmUsingEncoder(double dblInches, double dblPower, String direction){
+        dblInches=dblInches*37.6991118;
         int encoderCountsToMove = (int) (dblInches * Encoder_COUNTS_PER_INCH);
         arm.setTargetPosition(0);
 
@@ -100,5 +101,9 @@ public class compClaw {
         arm.setTargetPosition(0);
         setMotorPower(0);
         resetEncoderCount();
+    }
+
+    public double geArmEncoderPosition() {
+        return arm.getCurrentPosition();
     }
 }
