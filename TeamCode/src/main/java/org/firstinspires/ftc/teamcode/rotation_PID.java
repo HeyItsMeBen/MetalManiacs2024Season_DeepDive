@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
+@Config
 @TeleOp(name = "rotation_PID", group = "Linear OpMode")
 public class rotation_PID extends LinearOpMode {
 
@@ -24,9 +25,10 @@ public class rotation_PID extends LinearOpMode {
 
 
     double integralSum = 0;
-    double Kp = 0;
-    double Ki = 0;
-    double Kd = 0;
+    public static double Kp = 0;
+    public static double Ki = 0;
+    public static double Kd = 0;
+    public static double targetAngle=90;
     //double Kf = 10;
 
 
@@ -36,19 +38,19 @@ public class rotation_PID extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        FrontLeft = hardwareMap.get(DcMotorEx.class, "motor");
+        FrontLeft = hardwareMap.get(DcMotorEx.class, "frontLeftDrive");
         FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        FrontRight = hardwareMap.get(DcMotorEx.class, "FrontRight");
+        FrontRight = hardwareMap.get(DcMotorEx.class, "frontRightDrive");
         FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        BackLeft = hardwareMap.get(DcMotorEx.class, "BackLeft");
+        BackLeft = hardwareMap.get(DcMotorEx.class, "backLeftDrive");
         BackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        BackRight = hardwareMap.get(DcMotorEx.class, "BackRight");
+        BackRight = hardwareMap.get(DcMotorEx.class, "backRightDrive");
         BackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -67,9 +69,14 @@ public class rotation_PID extends LinearOpMode {
 
         waitForStart();
 
-
+        double referenceAngle;
         while (opModeIsActive()) {
-            // Main loop code
+            referenceAngle = Math.toRadians(targetAngle);
+            double power = PIDControl(referenceAngle, imu.getAngularOrientation().firstAngle);
+            FrontLeft.setPower(power);
+            BackLeft.setPower(power);
+            FrontRight.setPower(-power);
+            BackRight.setPower(-power);
         }
     }
 
