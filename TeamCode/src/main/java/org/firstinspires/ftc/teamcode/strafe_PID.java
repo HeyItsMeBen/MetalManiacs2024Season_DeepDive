@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+@Config
 @Autonomous(name = "strafe_PID", group = "Autonomous")
 public class strafe_PID extends LinearOpMode {
 
@@ -22,9 +24,11 @@ public class strafe_PID extends LinearOpMode {
 
     private static final double ENCODER_COUNTS_PER_INCH = 38.1971863;
     double integralSum = 0;
-    double Kp = PIDConstants.Kp;
-    double Ki = PIDConstants.Ki;
-    double Kd = PIDConstants.Kd;
+    public static double Kp=0.005;
+    public static double Ki;
+    public static double Kd;
+    double wheelPosition;
+    public static double target2 = 5;
     //double Kf = 2;
 
 
@@ -34,19 +38,19 @@ public class strafe_PID extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        frontLeftWheel = hardwareMap.get(DcMotorEx.class, "FrontLeftWheel");
+        frontLeftWheel = hardwareMap.get(DcMotorEx.class, "frontLeftDrive");
         frontLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        backLeftWheel = hardwareMap.get(DcMotorEx.class, "BackLeftWheel");
+        backLeftWheel = hardwareMap.get(DcMotorEx.class, "backLeftDrive");
         backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        frontRightWheel = hardwareMap.get(DcMotorEx.class, "FrontRightWheel");
+        frontRightWheel = hardwareMap.get(DcMotorEx.class, "frontRightDrive");
         frontRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        backRightWheel = hardwareMap.get(DcMotorEx.class, "BackRightWheel");
+        backRightWheel = hardwareMap.get(DcMotorEx.class, "backRightDrive");
         backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -58,13 +62,15 @@ public class strafe_PID extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            double power = PIDControl(3*ENCODER_COUNTS_PER_INCH, frontLeftWheel.getCurrentPosition());
+            wheelPosition = frontRightWheel.getCurrentPosition();
+            double power = PIDControl(target2*ENCODER_COUNTS_PER_INCH, wheelPosition);
             frontLeftWheel.setPower(power);
             backLeftWheel.setPower(power);
             frontRightWheel.setPower(power);
             backRightWheel.setPower(power);
-
-
+            telemetry.addData("pos2", wheelPosition);
+            telemetry.addData("target2", target2);
+            telemetry.update();
         }
     }
 

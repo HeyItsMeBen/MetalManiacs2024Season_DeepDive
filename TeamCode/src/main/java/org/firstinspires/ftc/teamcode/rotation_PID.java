@@ -2,13 +2,20 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.bosch.BNO055IMU;
+
+import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.IMU;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit; //just added this one
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles; //just added this one
 
 @Config
 @TeleOp(name = "rotation_PID", group = "Linear OpMode")
@@ -21,7 +28,7 @@ public class rotation_PID extends LinearOpMode {
     DcMotorEx BackRight;
 
 
-    private BNO055IMU imu;  //IMP for debugging and functionality. Check actual model. (I think this uses a gyroscope)
+    private BHI260IMU imu;  //IMP for debugging and functionality. Check actual model. (I think this uses a gyroscope)
 
 
     double integralSum = 0;
@@ -60,19 +67,24 @@ public class rotation_PID extends LinearOpMode {
         FrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        /*imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+        imu.initialize(parameters);*/
+        IMU.Parameters myIMUparameters;
+        myIMUparameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        imu.initialize(myIMUparameters);
 
+        YawPitchRollAngles robotOrientation;
 
         waitForStart();
 
         double referenceAngle;
         while (opModeIsActive()) {
             referenceAngle = Math.toRadians(targetAngle);
-            double power = PIDControl(referenceAngle, imu.getAngularOrientation().firstAngle);
+            robotOrientation = imu.getRobotYawPitchRollAngles();
+            double power = PIDControl(referenceAngle, robotOrientation.getYaw(AngleUnit.RADIANS));
             FrontLeft.setPower(power);
             BackLeft.setPower(power);
             FrontRight.setPower(-power);
