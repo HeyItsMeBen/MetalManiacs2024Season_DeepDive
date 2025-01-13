@@ -1,8 +1,12 @@
-//FILE PURPOSE: Should make the robot strafe using PID. I made this file using from a yt vid abt PID, then modified it to include the whole drivetrain instead of just one motor
+//FILE PURPOSE: Should make the robot strafe using PID. I made this file by modifying a copy of rotation_PID
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import com.qualcomm.hardware.bosch.BHI260IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.IMU;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,24 +15,25 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@TeleOp//(name = "strafe_PID", group = "Linear OpMode")
-public class strafe_PID extends LinearOpMode {
+
+//I'm commenting this (the part on thr line bellow) only because the Arm_PID doesn't have it, and the Arm_PID works. If commenting this code causes problems, u can uncomment it
+@TeleOp//(name = "strafe_PID3_fromRotation", group = "Linear OpMode")
+public class strafe_PID3_fromRotation extends LinearOpMode {
 
     //creates all four motors using the extended version of DcMotor
     DcMotorEx frontLeftDrive;
-    DcMotorEx backLeftDrive;
     DcMotorEx frontRightDrive;
+    DcMotorEx backLeftDrive;
     DcMotorEx backRightDrive;
 
     //creates variables. Some of these should be modifiable through the dashboard
-    public static double Kp=0.005;
-    public static double Ki;
-    public static double Kd;
-    public static double target2 = 5;
+    public static double Kp = 0;
+    public static double Ki = 0;
+    public static double Kd = 0;
+    public static double targetPos=10;
 
-    private static final double ENCODER_COUNTS_PER_INCH = 38.1971863;
     double integralSum = 0;
-    double wheelPosition;
+    private static final double ENCODER_COUNTS_PER_INCH = 38.1971863;
     private double lastError = 0;
 
     ElapsedTime timer = new ElapsedTime();
@@ -55,18 +60,20 @@ public class strafe_PID extends LinearOpMode {
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
+        double wheelPosition;
+
         waitForStart();
+
+        double referencePosition;
         //gets target angle, calculates power using PID, then sends it through the wheels
         while (opModeIsActive()) {
+            referencePosition = targetPos*ENCODER_COUNTS_PER_INCH;
             wheelPosition = frontRightDrive.getCurrentPosition();
-            double power = PIDControl(target2*ENCODER_COUNTS_PER_INCH, wheelPosition);
+            double power = PIDControl(referencePosition, wheelPosition);
             frontLeftDrive.setPower(power);
             backLeftDrive.setPower(power);
             frontRightDrive.setPower(power);
             backRightDrive.setPower(power);
-            telemetry.addData("pos2", wheelPosition);
-            telemetry.addData("target2", target2);
-            telemetry.update();
         }
     }
 
