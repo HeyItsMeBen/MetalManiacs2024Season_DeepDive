@@ -13,9 +13,10 @@ public class MeepMeepExample {
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(18, 18)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-15, -55, Math.toRadians(90)))
                 //.lineToX(30)
                 //.turn(Math.toRadians(90))
                 //.lineToY(30)
@@ -24,8 +25,16 @@ public class MeepMeepExample {
                 //.turn(Math.toRadians(90))
                 //.lineToY(0)
                 //.turn(Math.toRadians(90))
-                .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                .splineTo(new Vector2d(0, 60), Math.PI)
+                .splineTo(new Vector2d(-50, -40), Math.PI/2)
+                .waitSeconds(1)
+                .turn(Math.toRadians(135))
+                .strafeTo(new Vector2d(-55, -55))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(-47, -47))
+                .splineTo(new Vector2d(-55, -40), -Math.PI/2)
+                //.waitSeconds(2)
+                //.turn(Math.toRadians(180))
+                //.splineTo(new Vector2d(0, 60), Math.PI)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
