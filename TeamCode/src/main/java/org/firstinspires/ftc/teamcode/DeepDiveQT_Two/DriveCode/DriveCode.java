@@ -56,16 +56,16 @@ public class DriveCode extends LinearOpMode {
     int currpos = 1;
 
     //pick up arm servo pos
-    double STATE_1[] = {1,0};
+    double STATE_1[] = {0.85,0.15};
 
     //Stand-by arm servo pos
-    double STATE_2[] = {0.85,.15};
+    double STATE_2[] = {0.6,.4};
 
     //ready to score arm servo pos
-    double STATE_3[] = {0,1};
+    double STATE_3[] = {0.15,.85};
 
     //Scored arm servo pos
-    double STATE_4[] = {0.15,0.85};
+    double STATE_4[] = {0.4,.6};
 
     // Note: pushing stick forward gives negative value
 
@@ -127,6 +127,8 @@ public class DriveCode extends LinearOpMode {
         neutralOuttakeArmState();
         //Set pivot to neutral
         setArmPivotServoBack();
+        //claws to outside
+        armServoOpen(0.35);
 
         telemetry.addData(">", "Status: Initialized");
         telemetry.update();
@@ -177,7 +179,7 @@ public class DriveCode extends LinearOpMode {
             }
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                armServoOpen(0.4);
+                armServoOpen(0.35);
             }
             // arm claw close
             if (driver.getButton(GamepadKeys.Button.LEFT_BUMPER)){
@@ -244,7 +246,6 @@ public class DriveCode extends LinearOpMode {
             telemetry.addData("armTarget", armtarget);
             telemetry.update();
 
-
         currpos = 1;
         checkOuttakeArmState();
         outtakeServoClose();
@@ -266,10 +267,11 @@ public class DriveCode extends LinearOpMode {
     public void setArmPivotServoBack(){
         armPivotServo.setPosition(0.5);
     }
+
     public void slidesMove(int slidetarget) {
 
         slideController.setPID(Kp, Ki, Kd);
-        
+
             int slidePos = leftSlide.getCurrentPosition();
             double slidePID = slideController.calculate(slidePos, slidetarget);
             double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
@@ -295,13 +297,17 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void increaseOuttakeArmState(){
-        currpos = currpos + 1;
-        checkOuttakeArmState();
+        if (currpos < 4){
+            currpos = currpos + 1;
+            checkOuttakeArmState();
+        }
     }
 
     public void decreaseOuttakeArmState(){
-        currpos = currpos - 1;
-        checkOuttakeArmState();
+        if (currpos > 1) {
+            currpos = currpos - 1;
+            checkOuttakeArmState();
+        }
     }
 
     public void checkOuttakeArmState(){
