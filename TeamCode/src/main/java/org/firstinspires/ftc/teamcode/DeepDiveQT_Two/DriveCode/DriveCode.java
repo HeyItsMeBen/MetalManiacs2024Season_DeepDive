@@ -230,8 +230,8 @@ public class DriveCode extends LinearOpMode {
     }
     public void armRetract(int armtarget) {
         armController.setPID(p, i, d);
-        armtarget = armtarget/5;
-        for (int i =0; i < 5; i++) {
+
+
             int armPos = arm.getCurrentPosition();
             double armPID = armController.calculate(armPos, armtarget);
             double armFF = Math.cos(Math.toRadians(armtarget / ticks_in_degree)) * f;
@@ -244,12 +244,7 @@ public class DriveCode extends LinearOpMode {
             telemetry.addData("armTarget", armtarget);
             telemetry.update();
 
-//            DriveCode.xx = gamepad1.left_stick_x * 0.8;
-//            DriveCode.yy = -gamepad1.left_stick_y * 0.8;
-//            DriveCode.turn = gamepad1.right_stick_x * 0.8;
 
-            armtarget = armtarget + armtarget/5;
-        }
         currpos = 1;
         checkOuttakeArmState();
         outtakeServoClose();
@@ -271,14 +266,10 @@ public class DriveCode extends LinearOpMode {
     public void setArmPivotServoBack(){
         armPivotServo.setPosition(0.5);
     }
-    public void slidesMove(int slidetargetOG) {
+    public void slidesMove(int slidetarget) {
 
         slideController.setPID(Kp, Ki, Kd);
-
-        int slidetarget = slidetargetOG;
-        slidetarget = slidetarget/7;
-
-        for (int i =0; i < 7; i++) {
+        
             int slidePos = leftSlide.getCurrentPosition();
             double slidePID = slideController.calculate(slidePos, slidetarget);
             double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
@@ -292,12 +283,7 @@ public class DriveCode extends LinearOpMode {
             telemetry.addData("slideTarget", slidetarget);
             telemetry.update();
 
-//            DriveCode.xx = gamepad1.left_stick_x * 0.8;
-//            DriveCode.yy = -gamepad1.left_stick_y * 0.8;
-//            DriveCode.turn = gamepad1.right_stick_x * 0.8;
 
-            slidetarget = slidetarget + slidetargetOG/7;
-        }
     }
 
     public void outtakeServoOpen(){
