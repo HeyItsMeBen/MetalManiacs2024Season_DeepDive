@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode.DriveCode;
 
+@Config
 @TeleOp(name = "QTDriveCode", group = "Linear OpMode")
 
 public class DriveCode extends LinearOpMode {
@@ -33,8 +35,10 @@ public class DriveCode extends LinearOpMode {
     private Servo armPivotServo = null;
 
     private PIDController armController;
-    private static double p = 0.002, i = 0.1, d = 0.005;
-    private static double f = 0.03;
+    private static double p = 0.0005, i = 0.1, d = 0.00575;
+    private static double f = 0.05;
+
+    int armtarget;
 
     //Outtake subsystem
     private DcMotor leftSlide = null;
@@ -45,9 +49,9 @@ public class DriveCode extends LinearOpMode {
     private Servo slideRightServo = null;
 
     private PIDController slideController;
-    //private FinalDriveCodeTest DriveCode = new FinalDriveCodeTest();
 
-    private static double Kp = 0, Ki = 0, Kd = 0, Kf = 0;
+
+    private static double Kp = 0.0005, Ki = 0.1, Kd = 0.006, Kf = 0;
 
 
     //Gobilda 202 19.2:1
@@ -56,16 +60,16 @@ public class DriveCode extends LinearOpMode {
     int currpos = 1;
 
     //pick up arm servo pos
-    double STATE_1[] = {0.85,0.15};
+    double STATE_1[] = {0,1};
 
     //Stand-by arm servo pos
-    double STATE_2[] = {0.6,.4};
+    double STATE_2[] = {0.2,.8};
 
     //ready to score arm servo pos
-    double STATE_3[] = {0.15,.85};
+    double STATE_3[] = {0,1};
 
     //Scored arm servo pos
-    double STATE_4[] = {0.4,.6};
+    double STATE_4[] = {0.7,.3};
 
     // Note: pushing stick forward gives negative value
 
@@ -93,6 +97,11 @@ public class DriveCode extends LinearOpMode {
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //arm Subsystem
         arm = hardwareMap.get(DcMotor.class, "arm");
         armServo = hardwareMap.get(Servo.class, "intakeClawServo");
@@ -103,6 +112,7 @@ public class DriveCode extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        armController = new PIDController(p, i, d);
 
         //Outtake Subsystem
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
@@ -122,9 +132,11 @@ public class DriveCode extends LinearOpMode {
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        slideController = new PIDController(Kp, Ki, Kd);
 
         //Set Servos to stand-by
-        neutralOuttakeArmState();
+        currpos = 1;
+        checkOuttakeArmState();
         //Set pivot to neutral
         setArmPivotServoBack();
         //claws to outside
@@ -137,9 +149,9 @@ public class DriveCode extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Drive Code
-            double x = gamepad1.left_stick_x * 0.8;
-            double y = -gamepad1.left_stick_y * 0.8;
-            double turn = gamepad1.right_stick_x * 0.8;
+            double x = gamepad1.left_stick_x;
+            double y = -gamepad1.left_stick_y;
+            double turn = gamepad1.right_stick_x;
 
             double theta = Math.atan2(y, x);
             double power = Math.hypot(x, y);
@@ -162,10 +174,10 @@ public class DriveCode extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            frontLeftDrive.setPower(leftFrontPower);
-            frontRightDrive.setPower(rightFrontPower);
-            backLeftDrive.setPower(leftBackPower);
-            backRightDrive.setPower(rightBackPower);
+            frontLeftDrive.setPower(leftFrontPower * 0.8);
+            frontRightDrive.setPower(rightFrontPower * 0.8);
+            backLeftDrive.setPower(leftBackPower * 0.8);
+            backRightDrive.setPower(rightBackPower * 0.8);
 
             if (gamepad1.left_trigger > 0.01){
                 arm.setPower(gamepad1.left_trigger);
@@ -195,11 +207,13 @@ public class DriveCode extends LinearOpMode {
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                armRetract(0);
+                neutralOuttakeArmState();
+                armtarget = 1;
+                armRetract();
             }
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                slidesMove(-10 * 122);
+                slidesMove(10 * 122);
             }
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
@@ -230,9 +244,8 @@ public class DriveCode extends LinearOpMode {
         }
         //Run OpMode
     }
-    public void armRetract(int armtarget) {
+    public void armRetract() {
         armController.setPID(p, i, d);
-
 
             int armPos = arm.getCurrentPosition();
             double armPID = armController.calculate(armPos, armtarget);
@@ -265,7 +278,7 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void setArmPivotServoBack(){
-        armPivotServo.setPosition(0.5);
+        armPivotServo.setPosition(0.575);
     }
 
     public void slidesMove(int slidetarget) {
@@ -284,8 +297,6 @@ public class DriveCode extends LinearOpMode {
             telemetry.addData("slidePos", slidePos);
             telemetry.addData("slideTarget", slidetarget);
             telemetry.update();
-
-
     }
 
     public void outtakeServoOpen(){

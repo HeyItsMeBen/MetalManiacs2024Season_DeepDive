@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.FinalDriveCode;
+package org.firstinspires.ftc.teamcode.DeepDiveQT_One;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name = "DriveCode", group = "Linear OpMode")
+@TeleOp(name = "QT1DriveCode", group = "Linear OpMode")
 
 public class DriveCode extends LinearOpMode {
 
