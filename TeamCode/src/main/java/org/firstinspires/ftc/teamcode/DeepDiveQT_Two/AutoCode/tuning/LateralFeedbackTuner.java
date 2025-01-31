@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
@@ -9,7 +11,8 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TwoDeadWheelLocalizer;
 
-public final class ManualFeedbackTuner extends LinearOpMode {
+@Autonomous(name = "LateralFeedbackTuner", group = "Autonomous")
+public final class LateralFeedbackTuner extends LinearOpMode {
     public static double DISTANCE = 64;
 
     @Override
@@ -31,9 +34,9 @@ public final class ManualFeedbackTuner extends LinearOpMode {
             while (opModeIsActive()) {
                 Actions.runBlocking(
                     drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                            .lineToX(DISTANCE)
+                            .strafeTo(new Vector2d(0, DISTANCE))
                             .waitSeconds(1)
-                            .lineToX(0)
+                            .strafeTo(new Vector2d(0,0))
                             .waitSeconds(1)
                             .build());
             }
