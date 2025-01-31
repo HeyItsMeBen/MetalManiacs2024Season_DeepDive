@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
@@ -9,8 +10,9 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TwoDeadWheelLocalizer;
 
-public final class ManualFeedbackTuner extends LinearOpMode {
-    public static double DISTANCE = 64;
+@Autonomous(name = "AngularFeedbackTuner", group = "Autonomous")
+public final class AngularFeedbackTuner extends LinearOpMode {
+    public static double DISTANCE = 360;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,10 +33,14 @@ public final class ManualFeedbackTuner extends LinearOpMode {
             while (opModeIsActive()) {
                 Actions.runBlocking(
                     drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                            .lineToX(DISTANCE)
+                            .turn(Math.toRadians(DISTANCE))
                             .waitSeconds(1)
-                            .lineToX(0)
+                            .turn(Math.toRadians(-DISTANCE))
                             .waitSeconds(1)
+
+                            /*.waitSeconds(1)
+                            .turnTo(DISTANCE)*/
+
                             .build());
             }
         } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
