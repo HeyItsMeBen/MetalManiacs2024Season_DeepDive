@@ -27,11 +27,17 @@ public class Outtake extends OpMode {
     public static double Kp = 0.00575, Ki = 0.1, Kd = 0.0005;
     public static double Kf = 0.05;
 
+    double ahh;
 
-    public static int target = 50;
+    public static int target = -1000;
 
     //Gobilda 202 19.2:1
     private final double ticks_in_degree = 537.7/360;
+
+    public static double servopos = 0.5;
+
+    public static double leftservopos = 0;
+    public static double rightservopos = 1;
 
     int currpos = 1;
 
@@ -70,6 +76,9 @@ public class Outtake extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
+    double leftTempTarget = 0;
+    double rightTempTarget = 1;
+
     public void loop() {
 
         slideController.setPID(Kp, Ki, Kd);
@@ -83,12 +92,28 @@ public class Outtake extends OpMode {
         leftSlide.setPower(slidePower);
         rightSlide.setPower(slidePower);
 
-        telemetry.addData("slidePos", slidePos);
-        telemetry.addData("slideTarget", target);
+        telemetry.addData("leftservopos", slideLeftServo.getPosition());
+        telemetry.addData("rightservopos", slideRightServo.getPosition());
+        telemetry.addData("target", target);
+        telemetry.addData("leftslidepos", leftSlide.getCurrentPosition());
         telemetry.update();
 
+        if (gamepad1.a){
+            slideLeftServo.setPosition(leftservopos);
+            slideRightServo.setPosition(rightservopos);
+        }
 
+      /*  if (leftTempTarget != servopos && rightTempTarget != (1.0 - servopos)) {
+            leftTempTarget += 0.01;
+            rightTempTarget -= 0.01;
+            slideLeftServo.setPosition(leftTempTarget);
+            slideRightServo.setPosition(rightTempTarget);
+        }*/
+
+        slideLeftServo.setPosition(servopos);
     }
+
+
 
     public void outtakeServoOpen(){
         outtakeClawServo.setPosition(0.4);

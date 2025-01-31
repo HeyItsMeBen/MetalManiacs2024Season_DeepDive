@@ -57,19 +57,19 @@ public class DriveCode extends LinearOpMode {
     //Gobilda 202 19.2:1
     private final double ticks_in_degree = 537.7/360;
 
-    int currpos = 1;
+    int currpos = 2;
 
     //pick up arm servo pos
     double STATE_1[] = {0,1};
 
     //Stand-by arm servo pos
-    double STATE_2[] = {0.2,.8};
+    double STATE_2[] = {.5,.7};
 
     //ready to score arm servo pos
-    double STATE_3[] = {0,1};
+    double STATE_3[] = {0.7,.3};
 
     //Scored arm servo pos
-    double STATE_4[] = {0.7,.3};
+    double STATE_4[] = {0.95,0};
 
     // Note: pushing stick forward gives negative value
 
@@ -135,8 +135,7 @@ public class DriveCode extends LinearOpMode {
         slideController = new PIDController(Kp, Ki, Kd);
 
         //Set Servos to stand-by
-        currpos = 1;
-        checkOuttakeArmState();
+        outakearmPosState2();
         //Set pivot to neutral
         setArmPivotServoBack();
         //claws to outside
@@ -207,13 +206,15 @@ public class DriveCode extends LinearOpMode {
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                neutralOuttakeArmState();
                 armtarget = 1;
                 armRetract();
             }
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                slidesMove(10 * 122);
+                slidesMove(-27 * 122);
+            }
+            if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
+                slidesMove(-5 * 122);
             }
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
@@ -229,15 +230,18 @@ public class DriveCode extends LinearOpMode {
                 outtakeServoClose();
             }
 
+            if (operator.getButton(GamepadKeys.Button.B)){
+                outakearmPosState3();
+            }
             if (operator.getButton(GamepadKeys.Button.X)){
-                neutralOuttakeArmState();
+                outakearmPosState2();
             }
 
             if (operator.getButton(GamepadKeys.Button.Y)){
-                increaseOuttakeArmState();
+                outakearmPosState4();
             }
             if (operator.getButton(GamepadKeys.Button.A)){
-                decreaseOuttakeArmState();
+                outakearmPosState1();
             }
 
             //when OpMode is Active
@@ -245,6 +249,8 @@ public class DriveCode extends LinearOpMode {
         //Run OpMode
     }
     public void armRetract() {
+        outakearmPosState2();
+
         armController.setPID(p, i, d);
 
             int armPos = arm.getCurrentPosition();
@@ -259,11 +265,10 @@ public class DriveCode extends LinearOpMode {
             telemetry.addData("armTarget", armtarget);
             telemetry.update();
 
-        currpos = 1;
-        checkOuttakeArmState();
+        outakearmPosState1();
         outtakeServoClose();
         armServoOpen(0.2);
-
+        outakearmPosState2();
     }
     public void armServoOpen(double pos){
         armServo.setPosition(pos);
@@ -278,7 +283,7 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void setArmPivotServoBack(){
-        armPivotServo.setPosition(0.575);
+        armPivotServo.setPosition(0.5);
     }
 
     public void slidesMove(int slidetarget) {
@@ -307,44 +312,21 @@ public class DriveCode extends LinearOpMode {
         outtakeClawServo.setPosition(0.025);
     }
 
-    public void increaseOuttakeArmState(){
-        if (currpos < 4){
-            currpos = currpos + 1;
-            checkOuttakeArmState();
-        }
+    public void outakearmPosState1(){
+        slideRightServo.setPosition(STATE_1[1]);
     }
 
-    public void decreaseOuttakeArmState(){
-        if (currpos > 1) {
-            currpos = currpos - 1;
-            checkOuttakeArmState();
-        }
+    public void outakearmPosState2(){
+        slideRightServo.setPosition(STATE_2[1]);
     }
 
-    public void checkOuttakeArmState(){
-        switch (currpos){
-            case 1:
-                slideLeftServo.setPosition(STATE_1[0]);
-                slideRightServo.setPosition(STATE_1[1]);
-                break;
-            case 2:
-                slideLeftServo.setPosition(STATE_2[0]);
-                slideRightServo.setPosition(STATE_2[1]);
-                break;
-            case 3:
-                slideLeftServo.setPosition(STATE_3[0]);
-                slideRightServo.setPosition(STATE_3[1]);
-                break;
-            case 4:
-                slideLeftServo.setPosition(STATE_4[0]);
-                slideRightServo.setPosition(STATE_4[1]);
-                break;
-        }
+    public void outakearmPosState3(){
+        slideRightServo.setPosition(STATE_3[1]);
     }
 
-    public void neutralOuttakeArmState(){
-        currpos = 2;
-        checkOuttakeArmState();
+    public void outakearmPosState4(){
+        slideRightServo.setPosition(STATE_4[1]);
     }
+
     //end
 }
