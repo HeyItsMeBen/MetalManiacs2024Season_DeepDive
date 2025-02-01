@@ -39,10 +39,10 @@ public class DriveCode extends LinearOpMode {
     private Servo armPivotServo = null;
 
     private PIDController armController;
-    public static double p = 0, i = 0, d = 0;
+    public static double p = 0.0025, i = 0.05, d = 0.0001;
     public static double f = 0;
 
-    public static int armtarget;
+    public static int armtarget = 0;
 
     //Outtake subsystem
     private DcMotor leftSlide = null;
@@ -189,13 +189,13 @@ public class DriveCode extends LinearOpMode {
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                armtarget = 50;
+                armtarget = 0;
                 armRetract();
             }
             armRetract();
 
             if (driver.getButton(GamepadKeys.Button.Y)){
-                armtarget = 350;
+                armtarget = -350;
                 armRetract();
             }
             armRetract();
@@ -305,11 +305,11 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void outakearmPosState1(){
-        slideRightServo.setPosition(0);
+        slideRightServo.setPosition(0.1);
     }
 
     public void outakearmPosState2(){
-        slideRightServo.setPosition(0.3);
+        slideRightServo.setPosition(0.2);
     }
 
     public void outakearmPosState3(){
