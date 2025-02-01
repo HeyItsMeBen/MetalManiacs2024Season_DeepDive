@@ -23,13 +23,10 @@ public class Outtake extends OpMode {
 
     private PIDController slideController;
 
+    public static double Kp = 0.00024, Ki = 0.05, Kd = 0.00523;
+    public static double Kf = 0;
 
-    public static double Kp = 0.00575, Ki = 0.1, Kd = 0.0005;
-    public static double Kf = 0.05;
-
-    double ahh;
-
-    public static int target = -1000;
+    public static int target = 0;
 
     //Gobilda 202 19.2:1
     private final double ticks_in_degree = 537.7/360;
@@ -76,21 +73,18 @@ public class Outtake extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
-    double leftTempTarget = 0;
-    double rightTempTarget = 1;
-
     public void loop() {
 
-        slideController.setPID(Kp, Ki, Kd);
+       slideController.setPID(Kp, Ki, Kd);
 
         int slidePos = leftSlide.getCurrentPosition();
-        double slidePID = slideController.calculate(slidePos, target);
+       double slidePID = slideController.calculate(slidePos, target);
         double slideFF = Math.cos(Math.toRadians(target / ticks_in_degree)) * Kf;
 
-        double slidePower = slidePID + slideFF;
+double slidePower = slidePID + slideFF;
 
-        leftSlide.setPower(slidePower);
-        rightSlide.setPower(slidePower);
+       leftSlide.setPower(slidePower);
+       rightSlide.setPower(slidePower);
 
         telemetry.addData("leftservopos", slideLeftServo.getPosition());
         telemetry.addData("rightservopos", slideRightServo.getPosition());
@@ -110,7 +104,7 @@ public class Outtake extends OpMode {
             slideRightServo.setPosition(rightTempTarget);
         }*/
 
-        slideLeftServo.setPosition(servopos);
+       // slideLeftServo.setPosition(servopos);
     }
 
 

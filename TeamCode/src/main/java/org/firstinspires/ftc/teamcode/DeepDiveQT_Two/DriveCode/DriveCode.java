@@ -25,6 +25,8 @@ public class DriveCode extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    int slidetarget;
+
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
@@ -50,9 +52,7 @@ public class DriveCode extends LinearOpMode {
 
     private PIDController slideController;
 
-
-    private static double Kp = 0.0005, Ki = 0.1, Kd = 0.006, Kf = 0;
-
+    private static double Kp = 00.00024, Ki = 0.05, Kd = 0.00523, Kf = 0;
 
     //Gobilda 202 19.2:1
     private final double ticks_in_degree = 537.7/360;
@@ -136,6 +136,8 @@ public class DriveCode extends LinearOpMode {
 
         //Set Servos to stand-by
         outakearmPosState2();
+        //outtake claws inside
+        outtakeServoClose();
         //Set pivot to neutral
         setArmPivotServoBack();
         //claws to outside
@@ -211,11 +213,27 @@ public class DriveCode extends LinearOpMode {
             }
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                slidesMove(-27 * 122);
+                slidesMove(-3122);
             }
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                slidesMove(-5 * 122);
+                slidetarget = -500;
+
             }
+            slideController.setPID(Kp, Ki, Kd);
+
+            int slidePos = rightSlide.getCurrentPosition();
+            double slidePID = slideController.calculate(slidePos, slidetarget);
+            double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
+
+            double slidePower = slidePID + slideFF;
+
+            leftSlide.setPower(slidePower);
+            rightSlide.setPower(slidePower);
+
+            telemetry.addData("slidePos", slidePos);
+            telemetry.addData("slideTarget", slidetarget);
+            telemetry.update();
+
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
                 slidesMove(0);
@@ -240,6 +258,7 @@ public class DriveCode extends LinearOpMode {
             if (operator.getButton(GamepadKeys.Button.Y)){
                 outakearmPosState4();
             }
+
             if (operator.getButton(GamepadKeys.Button.A)){
                 outakearmPosState1();
             }
@@ -290,7 +309,7 @@ public class DriveCode extends LinearOpMode {
 
         slideController.setPID(Kp, Ki, Kd);
 
-            int slidePos = leftSlide.getCurrentPosition();
+            int slidePos = rightSlide.getCurrentPosition();
             double slidePID = slideController.calculate(slidePos, slidetarget);
             double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
 
@@ -305,27 +324,27 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void outtakeServoOpen(){
-        outtakeClawServo.setPosition(0.4);
+        outtakeClawServo.setPosition(0.2);
     }
 
     public void outtakeServoClose(){
-        outtakeClawServo.setPosition(0.025);
+        outtakeClawServo.setPosition(0);
     }
 
     public void outakearmPosState1(){
-        slideRightServo.setPosition(STATE_1[1]);
+        slideRightServo.setPosition(0);
     }
 
     public void outakearmPosState2(){
-        slideRightServo.setPosition(STATE_2[1]);
+        slideRightServo.setPosition(0.3);
     }
 
     public void outakearmPosState3(){
-        slideRightServo.setPosition(STATE_3[1]);
+        slideRightServo.setPosition(0.5);
     }
 
     public void outakearmPosState4(){
-        slideRightServo.setPosition(STATE_4[1]);
+        slideRightServo.setPosition(1);
     }
 
     //end
