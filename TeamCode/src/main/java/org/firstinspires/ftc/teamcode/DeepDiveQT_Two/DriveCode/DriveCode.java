@@ -52,27 +52,12 @@ public class DriveCode extends LinearOpMode {
 
     private PIDController slideController;
 
-    private static double Kp = 00.00024, Ki = 0.05, Kd = 0.00523, Kf = 0;
+    private static double Kp = 0.009, Ki = 0, Kd = 0.0005, Kf = 0;
 
     //Gobilda 202 19.2:1
     private final double ticks_in_degree = 537.7/360;
 
-    int currpos = 2;
-
-    //pick up arm servo pos
-    double STATE_1[] = {0,1};
-
-    //Stand-by arm servo pos
-    double STATE_2[] = {.5,.7};
-
-    //ready to score arm servo pos
-    double STATE_3[] = {0.7,.3};
-
-    //Scored arm servo pos
-    double STATE_4[] = {0.95,0};
-
     // Note: pushing stick forward gives negative value
-
     @Override
     public void runOpMode() {
 
@@ -135,7 +120,7 @@ public class DriveCode extends LinearOpMode {
         slideController = new PIDController(Kp, Ki, Kd);
 
         //Set Servos to stand-by
-        outakearmPosState2();
+        outakearmPosState3();
         //outtake claws inside
         outtakeServoClose();
         //Set pivot to neutral
@@ -149,6 +134,8 @@ public class DriveCode extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
+            slidesMove();
+            armRetract();
             // Drive Code
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
@@ -211,33 +198,25 @@ public class DriveCode extends LinearOpMode {
                 armtarget = 1;
                 armRetract();
             }
+            armRetract();
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                slidesMove(-3122);
+                slidetarget = -3122;
+                slidesMove();
             }
+            slidesMove();
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
                 slidetarget = -500;
-
+                slidesMove();
             }
-            slideController.setPID(Kp, Ki, Kd);
-
-            int slidePos = rightSlide.getCurrentPosition();
-            double slidePID = slideController.calculate(slidePos, slidetarget);
-            double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
-
-            double slidePower = slidePID + slideFF;
-
-            leftSlide.setPower(slidePower);
-            rightSlide.setPower(slidePower);
-
-            telemetry.addData("slidePos", slidePos);
-            telemetry.addData("slideTarget", slidetarget);
-            telemetry.update();
+            slidesMove();
 
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                slidesMove(0);
+                slidetarget = 0;
+                slidesMove();
             }
+            slidesMove();
             // slide arm claw open
             if (operator.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
                 outtakeServoOpen();
@@ -268,8 +247,6 @@ public class DriveCode extends LinearOpMode {
         //Run OpMode
     }
     public void armRetract() {
-        outakearmPosState2();
-
         armController.setPID(p, i, d);
 
             int armPos = arm.getCurrentPosition();
@@ -283,12 +260,8 @@ public class DriveCode extends LinearOpMode {
             telemetry.addData("armPos", armPos);
             telemetry.addData("armTarget", armtarget);
             telemetry.update();
-
-        outakearmPosState1();
-        outtakeServoClose();
-        armServoOpen(0.2);
-        outakearmPosState2();
     }
+
     public void armServoOpen(double pos){
         armServo.setPosition(pos);
     }
@@ -305,7 +278,7 @@ public class DriveCode extends LinearOpMode {
         armPivotServo.setPosition(0.5);
     }
 
-    public void slidesMove(int slidetarget) {
+    public void slidesMove() {
 
         slideController.setPID(Kp, Ki, Kd);
 
@@ -340,12 +313,11 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void outakearmPosState3(){
-        slideRightServo.setPosition(0.5);
+        slideRightServo.setPosition(0.625);
     }
 
     public void outakearmPosState4(){
-        slideRightServo.setPosition(1);
+        slideRightServo.setPosition(.8);
     }
-
     //end
 }

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.Hardware.Arm_PIDF_UsableFromOtherClasses;
 import org.firstinspires.ftc.teamcode.Hardware.compLinearSlide;
-import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
+//import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
 
 @Autonomous(name = "SamplePathing", group = "Linear OpMode")
 public final class AutoMainSamplePathing extends LinearOpMode {
@@ -113,7 +113,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     public class scoreSample implements Action {
         Servo intakeClaw;
         Servo outtakeClaw;
-        outtakeArm_PIDF outtakeArm;    //WARNING. outtakeArm_PIDF code is IDENTICAL to Arm_PIDF_UsableFromOtherClasses, and is currently not tuned.
+        //outtakeArm_PIDF outtakeArm;    //WARNING. outtakeArm_PIDF code is IDENTICAL to Arm_PIDF_UsableFromOtherClasses, and is currently not tuned.
         compLinearSlide slides;
         double position;
         ElapsedTime timer;
@@ -126,7 +126,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         public scoreSample(HardwareMap hMap) {
             intakeClaw=hMap.get(Servo.class, "claw");
             outtakeClaw=hMap.get(Servo.class, "outtakeClaw");
-            outtakeArm = new outtakeArm_PIDF(hMap);
+            //outtakeArm = new outtakeArm_PIDF(hMap);
         }
 
         @Override
@@ -147,7 +147,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             else if (timer.seconds() >= checkValue(6)){
                 outtakeClaw.setPosition(1);   //open
             } else if (timer.seconds() >= checkValue(5)){
-                outtakeArm.setArmTarget(0.5);       //arm up
+                // outtakeArm.setArmTarget(0.5);       //arm up
             } else if (timer.seconds() >= checkValue(4)){
                 slides.extendVerticalUsingEncoder(0.25, 30, "UP");   //extends slides upward.
             } else if (timer.seconds() >=checkValue(3)){
@@ -155,7 +155,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             } else if (timer.seconds() >= waitList[0]){
                 outtakeClaw.setPosition(0);   //close
             } else {
-                outtakeArm.setArmTarget(0);        //arm down
+                //outtakeArm.setArmTarget(0);        //arm down
             }
 
             // do we need to keep running?

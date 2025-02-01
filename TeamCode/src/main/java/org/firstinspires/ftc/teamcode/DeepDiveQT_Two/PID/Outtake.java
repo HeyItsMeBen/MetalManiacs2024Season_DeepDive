@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @TeleOp
@@ -23,9 +24,8 @@ public class Outtake extends OpMode {
 
     private PIDController slideController;
 
-    public static double Kp = 0.00024, Ki = 0.05, Kd = 0.00523;
-    public static double Kf = 0;
-
+    public static double Kp = 0.009, Ki = 0, Kd = 0.0005;
+    double Kf = 0 ;
     public static int target = 0;
 
     //Gobilda 202 19.2:1
@@ -75,16 +75,16 @@ public class Outtake extends OpMode {
 
     public void loop() {
 
-       slideController.setPID(Kp, Ki, Kd);
+        slideController.setPID(Kp, Ki, Kd);
 
         int slidePos = leftSlide.getCurrentPosition();
-       double slidePID = slideController.calculate(slidePos, target);
+        double slidePID = slideController.calculate(slidePos, target);
         double slideFF = Math.cos(Math.toRadians(target / ticks_in_degree)) * Kf;
 
-double slidePower = slidePID + slideFF;
+        double slidePower = slidePID + slideFF;
 
-       leftSlide.setPower(slidePower);
-       rightSlide.setPower(slidePower);
+        leftSlide.setPower(slidePower);
+        rightSlide.setPower(slidePower);
 
         telemetry.addData("leftservopos", slideLeftServo.getPosition());
         telemetry.addData("rightservopos", slideRightServo.getPosition());
@@ -92,22 +92,7 @@ double slidePower = slidePID + slideFF;
         telemetry.addData("leftslidepos", leftSlide.getCurrentPosition());
         telemetry.update();
 
-        if (gamepad1.a){
-            slideLeftServo.setPosition(leftservopos);
-            slideRightServo.setPosition(rightservopos);
-        }
-
-      /*  if (leftTempTarget != servopos && rightTempTarget != (1.0 - servopos)) {
-            leftTempTarget += 0.01;
-            rightTempTarget -= 0.01;
-            slideLeftServo.setPosition(leftTempTarget);
-            slideRightServo.setPosition(rightTempTarget);
-        }*/
-
-       // slideLeftServo.setPosition(servopos);
     }
-
-
 
     public void outtakeServoOpen(){
         outtakeClawServo.setPosition(0.4);
