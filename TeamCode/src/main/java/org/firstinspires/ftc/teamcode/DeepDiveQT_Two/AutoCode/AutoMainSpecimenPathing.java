@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Arm_PIDF_UsableFromOtherClasses;
 import org.firstinspires.ftc.teamcode.Hardware.compLinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
 
-@Autonomous(name = "SamplePathing", group = "Linear OpMode")
-public final class AutoMainSamplePathing extends LinearOpMode {
+@Autonomous(name = "SpecimenPathing", group = "Linear OpMode")
+public final class AutoMainSpecimenPathing extends LinearOpMode {
     public double LeftStrafeCompensation=0;
     public double MeepMeepCompensation=1.0125;
     //Servo servo=hardwareMap.get(Servo.class, "servo");
@@ -66,9 +66,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                             .setReversed(false)
                             .waitSeconds(1)//reverse safety
                             .build());
-                            /*
+            /*
 
-                             */
+             */
 
         } else {
             throw new RuntimeException();
@@ -110,7 +110,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
         }
     }
-    public class scoreSample implements Action {
+    public class scoreSpecimen implements Action {
         Servo intakeClaw;
         Servo outtakeClaw;
         outtakeArm_PIDF outtakeArm;    //WARNING. outtakeArm_PIDF code is IDENTICAL to Arm_PIDF_UsableFromOtherClasses, and is currently not tuned.
@@ -123,7 +123,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         double waitListSize=6;
         double var=0;
 
-        public scoreSample(HardwareMap hMap) {
+        public scoreSpecimen(HardwareMap hMap) {
             intakeClaw=hMap.get(Servo.class, "claw");
             outtakeClaw=hMap.get(Servo.class, "outtakeClaw");
             outtakeArm = new outtakeArm_PIDF(hMap);
@@ -137,9 +137,6 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
             //list of commands. The instructions said to use Elapsed time like this, so i didn't use a sleep function. These commands run from bottom to top (meaning the bottom command runs first). The parameter inputted in the checkValue function is simply which action it's on (Eg, 4th action)
 
-            //if (timer.seconds() >= checkValue(8)){
-            //    outtakeArm.setArmTarget(0);        //arm down
-            //}else
             if (timer.seconds() >= checkValue(7)){
                 slides.extendVerticalUsingEncoder(0.25, 30, "DOWN");   //retracts slides downward
             }
