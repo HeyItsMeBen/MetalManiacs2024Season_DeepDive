@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -37,10 +39,10 @@ public class DriveCode extends LinearOpMode {
     private Servo armPivotServo = null;
 
     private PIDController armController;
-    private static double p = 0.0005, i = 0.1, d = 0.00575;
-    private static double f = 0.05;
+    public static double p = 0, i = 0, d = 0;
+    public static double f = 0;
 
-    int armtarget;
+    public static int armtarget;
 
     //Outtake subsystem
     private DcMotor leftSlide = null;
@@ -118,6 +120,7 @@ public class DriveCode extends LinearOpMode {
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         slideController = new PIDController(Kp, Ki, Kd);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         //Set Servos to stand-by
         outakearmPosState3();
@@ -167,16 +170,7 @@ public class DriveCode extends LinearOpMode {
             backLeftDrive.setPower(leftBackPower * 0.8);
             backRightDrive.setPower(rightBackPower * 0.8);
 
-            if (gamepad1.left_trigger > 0.01){
-                arm.setPower(gamepad1.left_trigger);
-            } else {
-                arm.setPower(0);
-            }
-            if (gamepad1.right_trigger > 0.01){
-                arm.setPower(-gamepad1.right_trigger);
-            } else {
-                arm.setPower(0);
-            }
+
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
                 armServoOpen(0.35);
@@ -195,7 +189,13 @@ public class DriveCode extends LinearOpMode {
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                armtarget = 1;
+                armtarget = 50;
+                armRetract();
+            }
+            armRetract();
+
+            if (driver.getButton(GamepadKeys.Button.Y)){
+                armtarget = 350;
                 armRetract();
             }
             armRetract();
@@ -313,11 +313,11 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void outakearmPosState3(){
-        slideRightServo.setPosition(0.625);
+        slideRightServo.setPosition(0.7575);
     }
 
     public void outakearmPosState4(){
-        slideRightServo.setPosition(.8);
+        slideRightServo.setPosition(.9);
     }
     //end
 }

@@ -16,8 +16,8 @@ public class Arm_PIDF extends OpMode {
     private PIDController controller;
 
 
-    public static double p = 0.00575, i = 0.1, d = 0.0005;
-    public static double f = 0.05;
+    public static double p = 0.0007, i = 0.1, d = 0.0055;
+    public static double f = 0;
 
 
     public static int target = 50;   //0-->1
