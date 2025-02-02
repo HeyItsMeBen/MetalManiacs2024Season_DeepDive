@@ -30,8 +30,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d beginPose = new Pose2d(10, -60, Math.toRadians(-90));
-        Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 17 / 2) * MeepMeepCompensation, (-23.33 * 2.5 + 17 / 2) * MeepMeepCompensation);
+        Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
+        Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 20 /2) * MeepMeepCompensation, (-23.33 * 2.5 + 20 / 2) * MeepMeepCompensation);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -46,7 +46,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .waitSeconds(1)//score
 
                 //go to first sample
-                .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
+                .splineTo(new Vector2d((-37.5-(23.33/2))*MeepMeepCompensation, (-55+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
                 .waitSeconds(1)//grab
                 .setReversed(true)
 
@@ -62,8 +62,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .waitSeconds(2)
 
                 //go to second sample
-                .turnTo(Math.toRadians(135))
-                .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5-9)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
+                .strafeTo(new Vector2d(-56, -56))
+                .turnTo(Math.toRadians(90))
+                .splineTo(new Vector2d(-56, -45), Math.toRadians(90))
                 .waitSeconds(1)//grab
                 .setReversed(true)
 
@@ -79,25 +80,17 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 //drop second sample
                 .waitSeconds(2)
 
-                //go to third sample
-                .turnTo(Math.toRadians(90))
-                .splineTo(new Vector2d((-55)*MeepMeepCompensation, (-35)*MeepMeepCompensation), Math.toRadians(90))//135
+                //go to white triangle area
+                .turnTo(Math.toRadians(225))
+                .setReversed(true)
+                .splineTo(new Vector2d((-25)*MeepMeepCompensation, (-8)*MeepMeepCompensation), Math.toRadians(0))//135
                 .waitSeconds(1)//grab
-                .setReversed(true)
-                .waitSeconds(1)//reverse safety
 
-                //grab third sample
-                .turnTo(Math.toRadians(135))
-                .setReversed(true)
-                .splineTo(scoring_position, Math.toRadians(225))
-                .waitSeconds(1)//score
-                .setReversed(false)
+                //bring linear slide arm to bar
+                .waitSeconds(1)
 
                 //score final sample
                 .waitSeconds(2)//reverse safety
-
-                //park
-                .strafeTo(new Vector2d((-57)*MeepMeepCompensation, (-57)*MeepMeepCompensation))
 
                 .build());
 
@@ -106,6 +99,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     public class grabSample implements Action {
         Servo intakeClaw;
         Arm_PIDF_UsableFromOtherClasses arm;
+
         double position;
         ElapsedTime timer;
 
@@ -202,49 +196,4 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             return var;
         }
     }
-
-
-
-
-
-    //ActionWithSleep is a template and should not be used in the code
-    public class ActionWithSleep implements Action {
-        Servo servo;
-        double position;
-        ElapsedTime timer;
-
-        public ActionWithSleep(Servo s, double p) {
-            this.servo = s;
-            this.position = p;
-        }
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (timer == null) {
-                timer = new ElapsedTime();
-            }
-
-            servo.setPosition(position);
-
-            // do we need to keep running?
-            return timer.seconds() < 3;
-        }
-    }
-    //QuickAction is a template and should not be used in the code
-    public class QuickAction implements Action {
-        Servo servo;
-        double position;
-
-        public QuickAction(Servo s, double p) {
-            this.servo = s;
-            this.position = p;
-        }
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            servo.setPosition(position);
-            return false;
-        }
-    }
-
 }

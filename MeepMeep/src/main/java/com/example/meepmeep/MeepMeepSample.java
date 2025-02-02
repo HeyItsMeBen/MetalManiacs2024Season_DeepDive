@@ -31,7 +31,7 @@ public class MeepMeepSample {
                 .waitSeconds(1)//score
 
                 //go to first sample
-                .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
+                .splineTo(new Vector2d((-37.5-(23.33/2))*MeepMeepCompensation, (-57+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
                 .waitSeconds(1)//grab
                 .setReversed(true)
 
@@ -47,8 +47,9 @@ public class MeepMeepSample {
                 .waitSeconds(2)
 
                 //go to second sample
-                .turnTo(Math.toRadians(135))
-                .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5-9)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
+                .strafeTo(new Vector2d(-56, -56))
+                .turnTo(Math.toRadians(90))
+                .splineTo(new Vector2d(-57, -45), Math.toRadians(90))
                 .waitSeconds(1)//grab
                 .setReversed(true)
 
@@ -64,25 +65,14 @@ public class MeepMeepSample {
                 //drop second sample
                 .waitSeconds(2)
 
-                //go to third sample
-                .turnTo(Math.toRadians(90))
-                .splineTo(new Vector2d((-55)*MeepMeepCompensation, (-37)*MeepMeepCompensation), Math.toRadians(90))//135
+                //go to white triangle area
+                .turnTo(Math.toRadians(225))
+                .setReversed(true)
+                .splineTo(new Vector2d((-25)*MeepMeepCompensation, (-10)*MeepMeepCompensation), Math.toRadians(0))//135
                 .waitSeconds(1)//grab
-                .setReversed(true)
-                .waitSeconds(1)//reverse safety
 
-                //grab third sample
-                .turnTo(Math.toRadians(135))
-                .setReversed(true)
-                .splineTo(scoring_position, Math.toRadians(225))
-                .waitSeconds(1)//score
-                .setReversed(false)
-
-                //score final sample
-                .waitSeconds(2)//reverse safety
-
-                //park
-                .strafeTo(new Vector2d((-60)*MeepMeepCompensation, (-60)*MeepMeepCompensation))
+                //bring linear slide arm to bar
+                .waitSeconds(1)
 
                 .build());
 
