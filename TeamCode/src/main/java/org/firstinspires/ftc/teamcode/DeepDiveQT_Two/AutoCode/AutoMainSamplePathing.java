@@ -139,6 +139,12 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         double armPID;
         double armFF;
         double armpower;
+        double var=0;
+
+        //armDown (towards floor) part1, armDown part2, intakeClaw close, armUp (to transfer)
+        //double[] waitList={0.75, 0.75, 0.5, 2};   //old values
+        double[] waitList={0.75, 0.75, 0.5, 2};     //safer values
+        double waitListSize=4;
 
         public grabSample(HardwareMap hMap) {
 
@@ -160,7 +166,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 timer = new ElapsedTime();
                 intakeClaw.setPosition(0.35);   //open
             }
-            if (timer.seconds() >= 2) { //pull arm back
+            if (timer.seconds() >= checkValue(4)) { //pull arm back //2
 
                 armController.setPID(Arm_p, Arm_i, Arm_d);
                 armPos = arm.getCurrentPosition();
@@ -169,11 +175,11 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 armpower = armPID + armFF;
                 arm.setPower(armpower);
 
-            } else if (timer.seconds() >= 1.5) {
+            } else if (timer.seconds() >= checkValue(3)) {//1.5
 
                 intakeClaw.setPosition(0.035); //close
 
-            } else if (timer.seconds() >= 0.75){
+            } else if (timer.seconds() >= waitList[0]){    //0.75
 
                 armController.setPID(Arm_p, Arm_i, Arm_d);
                 armPos = arm.getCurrentPosition();
@@ -193,11 +199,19 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
             }
             // do we need to keep running?
-            if (timer.seconds() < 2){
+            if (timer.seconds() < checkValue(waitListSize+1)){
                 return true;
             } else{
                 return false;
             }
+        }
+        double checkValue(double num){
+            var=0;
+            num-=1;
+            for (int i=0; i<num; i++){
+                var+=waitList[i];
+            }
+            return var;
         }
     }
     public class scoreSample implements Action {
@@ -215,8 +229,21 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         double armPID;
         double armFF;
         double armpower;
-
         ElapsedTime timer;
+        double var=0;
+
+        /*
+        outtakeArm_transferPosition     1
+        prepForSlides                   2
+        raiseSlides                     3
+        outtakeArm toBasket             4
+        score                           5
+        outtakeArm toVertical           6
+        retract slides                  7
+         */
+        //double[] waitList={0.5, 1, 1, 0.5, 0.5, 0.5, 1};  //old values
+        double[] waitList={1, 2, 1, 1, 0.5, 1, 1};    //safer values
+        double waitListSize=7;
 
         public scoreSample(HardwareMap hMap) {
 
@@ -248,7 +275,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             if (timer == null) {
                 timer = new ElapsedTime();
                 //outtakeClawServo.setPosition(0.2); //open
-            } else if (timer.seconds() >= 4) {
+            }
+            if (timer.seconds() >= checkValue(7)) {  //4
 
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
@@ -258,19 +286,19 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 leftSlide.setPower(slidePower);
                 rightSlide.setPower(slidePower);
 
-            } else if (timer.seconds() >= 3.5) {
+            } else if (timer.seconds() >= checkValue(6)) {  //3.5
 
                 slideRightServo.setPosition(0.5); //pivot over linear slides
 
-            } else if (timer.seconds() >= 3) {
+            } else if (timer.seconds() >= checkValue(5)) {  //3
 
                 outtakeClawServo.setPosition(0.2); //open linear slide claw
 
-            } else if (timer.seconds() >= 2.5) {
+            } else if (timer.seconds() >= checkValue(4)) {//2.5
 
                 slideRightServo.setPosition(0); //prepare to drop sample
 
-            } else if (timer.seconds() >= 1.5) {
+            } else if (timer.seconds() >=checkValue(3)) { //1.5
 
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
@@ -289,7 +317,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 //                armpower = armPID + armFF;
 //                arm.setPower(armpower);
 
-            } else if (timer.seconds() >= 0.5) {
+            } else if (timer.seconds() >= waitList[0]) { //0.5
 
                 outtakeClawServo.setPosition(0.035); //close linear slides claw
                 intakeClawServo.setPosition(0.35);   //open claw
@@ -302,18 +330,24 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
 
             // do we need to keep running?
-            if (timer.seconds() < 5){
+            if (timer.seconds() < checkValue(waitListSize+1)){
                 return true;
             } else{
                 return false;
             }
 
         }
+        double checkValue(double num){
+            var=0;
+            num-=1;
+            for (int i=0; i<num; i++){
+                var+=waitList[i];
+            }
+            return var;
+        }
     }
     public class moveLinearSlideArm implements Action {
-
         Servo slideRightServo;
-
         ElapsedTime timer;
 
         public moveLinearSlideArm(HardwareMap hMap) {
@@ -326,7 +360,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
-                slideRightServo.setPosition(0.1); //touch the bar
+                slideRightServo.setPosition(0.4); //touch the bar
             }
             // do we need to keep running?
             if (timer.seconds() < 3){
@@ -336,5 +370,4 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
         }
     }
-
 }
