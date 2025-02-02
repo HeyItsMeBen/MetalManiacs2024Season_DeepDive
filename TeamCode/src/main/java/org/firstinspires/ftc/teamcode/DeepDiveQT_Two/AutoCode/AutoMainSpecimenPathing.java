@@ -19,94 +19,199 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.tuning.TuningOpMod
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.Hardware.Arm_PIDF_UsableFromOtherClasses;
+import org.firstinspires.ftc.teamcode.Hardware.Slides_PID;
 import org.firstinspires.ftc.teamcode.Hardware.compLinearSlide;
-//import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
+import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
 
 @Autonomous(name = "SpecimenPathing", group = "Linear OpMode")
 public final class AutoMainSpecimenPathing extends LinearOpMode {
-    public double LeftStrafeCompensation = 0;
-    public double MeepMeepCompensation = 1.0125;
-
+    public double LeftStrafeCompensation=0;
+    public double MeepMeepCompensation=1.0125;
     //Servo servo=hardwareMap.get(Servo.class, "servo");
-
     @Override
     public void runOpMode() throws InterruptedException {
+        Pose2d beginPose = new Pose2d(-34.99500+23.33, -61.5, Math.toRadians(0));
+        if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
+            MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Pose2d beginPose = new Pose2d(10, -60, Math.toRadians(-90));
+            waitForStart();
+            Actions.runBlocking(
+                    drive.actionBuilder(beginPose)
+                            //go to scoring position
+                            .waitSeconds(3) //set timer if you want
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+                            //hang preloaded sample
+                            .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38) * MeepMeepCompensation))
+                            .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
+                            .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38+1) * MeepMeepCompensation))
+                            .stopAndAdd(new scoreSpecimenPart2(hardwareMap))
 
-        waitForStart();
-        Actions.runBlocking(drive.actionBuilder(beginPose)
-                //go to scoring position
-                .waitSeconds(3) //set timer if you want
+                            .splineTo(new Vector2d((20)*MeepMeepCompensation, (-53)*MeepMeepCompensation), Math.toRadians(Math.PI/2))
+                            .splineTo(new Vector2d((35)*MeepMeepCompensation, (-12)*MeepMeepCompensation), Math.toRadians(90))
 
-                //hang preloaded sample
-                .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38) * MeepMeepCompensation))
-                .waitSeconds(2)
+                            .waitSeconds(0.5)
 
-                .splineTo(new Vector2d((20)*MeepMeepCompensation, (-53)*MeepMeepCompensation), Math.toRadians(Math.PI/2))
-                .splineTo(new Vector2d((35)*MeepMeepCompensation, (-12)*MeepMeepCompensation), Math.toRadians(90))
+                            //push first sample
+                            .strafeTo(new Vector2d((45) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
+                            .strafeTo(new Vector2d((45) * MeepMeepCompensation, (-50) * MeepMeepCompensation))
 
-                .waitSeconds(0.5)
+                            //push second sample
+                            .strafeTo(new Vector2d((45) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
+                            .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
+                            .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-50) * MeepMeepCompensation))
 
-                //push first sample
-                .strafeTo(new Vector2d((45) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
-                .strafeTo(new Vector2d((45) * MeepMeepCompensation, (-50) * MeepMeepCompensation))
+                            .waitSeconds(3)
 
-                //push second sample
-                .strafeTo(new Vector2d((45) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
-                .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
-                .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-50) * MeepMeepCompensation))
+                            //move forward and park
+                            .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-55) * MeepMeepCompensation))
 
-                .waitSeconds(3)
+                            .build());
+            /*
 
-                //move forward and park
-                .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-55) * MeepMeepCompensation))
+             */
 
-                .build());
-
+        } else {
+            throw new RuntimeException();
+        }
     }
-
-    public class grabSample implements Action {
+    public class scoreSpecimenPart1 implements Action {
         Servo intakeClaw;
-        Arm_PIDF_UsableFromOtherClasses arm;
+        Servo outtakeClaw;
+        outtakeArm_PIDF outtakeArm;
+        Slides_PID slides;
         double position;
         ElapsedTime timer;
+        //setOuttakeArm, raise slides
+        double[] waitList={2, 2};   //{2, 1} if u can
+        //2.5, 3, 5, 7
+        double waitListSize=2;
+        double var=0;
 
-        public grabSample(HardwareMap hMap) {
-            intakeClaw=hMap.get(Servo.class, "claw");
-            arm = new Arm_PIDF_UsableFromOtherClasses(hMap);
+        public scoreSpecimenPart1(HardwareMap hMap) {
+            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
+            outtakeClaw=hMap.get(Servo.class, "outtakeServo");
+            outtakeArm = new outtakeArm_PIDF(hMap);
+            slides = new Slides_PID(hMap);
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
-                intakeClaw.setPosition(1);   //open
+                outtakeClaw.setPosition(0.2);   //open
             }
-            if (timer.seconds() >= 8){
-                return true;
-            } else if (timer.seconds() >= 6){
-                arm.setArmTarget(1);
-            } else if (timer.seconds() >= 3){
-                intakeClaw.setPosition(0);   //close
+            //list of commands. The instructions said to use Elapsed time like this, so i didn't use a sleep function. These commands run from bottom to top (meaning the bottom command runs first). The parameter inputted in the checkValue function is simply which action it's on (Eg, 4th action)
+
+            if (timer.seconds() >= waitList[0]){
+                slides.setSlidesTarget(-500);
             } else {
-                arm.setArmTarget(0);        //arm down
+                outtakeArm.setArmTarget(outtakeArm.prepSpecimen);   //sets arm to parallel to the ground, and pointing out the back (preps arm to score)
             }
 
             // do we need to keep running?
-            if (timer.seconds() < 10){
+            if (timer.seconds() < checkValue(waitListSize+1)){
                 return true;
             } else{
                 return false;
             }
         }
+        double checkValue(double num){
+            var=0;
+            num-=1;
+            for (int i=0; i<num; i++){
+                var+=waitList[i];
+            }
+            return var;
+        }
     }
-    public class scoreSpecimen implements Action {
+    public class scoreSpecimenPart2 implements Action {
         Servo intakeClaw;
         Servo outtakeClaw;
-        //outtakeArm_PIDF outtakeArm;    //WARNING. outtakeArm_PIDF code is IDENTICAL to Arm_PIDF_UsableFromOtherClasses, and is currently not tuned.
+        outtakeArm_PIDF outtakeArm;
+        Slides_PID slides;
+        double position;
+        ElapsedTime timer;
+        //moveArmDown(score), release specimen, retract slides.
+        double[] waitList={2, 2, 2};    //{1, 1, 1} if possible
+        //2.5, 3, 5, 7
+        double waitListSize=3;
+        double var=0;
+
+        public scoreSpecimenPart2(HardwareMap hMap) {
+            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
+            outtakeClaw=hMap.get(Servo.class, "outtakeServo");
+            outtakeArm = new outtakeArm_PIDF(hMap);
+            slides = new Slides_PID(hMap);
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (timer == null) {
+                timer = new ElapsedTime();
+                outtakeClaw.setPosition(0.2);   //open
+            }
+            //list of commands. The instructions said to use Elapsed time like this, so i didn't use a sleep function. These commands run from bottom to top (meaning the bottom command runs first). The parameter inputted in the checkValue function is simply which action it's on (Eg, 4th action)
+
+            if (timer.seconds() >= checkValue(3)){
+                slides.setSlidesTarget(0);   //retract slides downward.
+            } else if (timer.seconds() >= waitList[0]){
+                outtakeClaw.setPosition(0.2);         //release specimen
+            } else {
+                outtakeArm.setArmTarget(outtakeArm.scoreSpecimen);   //push arm down abit, scoring specimen
+            }
+
+            // do we need to keep running?
+            if (timer.seconds() < checkValue(waitListSize+1)){
+                return true;
+            } else{
+                return false;
+            }
+        }
+        double checkValue(double num){
+            var=0;
+            num-=1;
+            for (int i=0; i<num; i++){
+                var+=waitList[i];
+            }
+            return var;
+        }
+    }
+    public class setStandby implements Action {
+        outtakeArm_PIDF outtakeArm;
+        /*ElapsedTime timer;
+        //setStandby
+        double[] waitList={0};    //{1, 1, 1} if possible
+        double waitListSize=0;
+        double var=0;*/
+
+        public setStandby(HardwareMap hMap) {
+            outtakeArm = new outtakeArm_PIDF(hMap);
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            outtakeArm.setArmTarget(outtakeArm.standby);
+            // do we need to keep running?
+            /*if (timer.seconds() < checkValue(waitListSize+1)){
+                return true;
+            } else{
+                return false;
+            }*/
+            return false;
+        }
+        /*double checkValue(double num){
+            var=0;
+            num-=1;
+            for (int i=0; i<num; i++){
+                var+=waitList[i];
+            }
+            return var;
+        }*/
+    }
+    public class grabSpecimenFromWall implements Action {
+        Servo intakeClaw;
+        Servo outtakeClaw;
+        outtakeArm_PIDF outtakeArm;
         compLinearSlide slides;
         double position;
         ElapsedTime timer;
@@ -116,40 +221,24 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         double waitListSize=6;
         double var=0;
 
-        public scoreSpecimen(HardwareMap hMap) {
-            intakeClaw=hMap.get(Servo.class, "claw");
-            outtakeClaw=hMap.get(Servo.class, "outtakeClaw");
-            //outtakeArm = new outtakeArm_PIDF(hMap);
+        public grabSpecimenFromWall(HardwareMap hMap) {
+            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
+            outtakeClaw=hMap.get(Servo.class, "outtakeServo");
+            outtakeArm = new outtakeArm_PIDF(hMap);
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
-                outtakeClaw.setPosition(1);   //open
+                outtakeClaw.setPosition(0.2);   //open
             }
             //list of commands. The instructions said to use Elapsed time like this, so i didn't use a sleep function. These commands run from bottom to top (meaning the bottom command runs first). The parameter inputted in the checkValue function is simply which action it's on (Eg, 4th action)
 
-            if (timer.seconds() >= checkValue(7)){
-                slides.extendVerticalUsingEncoder(0.25, 30, "DOWN");   //retracts slides downward
-            }
-            //finished scoring
-            else if (timer.seconds() >= checkValue(6)){
-                outtakeClaw.setPosition(1);   //open
-            } else if (timer.seconds() >= checkValue(5)){
-                //outtakeArm.setArmTarget(0.5);       //arm up
-            } else if (timer.seconds() >= checkValue(4)){
-                slides.extendVerticalUsingEncoder(0.25, 30, "UP");   //extends slides upward.
-            } else if (timer.seconds() >=checkValue(3)){
-                intakeClaw.setPosition(1);   //open
-            } else if (timer.seconds() >= waitList[0]){
-                outtakeClaw.setPosition(0);   //close
-            } else {
-                //outtakeArm.setArmTarget(0);        //arm down
-            }
+            //empty...
 
             // do we need to keep running?
-            if (timer.seconds() < checkValue(waitListSize)){
+            if (timer.seconds() < checkValue(waitListSize+1)){
                 return true;
             } else{
                 return false;
