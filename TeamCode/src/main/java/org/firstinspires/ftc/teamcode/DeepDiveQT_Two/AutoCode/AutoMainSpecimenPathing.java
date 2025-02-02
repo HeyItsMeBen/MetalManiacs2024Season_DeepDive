@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode;
 
-import androidx.annotation.NonNull;
+import  androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -26,11 +26,11 @@ import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
 @Autonomous(name = "SpecimenPathing", group = "Linear OpMode")
 public final class AutoMainSpecimenPathing extends LinearOpMode {
     public double LeftStrafeCompensation=0;
-    public double MeepMeepCompensation=1.0125;
+    public double MeepMeepCompensation=70.5/70;//1.0125;
     //Servo servo=hardwareMap.get(Servo.class, "servo");
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(-34.99500+23.33, -61.5, Math.toRadians(0));
+        Pose2d beginPose = new Pose2d(-34.99500+23.33+23.6+2.0, -61.5, Math.toRadians(270));
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -43,8 +43,11 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             //hang preloaded sample
                             .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38) * MeepMeepCompensation))
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
-                            .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38+1) * MeepMeepCompensation))
+                            .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38+1) * MeepMeepCompensation))    //shud be +4
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))
+                            .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38-8) * MeepMeepCompensation))
+
+                            .stopAndAdd(new setStandby(hardwareMap))
 
                             .splineTo(new Vector2d((20)*MeepMeepCompensation, (-53)*MeepMeepCompensation), Math.toRadians(Math.PI/2))
                             .splineTo(new Vector2d((35)*MeepMeepCompensation, (-12)*MeepMeepCompensation), Math.toRadians(90))
@@ -89,7 +92,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
 
         public scoreSpecimenPart1(HardwareMap hMap) {
             intakeClaw=hMap.get(Servo.class, "intakeClawServo");
-            outtakeClaw=hMap.get(Servo.class, "outtakeServo");
+            outtakeClaw=hMap.get(Servo.class, "outtakeServo");   //Real Name? //"outtakeClaw"
             outtakeArm = new outtakeArm_PIDF(hMap);
             slides = new Slides_PID(hMap);
         }
@@ -139,7 +142,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
 
         public scoreSpecimenPart2(HardwareMap hMap) {
             intakeClaw=hMap.get(Servo.class, "intakeClawServo");
-            outtakeClaw=hMap.get(Servo.class, "outtakeServo");
+            outtakeClaw=hMap.get(Servo.class, "outtakeServo");   //Real Name? //"outtakeClaw"
             outtakeArm = new outtakeArm_PIDF(hMap);
             slides = new Slides_PID(hMap);
         }
@@ -223,7 +226,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
 
         public grabSpecimenFromWall(HardwareMap hMap) {
             intakeClaw=hMap.get(Servo.class, "intakeClawServo");
-            outtakeClaw=hMap.get(Servo.class, "outtakeServo");
+            outtakeClaw=hMap.get(Servo.class, "outtakeServo");   //Real Name? //"outtakeClaw"
             outtakeArm = new outtakeArm_PIDF(hMap);
         }
 
