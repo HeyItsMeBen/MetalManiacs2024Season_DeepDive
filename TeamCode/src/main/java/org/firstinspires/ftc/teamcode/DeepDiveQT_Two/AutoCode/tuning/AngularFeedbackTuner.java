@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TwoDeadWheelLocali
 
 @Autonomous(name = "AngularFeedbackTuner", group = "Autonomous")
 public final class AngularFeedbackTuner extends LinearOpMode {
-    public static double DISTANCE = 360;
+    public static double DISTANCE = 180;
 
     @Override
     public void runOpMode() throws InterruptedException {

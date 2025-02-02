@@ -47,7 +47,7 @@ public class MeepMeepSpecimen {
                 .waitSeconds(3)
 
                 //move forward and park
-                .strafeTo(new Vector2d((50) * MeepMeepCompensation, (-55) * MeepMeepCompensation))
+                .strafeTo(new Vector2d((55) * MeepMeepCompensation, (-55) * MeepMeepCompensation))
 
                 .build());
 
