@@ -37,7 +37,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
         waitForStart();
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                
+
                 //go to scoring position
                 .strafeTo(scoring_position)
                 .turnTo(Math.toRadians(45))
@@ -97,7 +97,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .waitSeconds(2)//reverse safety
 
                 //park
-                .strafeTo(new Vector2d((-60)*MeepMeepCompensation, (-60)*MeepMeepCompensation))
+                .strafeTo(new Vector2d((-57)*MeepMeepCompensation, (-57)*MeepMeepCompensation))
 
                 .build());
 

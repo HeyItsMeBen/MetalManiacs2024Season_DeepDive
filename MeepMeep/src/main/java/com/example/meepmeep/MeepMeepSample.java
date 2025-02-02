@@ -66,7 +66,7 @@ public class MeepMeepSample {
 
                 //go to third sample
                 .turnTo(Math.toRadians(90))
-                .splineTo(new Vector2d((-55)*MeepMeepCompensation, (-35)*MeepMeepCompensation), Math.toRadians(90))//135
+                .splineTo(new Vector2d((-55)*MeepMeepCompensation, (-37)*MeepMeepCompensation), Math.toRadians(90))//135
                 .waitSeconds(1)//grab
                 .setReversed(true)
                 .waitSeconds(1)//reverse safety
