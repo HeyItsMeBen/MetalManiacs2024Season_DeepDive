@@ -193,10 +193,11 @@ public class DriveCode extends LinearOpMode {
                 armRetract();
             }
             armRetract();
+
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
                 outtakeServoOpen();
                 outakearmPosState4();
-                sleep(500);
+                sleep(1000);
                 outtakeServoClose();
                 sleep(100);
                 armServoOpen(0.35);
@@ -208,7 +209,12 @@ public class DriveCode extends LinearOpMode {
                 outakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
-                armtarget = -390;
+                armtarget = -350;
+                armRetract();
+            }
+
+            if (driver.getButton(GamepadKeys.Button.DPAD_DOWN)){
+                armtarget = -425;
                 armRetract();
             }
             armRetract();
@@ -283,11 +289,11 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void armServoClose(){
-        armServo.setPosition(0.025);
+        armServo.setPosition(0.035);
     }
 
     public void setArmPivotServoOut(){
-        armPivotServo.setPosition(0.425);
+        armPivotServo.setPosition(0.35);
     }
 
     public void setArmPivotServoBack(){
@@ -323,19 +329,19 @@ public class DriveCode extends LinearOpMode {
     public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
 
     public void outakearmPosState1(){
-        slideRightServo.setPosition(0.05);
+        slideRightServo.setPosition(0);
     }
 
     public void outakearmPosState2(){
-        slideRightServo.setPosition(0.2);
+        slideRightServo.setPosition(0.3);
     }
 
     public void outakearmPosState3(){
-        slideRightServo.setPosition(0.75);
+        slideRightServo.setPosition(0.815);
     }
 
     public void outakearmPosState4(){
-        slideRightServo.setPosition(.87);
+        slideRightServo.setPosition(0.99);
     }
     //end
 }
