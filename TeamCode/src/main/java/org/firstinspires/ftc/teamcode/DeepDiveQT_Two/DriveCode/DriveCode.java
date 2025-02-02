@@ -305,19 +305,19 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void outakearmPosState1(){
-        slideRightServo.setPosition(0.1);
+        slideRightServo.setPosition(0.05);
     }
 
     public void outakearmPosState2(){
-        slideRightServo.setPosition(0.2);
+        slideRightServo.setPosition(0.25);
     }
 
     public void outakearmPosState3(){
-        slideRightServo.setPosition(0.7575);
+        slideRightServo.setPosition(0.7525);
     }
 
     public void outakearmPosState4(){
-        slideRightServo.setPosition(.9);
+        slideRightServo.setPosition(.85);
     }
     //end
 }
