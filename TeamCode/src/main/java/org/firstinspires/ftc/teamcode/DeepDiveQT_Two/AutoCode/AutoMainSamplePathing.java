@@ -99,10 +99,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .turnTo(Math.toRadians(225))
                 .setReversed(true)
                 .splineTo(new Vector2d((-25)*MeepMeepCompensation, (-8)*MeepMeepCompensation), Math.toRadians(0))//135
-                .waitSeconds(1)//grab
 
                 //bring linear slide arm to bar
-                .waitSeconds(1)
+                .stopAndAdd(new moveLinearSlideArm(hardwareMap))
 
                 .build());
 
@@ -255,6 +254,34 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
             // do we need to keep running?
             if (timer.seconds() < 10){
+                return true;
+            } else{
+                return false;
+            }
+        }
+    }
+
+    public class moveLinearSlideArm implements Action {
+
+        Servo slideRightServo;
+
+        ElapsedTime timer;
+
+        public moveLinearSlideArm(HardwareMap hMap) {
+
+            slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
+
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if (timer == null) {
+                timer = new ElapsedTime();
+                slideRightServo.setPosition(0.3); //touch the bar
+
+            }
+            // do we need to keep running?
+            if (timer.seconds() < 0.5){
                 return true;
             } else{
                 return false;
