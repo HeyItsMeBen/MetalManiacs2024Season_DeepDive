@@ -42,7 +42,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
-        Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 20 /2) * MeepMeepCompensation, (-23.33 * 2.5 + 20 / 2) * MeepMeepCompensation);
+        Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 16 /2) * MeepMeepCompensation, (-23.33 * 2.5 + 16 / 2) * MeepMeepCompensation);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -54,22 +54,22 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .turnTo(Math.toRadians(45))
 
                 //drop preloaded sample
-                .waitSeconds(1)//score
+                .stopAndAdd(new scoreSample(hardwareMap))
 
                 //go to first sample
-                .splineTo(new Vector2d((-37.5-(23.33/2))*MeepMeepCompensation, (-55+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
-                .waitSeconds(1)//grab
+                .turnTo(Math.toRadians(90))
+                .strafeTo(new Vector2d((-36-(23.33/2))*MeepMeepCompensation, (-55+(23.33/2))*MeepMeepCompensation))
+                .waitSeconds(0.5)//grab
                 .setReversed(true)
-                .waitSeconds(0.5)
 
                 //grab sample
                 .stopAndAdd(new grabSample(hardwareMap)) //cycles claw
 
                 //return to scoring position
                 .splineTo(scoring_position, Math.toRadians(225))
-                .waitSeconds(1)//score
+                .waitSeconds(0.5)//score
                 .setReversed(false)
-                .waitSeconds(0.5)
+                //.waitSeconds(0.5)
 
                 //drop first sample
                 .stopAndAdd(new scoreSample(hardwareMap))
@@ -77,20 +77,18 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 //go to second sample
                 .strafeTo(new Vector2d(-56, -56))
                 .turnTo(Math.toRadians(90))
-                .splineTo(new Vector2d(-56, -45), Math.toRadians(90))
-                .waitSeconds(1)//grab
+                .splineTo(new Vector2d(-59, -45), Math.toRadians(90))
+                .waitSeconds(0.5)
                 .setReversed(true)
-                .waitSeconds(0.5)//reverse safety
 
                 //grab second sample
                 .stopAndAdd(new grabSample(hardwareMap))
 
                 //return to scoring position
-                .splineTo(scoring_position, Math.toRadians(0))
-                .waitSeconds(1)//score
+                .strafeTo((scoring_position))
+                .waitSeconds(0.5)
                 .setReversed(false)
                 .turnTo(Math.toRadians(45))
-                .waitSeconds(0.5)
 
                 //drop second sample
                 .stopAndAdd(new scoreSample(hardwareMap))
@@ -118,7 +116,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
         public grabSample(HardwareMap hMap) {
 
-            intakeClaw=hMap.get(Servo.class, "claw");
+            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
             arm = hMap.get(DcMotor.class, "arm");
 
             arm.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -136,34 +134,31 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 timer = new ElapsedTime();
                 intakeClaw.setPosition(0.35);   //open
             }
-            if (timer.seconds() >= 2) {
-                return true;
-
-            } else if (timer.seconds() >= 1) { //pull arm back
+            if (timer.seconds() >= 1) { //pull arm back
 
                 armController.setPID(Arm_p, Arm_i, Arm_d);
                 armPos = arm.getCurrentPosition();
                 armPID = armController.calculate(armPos, 0);
                 armFF = Math.cos(Math.toRadians(0 / ticks_in_degree)) * Arm_f;
                 armpower = armPID + armFF;
-                arm.setPower(armpower);
+                arm.setPower(armpower*0.8);
 
             } else if (timer.seconds() >= 0.5){
 
-                intakeClaw.setPosition(0.025); //close
+                intakeClaw.setPosition(0.035); //close
 
             } else { // bring arm forward
 
                 armController.setPID(Arm_p, Arm_i, Arm_d);
                 armPos = arm.getCurrentPosition();
-                armPID = armController.calculate(armPos, -390);
-                armFF = Math.cos(Math.toRadians(-390 / ticks_in_degree)) * Arm_f;
+                armPID = armController.calculate(armPos, -400);
+                armFF = Math.cos(Math.toRadians(-400 / ticks_in_degree)) * Arm_f;
                 armpower = armPID + armFF;
-                arm.setPower(armpower);      //close
+                arm.setPower(armpower*0.8);      //close
 
             }
             // do we need to keep running?
-            if (timer.seconds() < 5){
+            if (timer.seconds() < 2){
                 return true;
             } else{
                 return false;
@@ -180,6 +175,11 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         double slidePID;
         double slideFF;
         double slidePower ;
+        DcMotor arm;
+        int armPos;
+        double armPID;
+        double armFF;
+        double armpower;
 
         ElapsedTime timer;
 
@@ -190,6 +190,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
             intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo");
             outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
+            arm = hardwareMap.get(DcMotor.class, "arm");
+            armController = new PIDController(Arm_p, Arm_i, Arm_d);
 
             leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
             rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -210,11 +212,11 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
-                outtakeClawServo.setPosition(0.2); //open
+                //outtakeClawServo.setPosition(0.2); //open
             }
-            if (timer.seconds() >= 3){
+            if (timer.seconds() >= 3.5) {
 
-                slideRightServo.setPosition(0.76); //transfer perpendicular linear slides
+                slideRightServo.setPosition(0.5); //transfer perpendicular linear slides
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
                 slidePID = slideController.calculate(slidePos, 0);
@@ -223,41 +225,52 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 leftSlide.setPower(slidePower);
                 rightSlide.setPower(slidePower);
 
-            } else if (timer.seconds() >= 2.25){
+            } else if (timer.seconds() >= 3) {
 
-                outtakeClawServo.setPosition(0.035); //open linear slide claw
+                outtakeClawServo.setPosition(0.2); //open linear slide claw
 
-            } else if (timer.seconds() >= 2){
+            } else if (timer.seconds() >= 2) {
 
-                slideRightServo.setPosition(0.3); //prepare to drop sample
+                slideRightServo.setPosition(0); //prepare to drop sample
 
-            } else if (timer.seconds() >=1.5){
+            } else if (timer.seconds() >= 1.5) {
 
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
-                slidePID = slideController.calculate(slidePos, -3300);
-                slideFF = Math.cos(Math.toRadians(-3300 / ticks_in_degree)) * Slides_f;
+                slidePID = slideController.calculate(slidePos, -2000);
+                slideFF = Math.cos(Math.toRadians(-2000 / ticks_in_degree)) * Slides_f;
                 slidePower = slidePID + slideFF;
                 leftSlide.setPower(slidePower);
                 rightSlide.setPower(slidePower);
 
-            } else if (timer.seconds() >= 0.5){
+            } else if (timer.seconds() >= 1.0) {
 
+                armController.setPID(Arm_p, Arm_i, Arm_d);
+                armPos = arm.getCurrentPosition();
+                armPID = armController.calculate(armPos, -100);
+                armFF = Math.cos(Math.toRadians(-100 / ticks_in_degree)) * Arm_f;
+                armpower = armPID + armFF;
+                arm.setPower(armpower);
+
+            } else if (timer.seconds() >= 0.5) {
+
+                outtakeClawServo.setPosition(0.035); //close linear slides claw
                 intakeClawServo.setPosition(0.35);   //open claw
+                slideRightServo.setPosition(0.76); //clearance
 
             } else {
 
-                slideRightServo.setPosition(.99); //posed to transfer sample
-                outtakeClawServo.setPosition(0.035); //close linear slides claw
+                slideRightServo.setPosition(.89); //posed to transfer sample
 
             }
 
             // do we need to keep running?
-            if (timer.seconds() < 10){
+            if (timer.seconds() < 4.5){
                 return true;
             } else{
                 return false;
             }
+
         }
     }
     public class moveLinearSlideArm implements Action {
@@ -276,7 +289,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
-                slideRightServo.setPosition(0.5); //touch the bar
+                slideRightServo.setPosition(0.35); //touch the bar
 
             }
             // do we need to keep running?

@@ -31,8 +31,9 @@ public class MeepMeepSample {
                 .waitSeconds(1)//score
 
                 //go to first sample
-                .splineTo(new Vector2d((-37.5-(23.33/2))*MeepMeepCompensation, (-57+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
-                .waitSeconds(1)//grab
+                .turnTo(Math.toRadians(90))
+                .strafeTo(new Vector2d((-36-(23.33/2))*MeepMeepCompensation, (-55+(23.33/2))*MeepMeepCompensation))
+                .waitSeconds(0.1)//grab
                 .setReversed(true)
 
                 //grab sample
