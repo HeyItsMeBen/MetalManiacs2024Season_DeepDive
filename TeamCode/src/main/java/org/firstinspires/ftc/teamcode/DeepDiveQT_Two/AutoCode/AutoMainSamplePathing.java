@@ -214,7 +214,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
             if (timer.seconds() >= 3){
 
-                slideRightServo.setPosition(0.75); //transfer perpendicular linear slides
+                slideRightServo.setPosition(0.76); //transfer perpendicular linear slides
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
                 slidePID = slideController.calculate(slidePos, 0);
@@ -229,7 +229,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
             } else if (timer.seconds() >= 2){
 
-                slideRightServo.setPosition(0.2);
+                slideRightServo.setPosition(0.3); //prepare to drop sample
 
             } else if (timer.seconds() >=1.5){
 
@@ -247,7 +247,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
             } else {
 
-                slideRightServo.setPosition(.87); //posed to transfer sample
+                slideRightServo.setPosition(.99); //posed to transfer sample
                 outtakeClawServo.setPosition(0.035); //close linear slides claw
 
             }
@@ -276,7 +276,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             if (timer == null) {
                 timer = new ElapsedTime();
-                slideRightServo.setPosition(0.3); //touch the bar
+                slideRightServo.setPosition(0.5); //touch the bar
 
             }
             // do we need to keep running?
