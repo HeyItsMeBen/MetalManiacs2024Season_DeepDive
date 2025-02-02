@@ -214,7 +214,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
             if (timer.seconds() >= 3){
 
-                slideRightServo.setPosition(0.815); //transfer perpendicular linear slides
+                slideRightServo.setPosition(0.76); //transfer perpendicular linear slides
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
                 slidePID = slideController.calculate(slidePos, 0);
