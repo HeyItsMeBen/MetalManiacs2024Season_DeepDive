@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode.DriveCode;
 
 @Config
-@TeleOp(name = "QTDriveCode", group = "Linear OpMode")
+@TeleOp(name = "QT Drive Code", group = "Linear OpMode")
 
 public class DriveCode extends LinearOpMode {
 
@@ -95,7 +95,7 @@ public class DriveCode extends LinearOpMode {
         armPivotServo = hardwareMap.get(Servo.class, "intakePivotServo");
 
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

@@ -32,6 +32,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     //Servo servo=hardwareMap.get(Servo.class, "servo");
     private PIDController armController;
     private PIDController slideController;
+    DcMotor arm;
+    DcMotor leftSlide;
+    DcMotor rightSlide;
     public static double Arm_p = 0.0025, Arm_i = 0.05, Arm_d = 0.0001, Arm_f = 0;
     private static double Slides_p = 0.009, Slides_i = 0, Slides_d = 0.0005, Slides_f = 0;
 
@@ -40,6 +43,24 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
         Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 16 /2) * MeepMeepCompensation, (-23.33 * 2.5 + 16 / 2) * MeepMeepCompensation);
@@ -120,7 +141,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             arm = hMap.get(DcMotor.class, "arm");
 
             arm.setDirection(DcMotorSimple.Direction.FORWARD);
-            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -141,20 +162,25 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 armPID = armController.calculate(armPos, 0);
                 armFF = Math.cos(Math.toRadians(0 / ticks_in_degree)) * Arm_f;
                 armpower = armPID + armFF;
-                arm.setPower(armpower*0.8);
+                arm.setPower(armpower);
 
             } else if (timer.seconds() >= 0.5){
 
                 intakeClaw.setPosition(0.035); //close
 
             } else { // bring arm forward
-
+                armController.setPID(Arm_p, Arm_i, Arm_d);
+                armPos = arm.getCurrentPosition();
+                armPID = armController.calculate(armPos, -350);
+                armFF = Math.cos(Math.toRadians(-350 / ticks_in_degree)) * Arm_f;
+                armpower = armPID + armFF;
+                arm.setPower(armpower);
                 armController.setPID(Arm_p, Arm_i, Arm_d);
                 armPos = arm.getCurrentPosition();
                 armPID = armController.calculate(armPos, -400);
                 armFF = Math.cos(Math.toRadians(-400 / ticks_in_degree)) * Arm_f;
                 armpower = armPID + armFF;
-                arm.setPower(armpower*0.8);      //close
+                arm.setPower(armpower);      //close
 
             }
             // do we need to keep running?
@@ -196,9 +222,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
             rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -229,11 +255,11 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
                 outtakeClawServo.setPosition(0.2); //open linear slide claw
 
-            } else if (timer.seconds() >= 2) {
+            } else if (timer.seconds() >= 2.5) {
 
                 slideRightServo.setPosition(0); //prepare to drop sample
 
-            } else if (timer.seconds() >= 1.5) {
+            } else if (timer.seconds() >= 2) {
 
                 slideController.setPID(Slides_p, Slides_i, Slides_d);
                 slidePos = rightSlide.getCurrentPosition();
@@ -243,14 +269,14 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 leftSlide.setPower(slidePower);
                 rightSlide.setPower(slidePower);
 
-            } else if (timer.seconds() >= 1.0) {
-
-                armController.setPID(Arm_p, Arm_i, Arm_d);
-                armPos = arm.getCurrentPosition();
-                armPID = armController.calculate(armPos, -100);
-                armFF = Math.cos(Math.toRadians(-100 / ticks_in_degree)) * Arm_f;
-                armpower = armPID + armFF;
-                arm.setPower(armpower);
+//            } else if (timer.seconds() >= 1.0) {
+//
+//                armController.setPID(Arm_p, Arm_i, Arm_d);
+//                armPos = arm.getCurrentPosition();
+//                armPID = armController.calculate(armPos, -100);
+//                armFF = Math.cos(Math.toRadians(-100 / ticks_in_degree)) * Arm_f;
+//                armpower = armPID + armFF;
+//                arm.setPower(armpower);
 
             } else if (timer.seconds() >= 0.5) {
 
