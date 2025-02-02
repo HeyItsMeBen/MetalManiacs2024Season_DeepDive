@@ -260,7 +260,6 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
         }
     }
-
     public class moveLinearSlideArm implements Action {
 
         Servo slideRightServo;
@@ -288,4 +287,5 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             }
         }
     }
+
 }
