@@ -29,50 +29,78 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     //Servo servo=hardwareMap.get(Servo.class, "servo");
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(-34.99500+23.33, -61.5, Math.toRadians(0));
-        if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
-            MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-            waitForStart();
-            Actions.runBlocking(
-                    drive.actionBuilder(beginPose)
-                            .strafeTo(new Vector2d((-23.33*2.5+17/2)*MeepMeepCompensation,(-23.33*2.5+17/2)*MeepMeepCompensation))
-                            .turnTo(Math.toRadians(45))
-                            .waitSeconds(1)//score
-                            //.stopAndAdd(new ActionWithSleep(servo, 0.5))
-                            .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
-                            .waitSeconds(1)//grab
-                            .setReversed(true)
-                            .waitSeconds(1)//reverse safety
-                            //.splineTo(new Vector2d(-23.33*2.5,-61.5), Math.toRadians(225))
-                            .splineTo(new Vector2d((-23.33*2.5+17/2)*MeepMeepCompensation,(-23.33*2.5+17/2)*MeepMeepCompensation), Math.toRadians(225))
-                            .waitSeconds(1)//score
-                            .setReversed(false)
-                            .waitSeconds(1)//reverse safety
-                            .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5-9)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
-                            .waitSeconds(1)//grab
-                            .setReversed(true)
-                            .waitSeconds(1)//reverse safety
-                            .splineTo(new Vector2d((-23.33*2.5+17/2)*MeepMeepCompensation,(-23.33*2.5+17/2)*MeepMeepCompensation), Math.toRadians(225))
-                            .waitSeconds(1)//score
-                            .setReversed(false)
-                            .waitSeconds(1)//reverse safety
-                            .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5-18)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))//135
-                            .waitSeconds(1)//grab
-                            .setReversed(true)
-                            .waitSeconds(1)//reverse safety
-                            .splineTo(new Vector2d((-23.33*2.5+17/2)*MeepMeepCompensation,(-23.33*2.5+17/2)*MeepMeepCompensation), Math.toRadians(225))
-                            .waitSeconds(1)//score
-                            .setReversed(false)
-                            .waitSeconds(1)//reverse safety
-                            .build());
-                            /*
+        Pose2d beginPose = new Pose2d(10, -60, Math.toRadians(-90));
+        Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 17 / 2) * MeepMeepCompensation, (-23.33 * 2.5 + 17 / 2) * MeepMeepCompensation);
 
-                             */
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        } else {
-            throw new RuntimeException();
-        }
+        waitForStart();
+        Actions.runBlocking(drive.actionBuilder(beginPose)
+
+                //go to scoring position
+                .strafeTo(scoring_position)
+                .turnTo(Math.toRadians(45))
+
+                //drop preloaded sample
+                .waitSeconds(1)//score
+
+                //go to first sample
+                .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
+                .waitSeconds(1)//grab
+                .setReversed(true)
+
+                //grab sample
+                .waitSeconds(2)
+
+                //return to scoring position
+                .splineTo(scoring_position, Math.toRadians(225))
+                .waitSeconds(1)//score
+                .setReversed(false)
+
+                //drop first sample
+                .waitSeconds(2)
+
+                //go to second sample
+                .turnTo(Math.toRadians(135))
+                .splineTo(new Vector2d((-34.99500-(23.33/2)-1.5-9)*MeepMeepCompensation, (-53+(23.33/2))*MeepMeepCompensation), Math.toRadians(90))
+                .waitSeconds(1)//grab
+                .setReversed(true)
+
+                //grab second sample
+                .waitSeconds(2)//reverse safety
+
+                //return to scoring position
+                .splineTo(scoring_position, Math.toRadians(0))
+                .waitSeconds(1)//score
+                .setReversed(false)
+                .turnTo(Math.toRadians(45))
+
+                //drop second sample
+                .waitSeconds(2)
+
+                //go to third sample
+                .turnTo(Math.toRadians(90))
+                .splineTo(new Vector2d((-55)*MeepMeepCompensation, (-35)*MeepMeepCompensation), Math.toRadians(90))//135
+                .waitSeconds(1)//grab
+                .setReversed(true)
+                .waitSeconds(1)//reverse safety
+
+                //grab third sample
+                .turnTo(Math.toRadians(135))
+                .setReversed(true)
+                .splineTo(scoring_position, Math.toRadians(225))
+                .waitSeconds(1)//score
+                .setReversed(false)
+
+                //score final sample
+                .waitSeconds(2)//reverse safety
+
+                //park
+                .strafeTo(new Vector2d((-57)*MeepMeepCompensation, (-57)*MeepMeepCompensation))
+
+                .build());
+
     }
 
     public class grabSample implements Action {
