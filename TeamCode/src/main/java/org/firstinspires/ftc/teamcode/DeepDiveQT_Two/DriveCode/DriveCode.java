@@ -322,19 +322,19 @@ public class DriveCode extends LinearOpMode {
 
     public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
 
-    public void outakearmPosState1(){
+    public void outakearmPosState1(){ //lean back fully
         slideRightServo.setPosition(0.05);
     }
 
-    public void outakearmPosState2(){
+    public void outakearmPosState2(){ //lean back somewhat
         slideRightServo.setPosition(0.2);
     }
 
-    public void outakearmPosState3(){
+    public void outakearmPosState3(){ //lean forward, perpedicular to slides
         slideRightServo.setPosition(0.75);
     }
 
-    public void outakearmPosState4(){
+    public void outakearmPosState4(){ //lean forward to grab sample
         slideRightServo.setPosition(.87);
     }
     //end
