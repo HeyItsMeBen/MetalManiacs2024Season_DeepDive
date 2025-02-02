@@ -75,7 +75,7 @@ public class Outtake extends OpMode {
 
     public void loop() {
 
-        slideController.setPID(Kp, Ki, Kd);
+       /* slideController.setPID(Kp, Ki, Kd);
 
         int slidePos = leftSlide.getCurrentPosition();
         double slidePID = slideController.calculate(slidePos, target);
@@ -85,7 +85,7 @@ public class Outtake extends OpMode {
 
         leftSlide.setPower(slidePower);
         rightSlide.setPower(slidePower);
-
+*/
         telemetry.addData("leftservopos", slideLeftServo.getPosition());
         telemetry.addData("rightservopos", slideRightServo.getPosition());
         telemetry.addData("target", target);

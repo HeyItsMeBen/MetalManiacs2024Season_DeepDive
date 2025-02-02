@@ -193,15 +193,28 @@ public class DriveCode extends LinearOpMode {
                 armRetract();
             }
             armRetract();
-
+            if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
+                outtakeServoOpen();
+                outakearmPosState4();
+                sleep(500);
+                outtakeServoClose();
+                sleep(100);
+                armServoOpen(0.35);
+                sleep(100);
+                outakearmPosState1();
+                sleep(1250);
+                outtakeServoClosetight();
+                sleep(100);
+                outakearmPosState2();
+            }
             if (driver.getButton(GamepadKeys.Button.Y)){
-                armtarget = -350;
+                armtarget = -390;
                 armRetract();
             }
             armRetract();
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                slidetarget = -3122;
+                slidetarget = -3300;
                 slidesMove();
             }
             slidesMove();
@@ -227,6 +240,9 @@ public class DriveCode extends LinearOpMode {
                 outtakeServoClose();
             }
 
+            if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
+                outtakeServoClosetight();
+            }
             if (operator.getButton(GamepadKeys.Button.B)){
                 outakearmPosState3();
             }
@@ -271,11 +287,11 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void setArmPivotServoOut(){
-        armPivotServo.setPosition(0.65);
+        armPivotServo.setPosition(0.425);
     }
 
     public void setArmPivotServoBack(){
-        armPivotServo.setPosition(0.5);
+        armPivotServo.setPosition(0.49);
     }
 
     public void slidesMove() {
@@ -301,23 +317,25 @@ public class DriveCode extends LinearOpMode {
     }
 
     public void outtakeServoClose(){
-        outtakeClawServo.setPosition(0);
+        outtakeClawServo.setPosition(0.035);
     }
+
+    public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
 
     public void outakearmPosState1(){
         slideRightServo.setPosition(0.05);
     }
 
     public void outakearmPosState2(){
-        slideRightServo.setPosition(0.25);
+        slideRightServo.setPosition(0.2);
     }
 
     public void outakearmPosState3(){
-        slideRightServo.setPosition(0.7525);
+        slideRightServo.setPosition(0.75);
     }
 
     public void outakearmPosState4(){
-        slideRightServo.setPosition(.85);
+        slideRightServo.setPosition(.87);
     }
     //end
 }
