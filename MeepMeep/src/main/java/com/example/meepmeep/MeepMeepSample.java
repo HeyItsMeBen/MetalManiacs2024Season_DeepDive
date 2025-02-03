@@ -25,7 +25,9 @@ public class MeepMeepSample {
 
                 //go to scoring position
                 .strafeTo(scoring_position)
-                .turnTo(Math.toRadians(45))
+                //.turnTo(Math.toRadians(45))
+                        //.strafeTo(new Vector2d(0, 0))
+                //.strafeToConstantHeading(new Vector2d(0, 0))
 
                 //drop preloaded sample
                 .waitSeconds(1)//score

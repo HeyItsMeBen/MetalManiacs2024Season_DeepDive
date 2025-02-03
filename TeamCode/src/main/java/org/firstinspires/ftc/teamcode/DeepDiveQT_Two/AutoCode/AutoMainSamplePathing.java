@@ -74,10 +74,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
-        Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 16 /2) * MeepMeepCompensation, (-23.33 * 2.5 + 16 / 2) * MeepMeepCompensation);
-
+        Vector2d scoring_position = new Vector2d((-50) * MeepMeepCompensation, (-50) * MeepMeepCompensation);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -85,87 +83,70 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
-                .stopAndAdd(new retrieveSample(hardwareMap))
+                //go to scoring position and score initial sample
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .waitSeconds(3) //score initial sample
 
-                //go to scoring position
-                .strafeTo(scoring_position)
-                .turnTo(Math.toRadians(45))
+                //grab and score first sample
+                .strafeToLinearHeading(new Vector2d(-48*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
+                .waitSeconds(2) //grab first sample
+                .waitSeconds(2) //transfer to linear slides
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .waitSeconds(3) //score first sample
 
+                //grab and score second sample
+                .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
+                .waitSeconds(2) //grab second sample
+                .waitSeconds(2) //transfer to linear slides
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .waitSeconds(3) //score second sample
 
-                //drop preloaded sample
-                .stopAndAdd(new retractSlide(hardwareMap))
-
-                //REMOVE THIS IF NOT WORKING v
-
-
-                //go to first sample
-                .turnTo(Math.toRadians(90))
-                .strafeTo(new Vector2d((-36-(23.33/2))*MeepMeepCompensation, (-55+(23.33/2))*MeepMeepCompensation))
-                .waitSeconds(0.5)//grab
-                .setReversed(true)
-
-
-                //grab sample
-                .stopAndAdd(new grabSample(hardwareMap)) //cycles claw
-
-                .waitSeconds(0.5)
-
-                .stopAndAdd(new retrieveSample(hardwareMap))
-
-                //return to scoring position
-                .splineTo(scoring_position, Math.toRadians(225))
-                .waitSeconds(0.5)//score
-                .setReversed(false)
-                //.waitSeconds(0.5)
-
-                //drop first sample
-                .stopAndAdd(new retractSlide(hardwareMap))
-
-
-//                //go to second sample
-//                .strafeTo(new Vector2d(-56, -56))
-//                .turnTo(Math.toRadians(90))
-//                .splineTo(new Vector2d(-59, -45), Math.toRadians(90))
-//                .waitSeconds(0.5)
-//                .setReversed(true)
-//
-//
-//                //grab second sample
-//                .stopAndAdd(new grabSample(hardwareMap))
-//
-//
-//                //return to scoring position
-//                .strafeTo((scoring_position))
-//                .waitSeconds(0.5)
-//                .setReversed(false)
-//                .turnTo(Math.toRadians(45))
-//
-//
-//                //drop second sample
-//                .stopAndAdd(new scoreSample(hardwareMap))
-
-
-                //REMOVE THIS IF NOT WORKING ^
-
-
-
-
-                //go to white triangle area
-                .turnTo(Math.toRadians(225))
-                .setReversed(true)
-                .splineTo(new Vector2d((-25)*MeepMeepCompensation, (-8)*MeepMeepCompensation), Math.toRadians(0))//135
-
-
-                //bring linear slide arm to bar
-                .stopAndAdd(new achieveFirstAscent(hardwareMap))
-
+                //go to achieve first ascent
+                .splineToLinearHeading(new Pose2d(-25*MeepMeepCompensation, (-5*MeepMeepCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .waitSeconds(1) //achieve first ascent
 
                 .build());
-
 
     }
 
 
+    public class grabSample implements Action {
+        Servo intakeClaw;
+        Servo highBarPivot;
+        DcMotor arm;
+        int armPos;
+        double armPID;
+        double armFF;
+        double armpower;
+
+
+        public grabSample(HardwareMap hMap) {
+
+
+            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
+            highBarPivot = hardwareMap.get(Servo.class, "rightOuttake");
+            arm = hMap.get(DcMotor.class, "arm");
+
+
+
+        }
+
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeClaw.setPosition(0.35);   //open
+            highBarPivot.setPosition(0.5);
+
+            setArmTarget(-350, 0.75);   //arm down
+            setArmTarget(-400, 1);      //arm down a bit more
+            setIntakeClawPosition(0.035);   //close
+            setArmTarget(-100, 1);      //arm up
+            setArmTarget(0, 1);      //arm up abit more
+
+            // do we need to keep running?
+            return false;
+        }
+    }/*
     public class grabSample implements Action {
         Servo intakeClaw;
         Servo highBarPivot;
@@ -260,7 +241,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 return false;
             }
         }
-    }
+    }*/
     public class retrieveSample implements Action {
         DcMotor leftSlide = null;
         DcMotor rightSlide = null;
@@ -461,7 +442,42 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         }
     }
 
+    public void setArmTarget(double target, double seconds){
+        DcMotor arm;
+        int armPos;
+        double armPID;
+        double armFF;
+        double armpower;
+        ElapsedTime timer;
+        timer=new ElapsedTime();
 
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armController = new PIDController(Arm_p, Arm_i, Arm_d);
+
+        while (timer.seconds()<seconds) {
+            armController.setPID(Arm_p, Arm_i, Arm_d);
+            armPos = arm.getCurrentPosition();
+            armPID = armController.calculate(armPos, target);
+            armFF = Math.cos(Math.toRadians(target / ticks_in_degree)) * Arm_f;
+            armpower = armPID + armFF;
+            arm.setPower(armpower);
+        }
+    }
+    public void setIntakeClawPosition(double position){
+        Servo intakeClaw;
+
+        intakeClaw=hardwareMap.get(Servo.class, "intakeClawServo");
+
+        intakeClaw.setPosition(position);
+
+        while (intakeClaw.getPosition()!=position){
+            //empty loop. Keeps running until actual position reaches target position
+        }
+    }
 }
 
 
