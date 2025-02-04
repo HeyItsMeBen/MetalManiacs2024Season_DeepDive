@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -14,7 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode.DriveCode;
 import org.firstinspires.ftc.teamcode.Hw.Outtake;
 
 @Config
@@ -176,17 +172,17 @@ public class DriveCode extends LinearOpMode {
 
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
                 outtake.outtakeServoOpen();
-                outtake.outakearmPosState4();
+                outtake.outtakearmPosState4();
                 sleep(1000);
                 outtake.outtakeServoClose();
                 sleep(100);
                 armServoOpen(0.35);
                 sleep(100);
-                outtake.outakearmPosState1();
+                outtake.outtakearmPosState1();
                 sleep(1250);
                 outtake.outtakeServoClosetight();
                 sleep(100);
-                outtake.outakearmPosState2();
+                outtake.outtakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
                 armtarget = -350;
@@ -230,18 +226,18 @@ public class DriveCode extends LinearOpMode {
                 outtake.outtakeServoClosetight();
             }
             if (operator.getButton(GamepadKeys.Button.B)){
-                outtake.outakearmPosState3();
+                outtake.outtakearmPosState3();
             }
             if (operator.getButton(GamepadKeys.Button.X)){
-                outtake.outakearmPosState2();
+                outtake.outtakearmPosState2();
             }
 
             if (operator.getButton(GamepadKeys.Button.Y)){
-                outtake.outakearmPosState4();
+                outtake.outtakearmPosState4();
             }
 
             if (operator.getButton(GamepadKeys.Button.A)){
-                outtake.outakearmPosState1();
+                outtake.outtakearmPosState1();
             }
 
             //when OpMode is Active

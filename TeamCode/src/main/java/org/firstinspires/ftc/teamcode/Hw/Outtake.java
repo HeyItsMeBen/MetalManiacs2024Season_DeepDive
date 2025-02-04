@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -61,7 +60,7 @@ public class Outtake extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         //Set Servos to stand-by
-        outakearmPosState3();
+        outtakearmPosState3();
         //outtake claws inside
         outtakeServoClose();
     }
@@ -101,23 +100,23 @@ public class Outtake extends OpMode {
 
     public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
 
-    public void outakearmPosState1(){
+    public void outtakearmPosState1(){
         leftOuttakeArm.setPosition(STATE_1[0]);
         rightOuttakeArm.setPosition(STATE_1[1]);
 
     }
 
-    public void outakearmPosState2(){
+    public void outtakearmPosState2(){
         leftOuttakeArm.setPosition(STATE_2[0]);
         rightOuttakeArm.setPosition(STATE_2[1]);
     }
 
-    public void outakearmPosState3(){
+    public void outtakearmPosState3(){
         leftOuttakeArm.setPosition(STATE_3[0]);
         rightOuttakeArm.setPosition(STATE_3[1]);
     }
 
-    public void outakearmPosState4(){
+    public void outtakearmPosState4(){
         leftOuttakeArm.setPosition(STATE_4[0]);
         rightOuttakeArm.setPosition(STATE_4[1]);
     }
