@@ -28,20 +28,17 @@ public class Outtake extends OpMode {
     double Kf = 0 ;
     public int slidetarget = 0;
 
-    //Gobilda 202 19.2:1
-    private final double ticks_in_degree = 537.7/360;
-
     //pick up arm servo pos
-    double STATE_1[] = {1,0};
+    double[] STATE_1 = {1,0};
 
     //Stand-by arm servo pos
-    double STATE_2[] = {0.7,.3};
+    double[] STATE_2 = {0.7,.3};
 
     //ready to score arm servo pos
-    double STATE_3[] = {.2,.8};
+    double[] STATE_3 = {.2,.8};
 
     //Scored arm servo pos
-    double STATE_4[] = {0,1};
+    double[] STATE_4 = {0,1};
 
     public void init() {
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
@@ -82,9 +79,11 @@ public class Outtake extends OpMode {
     public void slidesMove() {
 
         slideController.setPID(Kp, Ki, Kd);
-
+        double ticks_in_degree = 537.7 / 360;
         int slidePos = rightSlide.getCurrentPosition();
         double slidePID = slideController.calculate(slidePos, slidetarget);
+        //Gobilda 202 19.2:1
+
         double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
 
         double slidePower = slidePID + slideFF;
