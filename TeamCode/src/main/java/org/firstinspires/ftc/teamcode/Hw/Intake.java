@@ -39,8 +39,8 @@ public class Intake extends OpMode {
 
     public void loop() {
        armRetract();
-
     }
+
     public void armRetract() {
         armController.setPID(p, i, d);
         double ticks_in_degree = 537.7 / 360;
@@ -50,7 +50,7 @@ public class Intake extends OpMode {
 
         double armpower = armPID + armFF;
 
-        arm.setPower(armpower);
+        arm.setPower(armpower * 0.75);
 
         telemetry.addData("armPos", armPos);
         telemetry.addData("armTarget", armtarget);

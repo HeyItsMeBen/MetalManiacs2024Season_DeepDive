@@ -166,7 +166,7 @@ public class DriveCode extends LinearOpMode {
             }
             outtake.slidesMove();
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                Outtake.slidetarget = -500;
+                Outtake.slidetarget = -600;
                 outtake.slidesMove();
             }
             outtake.slidesMove();
