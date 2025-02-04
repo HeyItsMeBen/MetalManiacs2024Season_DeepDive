@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Hw.Intake;
 import org.firstinspires.ftc.teamcode.Hw.Outtake;
 
 @Config
@@ -22,36 +23,10 @@ public class DriveCode extends LinearOpMode {
     public GamepadEx driver;
     public GamepadEx operator;
 
-    private ElapsedTime runtime = new ElapsedTime();
-
-    int slidetarget;
-
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    public DcMotor arm = null;
-
-    private Servo armServo = null;
-    private Servo armPivotServo = null;
-
-    private PIDController armController;
-    public static double p = 0.0025, i = 0.05, d = 0.0001;
-    public static double f = 0;
-
-    public static int armtarget = 0;
-
-    //Outtake subsystem
-    private DcMotor leftSlide = null;
-    private DcMotor rightSlide = null;
-
-    private Servo outtakeClawServo = null;
-    private Servo slideLeftServo = null;
-    private Servo slideRightServo = null;
-
-    private PIDController slideController;
-
-    private static double Kp = 0.009, Ki = 0, Kd = 0.0005, Kf = 0;
 
     //Gobilda 202 19.2:1
     private final double ticks_in_degree = 537.7/360;
@@ -63,6 +38,7 @@ public class DriveCode extends LinearOpMode {
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
         Outtake outtake = new Outtake();
+        Intake intake = new Intake();
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -87,34 +63,23 @@ public class DriveCode extends LinearOpMode {
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //arm Subsystem
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        armServo = hardwareMap.get(Servo.class, "intakeClawServo");
-        armPivotServo = hardwareMap.get(Servo.class, "intakePivotServo");
 
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        armController = new PIDController(p, i, d);
-
-        //Outtake Subsystem
+        //Outtake Subsystem init
         outtake.init();
-
+        //Intake Subsystem init
+        intake.init();
         //Set pivot to neutral
-        setArmPivotServoBack();
+        intake.setArmPivotServoBack();
         //claws to outside
-        armServoOpen(0.35);
+        intake.armServoOpen(0.35);
 
         telemetry.addData(">", "Status: Initialized");
         telemetry.update();
         waitForStart();
-        runtime.reset();
 
         while (opModeIsActive()) {
             outtake.slidesMove();
-            armRetract();
+            intake.armRetract();
             // Drive Code
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
@@ -149,26 +114,26 @@ public class DriveCode extends LinearOpMode {
 
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                armServoOpen(0.35);
+                intake.armServoOpen(0.35);
             }
             // arm claw close
             if (driver.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                armServoClose();
+                intake.armServoClose();
             }
             //Makes intake pivot go out 0.15 so variable is now 0.65
             if (driver.getButton(GamepadKeys.Button.X)) {
-                setArmPivotServoOut();
+                intake.setArmPivotServoOut();
             }
             //Brings pivot back to 0.5
             if (driver.getButton(GamepadKeys.Button.B)){
-                setArmPivotServoBack();
+                intake.setArmPivotServoBack();
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                armtarget = 0;
-                armRetract();
+                Intake.armtarget = 0;
+                intake.armRetract();
             }
-            armRetract();
+            intake.armRetract();
 
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
                 outtake.outtakeServoOpen();
@@ -176,7 +141,7 @@ public class DriveCode extends LinearOpMode {
                 sleep(1000);
                 outtake.outtakeServoClose();
                 sleep(100);
-                armServoOpen(0.35);
+                intake.armServoOpen(0.35);
                 sleep(100);
                 outtake.outtakearmPosState1();
                 sleep(1250);
@@ -185,30 +150,30 @@ public class DriveCode extends LinearOpMode {
                 outtake.outtakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
-                armtarget = -350;
-                armRetract();
+                Intake.armtarget = -350;
+                intake.armRetract();
             }
 
             if (driver.getButton(GamepadKeys.Button.DPAD_DOWN)){
-                armtarget = -425;
-                armRetract();
+                Intake.armtarget = -425;
+                intake.armRetract();
             }
-            armRetract();
+            intake.armRetract();
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                outtake.slidetarget = -3300;
+                Outtake.slidetarget = -3300;
                 outtake.slidesMove();
             }
             outtake.slidesMove();
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                outtake.slidetarget = -500;
+                Outtake.slidetarget = -500;
                 outtake.slidesMove();
             }
             outtake.slidesMove();
 
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                outtake.slidetarget = 0;
+                Outtake.slidetarget = 0;
                 outtake.slidesMove();
             }
             outtake.slidesMove();
@@ -243,37 +208,6 @@ public class DriveCode extends LinearOpMode {
             //when OpMode is Active
         }
         //Run OpMode
-    }
-    public void armRetract() {
-        armController.setPID(p, i, d);
-
-            int armPos = arm.getCurrentPosition();
-            double armPID = armController.calculate(armPos, armtarget);
-            double armFF = Math.cos(Math.toRadians(armtarget / ticks_in_degree)) * f;
-
-            double armpower = armPID + armFF;
-
-            arm.setPower(armpower);
-
-            telemetry.addData("armPos", armPos);
-            telemetry.addData("armTarget", armtarget);
-            telemetry.update();
-    }
-
-    public void armServoOpen(double pos){
-        armServo.setPosition(pos);
-    }
-
-    public void armServoClose(){
-        armServo.setPosition(0.035);
-    }
-
-    public void setArmPivotServoOut(){
-        armPivotServo.setPosition(0.35);
-    }
-
-    public void setArmPivotServoBack(){
-        armPivotServo.setPosition(0.49);
     }
     //end
 }

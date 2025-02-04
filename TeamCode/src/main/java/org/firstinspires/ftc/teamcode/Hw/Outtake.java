@@ -25,7 +25,7 @@ public class Outtake extends OpMode {
 
     public static double Kp = 0.009, Ki = 0, Kd = 0.0005;
     double Kf = 0 ;
-    public int slidetarget = 0;
+    public static int slidetarget = 0;
 
     //pick up arm servo pos
     double[] STATE_1 = {1,0};
@@ -39,6 +39,7 @@ public class Outtake extends OpMode {
     //Scored arm servo pos
     double[] STATE_4 = {0,1};
 
+    //Outtake subsystem
     public void init() {
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
