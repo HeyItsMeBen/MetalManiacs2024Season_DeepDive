@@ -1,0 +1,127 @@
+package org.firstinspires.ftc.teamcode.Hw;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+@Config
+@TeleOp
+public class Outtake extends OpMode {
+
+    private DcMotor leftSlide = null;
+    private DcMotor rightSlide = null;
+
+    private Servo outtakeClawServo = null;
+    private Servo leftOuttakeArm = null;
+    private Servo rightOuttakeArm = null;
+
+    private PIDController slideController;
+
+    public static double Kp = 0.009, Ki = 0, Kd = 0.0005;
+    double Kf = 0 ;
+    public int slidetarget = 0;
+
+    //Gobilda 202 19.2:1
+    private final double ticks_in_degree = 537.7/360;
+
+    //pick up arm servo pos
+    double STATE_1[] = {1,0};
+
+    //Stand-by arm servo pos
+    double STATE_2[] = {0.7,.3};
+
+    //ready to score arm servo pos
+    double STATE_3[] = {.2,.8};
+
+    //Scored arm servo pos
+    double STATE_4[] = {0,1};
+
+    public void init() {
+        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+        leftOuttakeArm = hardwareMap.get(Servo.class, "leftOuttake");
+        rightOuttakeArm = hardwareMap.get(Servo.class, "rightOuttake");
+        outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
+
+        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideController = new PIDController(Kp, Ki, Kd);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        //Set Servos to stand-by
+        outakearmPosState3();
+        //outtake claws inside
+        outtakeServoClose();
+    }
+
+    public void loop() {
+        slidesMove();
+
+        telemetry.addData("leftservopos", leftOuttakeArm.getPosition());
+        telemetry.addData("rightservopos", rightOuttakeArm.getPosition());
+        telemetry.addData("target", slidetarget);
+        telemetry.addData("leftslidepos", leftSlide.getCurrentPosition());
+        telemetry.update();
+    }
+
+    public void slidesMove() {
+
+        slideController.setPID(Kp, Ki, Kd);
+
+        int slidePos = rightSlide.getCurrentPosition();
+        double slidePID = slideController.calculate(slidePos, slidetarget);
+        double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
+
+        double slidePower = slidePID + slideFF;
+
+        leftSlide.setPower(slidePower);
+        rightSlide.setPower(slidePower);
+
+        telemetry.addData("slidePos", slidePos);
+        telemetry.addData("slideTarget", slidetarget);
+        telemetry.update();
+    }
+    public void outtakeServoOpen(){outtakeClawServo.setPosition(0.2);}
+
+    public void outtakeServoClose(){outtakeClawServo.setPosition(0.035);}
+
+    public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
+
+    public void outakearmPosState1(){
+        leftOuttakeArm.setPosition(STATE_1[0]);
+        rightOuttakeArm.setPosition(STATE_1[1]);
+
+    }
+
+    public void outakearmPosState2(){
+        leftOuttakeArm.setPosition(STATE_2[0]);
+        rightOuttakeArm.setPosition(STATE_2[1]);
+    }
+
+    public void outakearmPosState3(){
+        leftOuttakeArm.setPosition(STATE_3[0]);
+        rightOuttakeArm.setPosition(STATE_3[1]);
+    }
+
+    public void outakearmPosState4(){
+        leftOuttakeArm.setPosition(STATE_4[0]);
+        rightOuttakeArm.setPosition(STATE_4[1]);
+    }
+
+    //end
+}

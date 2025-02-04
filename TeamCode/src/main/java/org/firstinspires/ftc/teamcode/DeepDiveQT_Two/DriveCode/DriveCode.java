@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode.DriveCode;
+import org.firstinspires.ftc.teamcode.Hw.Outtake;
 
 @Config
 @TeleOp(name = "QT Drive Code", group = "Linear OpMode")
@@ -65,6 +66,7 @@ public class DriveCode extends LinearOpMode {
 
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
+        Outtake outtake = new Outtake();
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -102,30 +104,8 @@ public class DriveCode extends LinearOpMode {
         armController = new PIDController(p, i, d);
 
         //Outtake Subsystem
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
-        slideLeftServo = hardwareMap.get(Servo.class, "leftOuttake");
-        slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
-        outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
+        outtake.init();
 
-        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        //leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        slideController = new PIDController(Kp, Ki, Kd);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        //Set Servos to stand-by
-        outakearmPosState3();
-        //outtake claws inside
-        outtakeServoClose();
         //Set pivot to neutral
         setArmPivotServoBack();
         //claws to outside
@@ -137,7 +117,7 @@ public class DriveCode extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            slidesMove();
+            outtake.slidesMove();
             armRetract();
             // Drive Code
             double x = gamepad1.left_stick_x;
@@ -195,18 +175,18 @@ public class DriveCode extends LinearOpMode {
             armRetract();
 
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
-                outtakeServoOpen();
-                outakearmPosState4();
+                outtake.outtakeServoOpen();
+                outtake.outakearmPosState4();
                 sleep(1000);
-                outtakeServoClose();
+                outtake.outtakeServoClose();
                 sleep(100);
                 armServoOpen(0.35);
                 sleep(100);
-                outakearmPosState1();
+                outtake.outakearmPosState1();
                 sleep(1250);
-                outtakeServoClosetight();
+                outtake.outtakeServoClosetight();
                 sleep(100);
-                outakearmPosState2();
+                outtake.outakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
                 armtarget = -350;
@@ -220,48 +200,48 @@ public class DriveCode extends LinearOpMode {
             armRetract();
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                slidetarget = -3300;
-                slidesMove();
+                outtake.slidetarget = -3300;
+                outtake.slidesMove();
             }
-            slidesMove();
+            outtake.slidesMove();
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                slidetarget = -500;
-                slidesMove();
+                outtake.slidetarget = -500;
+                outtake.slidesMove();
             }
-            slidesMove();
+            outtake.slidesMove();
 
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                slidetarget = 0;
-                slidesMove();
+                outtake.slidetarget = 0;
+                outtake.slidesMove();
             }
-            slidesMove();
+            outtake.slidesMove();
             // slide arm claw open
             if (operator.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                outtakeServoOpen();
+                outtake.outtakeServoOpen();
             }
             // arm claw close
 
             if (operator.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                outtakeServoClose();
+                outtake.outtakeServoClose();
             }
 
             if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
-                outtakeServoClosetight();
+                outtake.outtakeServoClosetight();
             }
             if (operator.getButton(GamepadKeys.Button.B)){
-                outakearmPosState3();
+                outtake.outakearmPosState3();
             }
             if (operator.getButton(GamepadKeys.Button.X)){
-                outakearmPosState2();
+                outtake.outakearmPosState2();
             }
 
             if (operator.getButton(GamepadKeys.Button.Y)){
-                outakearmPosState4();
+                outtake.outakearmPosState4();
             }
 
             if (operator.getButton(GamepadKeys.Button.A)){
-                outakearmPosState1();
+                outtake.outakearmPosState1();
             }
 
             //when OpMode is Active
@@ -298,50 +278,6 @@ public class DriveCode extends LinearOpMode {
 
     public void setArmPivotServoBack(){
         armPivotServo.setPosition(0.49);
-    }
-
-    public void slidesMove() {
-
-        slideController.setPID(Kp, Ki, Kd);
-
-            int slidePos = rightSlide.getCurrentPosition();
-            double slidePID = slideController.calculate(slidePos, slidetarget);
-            double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
-
-            double slidePower = slidePID + slideFF;
-
-            leftSlide.setPower(slidePower);
-            rightSlide.setPower(slidePower);
-
-            telemetry.addData("slidePos", slidePos);
-            telemetry.addData("slideTarget", slidetarget);
-            telemetry.update();
-    }
-
-    public void outtakeServoOpen(){
-        outtakeClawServo.setPosition(0.2);
-    }
-
-    public void outtakeServoClose(){
-        outtakeClawServo.setPosition(0.035);
-    }
-
-    public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
-
-    public void outakearmPosState1(){
-        slideRightServo.setPosition(0);
-    }
-
-    public void outakearmPosState2(){
-        slideRightServo.setPosition(0.3);
-    }
-
-    public void outakearmPosState3(){
-        slideRightServo.setPosition(0.885);
-    }
-
-    public void outakearmPosState4(){
-        slideRightServo.setPosition(0.99);
     }
     //end
 }
