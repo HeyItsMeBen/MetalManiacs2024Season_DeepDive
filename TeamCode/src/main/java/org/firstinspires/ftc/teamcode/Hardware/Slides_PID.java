@@ -14,7 +14,13 @@ public class Slides_PID {
     public Slides_PID (HardwareMap hMap) {
         leftSlide = hMap.get(DcMotor.class, "leftSlide");
         rightSlide = hMap.get(DcMotor.class, "rightSlide");
+
+        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+    //WARNING. U NEED to run this method in a LOOP, or it WON'T STOP
     public void setSlidesTarget(double target){
         slideController.setPID(Kp, Ki, Kd);
 
