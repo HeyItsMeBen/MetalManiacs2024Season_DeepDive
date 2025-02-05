@@ -28,7 +28,6 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.Hardware.Arm_PIDF_UsableFromOtherClasses;
 import org.firstinspires.ftc.teamcode.Hardware.compLinearSlide;
-import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
 
 
 @Autonomous(name = "Sample Pathing", group = "Linear OpMode")

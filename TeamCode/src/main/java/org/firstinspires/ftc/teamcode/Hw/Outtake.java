@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @TeleOp
@@ -27,6 +28,7 @@ public class Outtake extends OpMode {
     double Kf = 0 ;
     public static int slidetarget = 0;
 
+    ElapsedTime runtime = new ElapsedTime();
     //pick up arm servo pos
     double[] STATE_1 = {1,0};
 
@@ -61,13 +63,27 @@ public class Outtake extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         //Set Servos to stand-by
-        outtakearmPosState3();
+        //outtakearmPosState3();
         //outtake claws inside
-        outtakeServoClose();
+        //outtakeServoClose();
     }
 
     public void loop() {
         slidesMove();
+
+        if (gamepad2.a){
+            outtakearmPosState1();
+        }
+        if (gamepad2.x){
+            outtakearmPosState3();
+        }
+
+        if (gamepad2.b){
+            outtakearmPosState2();
+        }
+        if (gamepad2.y){
+            outtakearmPosState4();
+        }
 
         telemetry.addData("leftservopos", leftOuttakeArm.getPosition());
         telemetry.addData("rightservopos", rightOuttakeArm.getPosition());
@@ -88,14 +104,28 @@ public class Outtake extends OpMode {
 
         double slidePower = slidePID + slideFF;
 
-        leftSlide.setPower(slidePower);
-        rightSlide.setPower(slidePower);
+        if (slidetarget == 0) {
+            leftSlide.setPower(slidePower * 0.8);
+            rightSlide.setPower(slidePower * 0.8);
+        } else {
+            leftSlide.setPower(slidePower);
+            rightSlide.setPower(slidePower);
+        }
 
         telemetry.addData("slidePos", slidePos);
         telemetry.addData("slideTarget", slidetarget);
         telemetry.update();
     }
-    public void outtakeServoOpen(){outtakeClawServo.setPosition(0.2);}
+    public void outtakeServoOpen(){
+        runtime.reset();
+        outtakeClawServo.setPosition(0.2);
+        if (slidetarget == -3300){
+            if (runtime.milliseconds() > 300){
+                outtakearmPosState3();
+                slidetarget = 0;
+            }
+        }
+    }
 
     public void outtakeServoClose(){outtakeClawServo.setPosition(0.035);}
 

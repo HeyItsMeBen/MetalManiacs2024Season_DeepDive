@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Hw;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 @TeleOp(name = "Intake", group = "OpMode")
 public class Intake extends OpMode {
 
@@ -16,10 +20,12 @@ public class Intake extends OpMode {
     private Servo armPivotServo = null;
 
     private PIDController armController;
-    public static double p = 0.0025, i = 0.05, d = 0.0001;
+    public static double p = 0.005, i = 0., d = 0.00075;
     public static double f = 0;
 
     public static int armtarget = 0;
+
+    public double pivotTarget = 0.5;
 
 
     public void init() {
@@ -34,7 +40,7 @@ public class Intake extends OpMode {
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         armController = new PIDController(p, i, d);
-
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     public void loop() {
@@ -66,10 +72,11 @@ public class Intake extends OpMode {
     }
 
     public void setArmPivotServoOut(){
-        armPivotServo.setPosition(0.35);
+        pivotTarget += 0.15;
+        armPivotServo.setPosition(pivotTarget);
     }
 
     public void setArmPivotServoBack(){
-        armPivotServo.setPosition(0.49);
+        armPivotServo.setPosition(0.5);
     }
 }

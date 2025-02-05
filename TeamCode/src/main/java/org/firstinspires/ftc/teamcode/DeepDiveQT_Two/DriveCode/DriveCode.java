@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hw.Intake;
 import org.firstinspires.ftc.teamcode.Hw.Outtake;
+
+import java.util.concurrent.CountDownLatch;
 
 @Config
 @TeleOp(name = "QT Drive Code", group = "Linear OpMode")
@@ -28,9 +29,17 @@ public class DriveCode extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
-    //Gobilda 202 19.2:1
-    private final double ticks_in_degree = 537.7/360;
 
+    private DcMotor leftSlide = null;
+    private DcMotor rightSlide = null;
+
+    private Servo outtakeClawServo = null;
+    private Servo leftOuttakeArm = null;
+    private Servo rightOuttakeArm = null;
+
+    public DcMotor arm = null;
+    private Servo armServo = null;
+    private Servo armPivotServo = null;
     // Note: pushing stick forward gives negative value
     @Override
     public void runOpMode() {
@@ -39,6 +48,8 @@ public class DriveCode extends LinearOpMode {
         operator = new GamepadEx(gamepad2);
         Outtake outtake = new Outtake();
         Intake intake = new Intake();
+        ElapsedTime timer = new ElapsedTime();
+
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -64,19 +75,43 @@ public class DriveCode extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
+        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+        leftOuttakeArm = hardwareMap.get(Servo.class, "leftOuttake");
+        rightOuttakeArm = hardwareMap.get(Servo.class, "rightOuttake");
+        outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
         //Outtake Subsystem init
-        outtake.init();
+
+        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //Intake Subsystem init
-        intake.init();
+        //arm Subsystem
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        armServo = hardwareMap.get(Servo.class, "intakeClawServo");
+        armPivotServo = hardwareMap.get(Servo.class, "intakePivotServo");
+
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //Set pivot to neutral
         intake.setArmPivotServoBack();
         //claws to outside
-        intake.armServoOpen(0.35);
-
+        intake.armServoClose();
+        //intake.armServoOpen(0.35);
         telemetry.addData(">", "Status: Initialized");
         telemetry.update();
         waitForStart();
-
+        timer.reset();
         while (opModeIsActive()) {
             outtake.slidesMove();
             intake.armRetract();
@@ -111,7 +146,6 @@ public class DriveCode extends LinearOpMode {
             backLeftDrive.setPower(leftBackPower * 0.8);
             backRightDrive.setPower(rightBackPower * 0.8);
 
-
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
                 intake.armServoOpen(0.35);
@@ -131,21 +165,20 @@ public class DriveCode extends LinearOpMode {
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
                 Intake.armtarget = 0;
+                intake.setArmPivotServoBack();
                 intake.armRetract();
             }
             intake.armRetract();
 
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
+
                 outtake.outtakeServoOpen();
                 outtake.outtakearmPosState4();
+                timer.reset();
                 sleep(1000);
-                outtake.outtakeServoClose();
+                outtake.outtakeServoClosetight();
                 sleep(100);
                 intake.armServoOpen(0.35);
-                sleep(100);
-                outtake.outtakearmPosState1();
-                sleep(1250);
-                outtake.outtakeServoClosetight();
                 sleep(100);
                 outtake.outtakearmPosState2();
             }
