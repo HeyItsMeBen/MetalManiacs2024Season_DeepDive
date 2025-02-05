@@ -77,7 +77,6 @@ public class Outtake extends OpMode {
         if (gamepad2.x){
             outtakearmPosState3();
         }
-
         if (gamepad2.b){
             outtakearmPosState2();
         }

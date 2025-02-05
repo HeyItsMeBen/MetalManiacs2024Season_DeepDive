@@ -194,12 +194,12 @@ public class DriveCode extends LinearOpMode {
             intake.armRetract();
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                Outtake.slidetarget = -3300;
+                Outtake.slidetarget = 3300;
                 outtake.slidesMove();
             }
             outtake.slidesMove();
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                Outtake.slidetarget = -600;
+                Outtake.slidetarget = 600;
                 outtake.slidesMove();
             }
             outtake.slidesMove();
