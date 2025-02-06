@@ -20,15 +20,18 @@ public class MeepMeepSpecimen {
                 .build();
 
         //Vector2d scoring_position = new Vector2d((-23.33 * 2.5 + 17 / 2) * MeepMeepCompensation, (-23.33 * 2.5 + 17 / 2) * MeepMeepCompensation);
-        Pose2d beginPose = new Pose2d(10, -60, Math.toRadians(-90));
+        Pose2d beginPose = new Pose2d(-34.99500+23.33+23.6+2.0, -61.5, Math.toRadians(270));
 
         myBot.runAction(myBot.getDrive().actionBuilder(beginPose)
 
-                .waitSeconds(3) //set timer if you want
-
-                //hang preloaded sample
                 .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38) * MeepMeepCompensation))
+                //.stopAndAdd(new scoreSpecimenPart1(hardwareMap))
+                .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38+1) * MeepMeepCompensation))    //shud be +4
+                //.stopAndAdd(new scoreSpecimenPart2(hardwareMap))
+                .strafeTo( new Vector2d((5) * MeepMeepCompensation, (-38-8) * MeepMeepCompensation))
+
                 .waitSeconds(2)
+                //.stopAndAdd(new setStandby(hardwareMap))
 
                 .splineTo(new Vector2d((20)*MeepMeepCompensation, (-53)*MeepMeepCompensation), Math.toRadians(Math.PI/2))
                 .splineTo(new Vector2d((35)*MeepMeepCompensation, (-12)*MeepMeepCompensation), Math.toRadians(90))

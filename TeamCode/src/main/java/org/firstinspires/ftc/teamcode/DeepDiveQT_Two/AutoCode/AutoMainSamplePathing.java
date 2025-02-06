@@ -28,11 +28,7 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.Hardware.Arm_PIDF_UsableFromOtherClasses;
 import org.firstinspires.ftc.teamcode.Hardware.compLinearSlide;
-<<<<<<< HEAD
-=======
 //import org.firstinspires.ftc.teamcode.Hardware.outtakeArm_PIDF;
->>>>>>> 63987c9381aff7f6fe39faa5f9adb1ee0bb64af8
-
 
 @Autonomous(name = "Sample Pathing", group = "Linear OpMode")
 public final class AutoMainSamplePathing extends LinearOpMode {
@@ -78,7 +74,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
-        Vector2d scoring_position = new Vector2d((-50) * MeepMeepCompensation, (-50) * MeepMeepCompensation);
+        Vector2d scoring_position = new Vector2d((-48) * MeepMeepCompensation, (-48) * MeepMeepCompensation);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -92,21 +88,21 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .waitSeconds(3) //score initial sample
 
                 //grab and score first sample
-                .strafeToLinearHeading(new Vector2d(-45*MeepMeepCompensation, -45*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-49*MeepMeepCompensation, -44*MeepMeepCompensation), Math.toRadians(90))
                 .waitSeconds(2) //grab first sample
                 .waitSeconds(2) //transfer to linear slides
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                 .waitSeconds(3) //score first sample
 
                 //grab and score second sample
-                .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -45*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -44*MeepMeepCompensation), Math.toRadians(90))
                 .waitSeconds(2) //grab second sample
                 .waitSeconds(2) //transfer to linear slides
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                 .waitSeconds(3) //score second sample
 
                 //go to achieve first ascent
-                .splineToLinearHeading(new Pose2d(-27*MeepMeepCompensation, (-5*MeepMeepCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-25*MeepMeepCompensation, (-5*MeepMeepCompensation), Math.toRadians(180)), Math.toRadians(0))
                 .waitSeconds(1) //achieve first ascent
 
                 .build());
