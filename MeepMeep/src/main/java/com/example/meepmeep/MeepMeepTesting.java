@@ -19,25 +19,24 @@ public class MeepMeepTesting {
                 .setDimensions(18, 18)
                 .build();
 
-        Vector2d scoring_position = new Vector2d((-48) * MeepMeepCompensation, (-48) * MeepMeepCompensation);
+        Vector2d scoring_position = new Vector2d((-50) * MeepMeepCompensation, (-50) * MeepMeepCompensation);
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
 
         Finn.runAction(Finn.getDrive().actionBuilder(beginPose)
 
                 //go to scoring position and score initial sample
-                .strafeTo(scoring_position)
-                .turnTo(Math.toRadians(45))
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                         .waitSeconds(3) //score initial sample
 
                 //grab and score first sample
-                .strafeToLinearHeading(new Vector2d(-49*MeepMeepCompensation, -44*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-48*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
                     .waitSeconds(2) //grab first sample
                     .waitSeconds(2) //transfer to linear slides
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                     .waitSeconds(3) //score first sample
 
                 //grab and score second sample
-                .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -44*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
                     .waitSeconds(2) //grab second sample
                     .waitSeconds(2) //transfer to linear slides
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
