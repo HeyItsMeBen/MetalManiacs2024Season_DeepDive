@@ -46,16 +46,18 @@ public class DriveCode extends LinearOpMode {
     double Kf = 0 ;
     public static int slidetarget = 0;
 
+    // State for picking up specimens
     double[] STATE_1 = {1,0};
-
-    //Stand-by arm servo pos
+    
+    //State for depositing in basket
     double[] STATE_2 = {0.7,.3};
 
-    //ready to score arm servo pos
+    //"Stand-by state" (After deposit + default state)
     double[] STATE_3 = {.3,.7};
 
-    //Scored arm servo pos
+    //State being able to transfer
     double[] STATE_4 = {0.135,0.865};
+
 
 
     public DcMotor arm = null;
