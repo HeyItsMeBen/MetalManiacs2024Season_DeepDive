@@ -34,13 +34,13 @@ public class Outtake extends OpMode {
     double[] STATE_1 = {1,0};
 
     //Stand-by arm servo pos
-    double[] STATE_2 = {0.7,.3};
+    double[] STATE_2 = {0.725,.275};
 
     //ready to score arm servo pos
     double[] STATE_3 = {.2,.8};
 
     //Scored arm servo pos
-    double[] STATE_4 = {0.135,0.865};
+    double[] STATE_4 = {0.125,0.875};
 
     //Outtake subsystem
     public void init() {
@@ -63,10 +63,6 @@ public class Outtake extends OpMode {
         slideController = new PIDController(Kp, Ki, Kd);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        //Set Servos to stand-by
-        //outtakearmPosState3();
-        //outtake claws inside
-        //outtakeServoClose();
     }
 
     public Outtake(HardwareMap hwMap) {
