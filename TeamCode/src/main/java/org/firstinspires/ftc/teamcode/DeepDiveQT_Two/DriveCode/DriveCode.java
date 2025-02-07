@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -37,19 +40,47 @@ public class DriveCode extends LinearOpMode {
     private Servo leftOuttakeArm = null;
     private Servo rightOuttakeArm = null;
 
+    private PIDController slideController;
+
+    public static double Kp = 0.009, Ki = 0, Kd = 0.0005;
+    double Kf = 0 ;
+    public static int slidetarget = 0;
+
+    double[] STATE_1 = {1,0};
+
+    //Stand-by arm servo pos
+    double[] STATE_2 = {0.7,.3};
+
+    //ready to score arm servo pos
+    double[] STATE_3 = {.3,.7};
+
+    //Scored arm servo pos
+    double[] STATE_4 = {0.135,0.865};
+
+
     public DcMotor arm = null;
     private Servo armServo = null;
     private Servo armPivotServo = null;
+    private PIDController armController;
+    public static double p = 0.005, i = 0., d = 0.00075;
+    public static double f = 0;
+
+    public static int armtarget = 0;
+
+    public double pivotTarget = 0.5;
     // Note: pushing stick forward gives negative value
     @Override
     public void runOpMode() {
 
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
-        Outtake outtake = new Outtake();
-        Intake intake = new Intake();
-        ElapsedTime timer = new ElapsedTime();
 
+        slideController = new PIDController(Kp, Ki, Kd);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        ElapsedTime runtime = new ElapsedTime();
+
+        armController = new PIDController(p, i, d);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -93,6 +124,7 @@ public class DriveCode extends LinearOpMode {
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         //Intake Subsystem init
         //arm Subsystem
         arm = hardwareMap.get(DcMotor.class, "arm");
@@ -103,18 +135,23 @@ public class DriveCode extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //close outtake claw
+        outtakeServoClosetight();
+        //outtake arm pos 4
+        outtakearmPosState4();
         //Set pivot to neutral
-        intake.setArmPivotServoBack();
+        setArmPivotServoBack();
         //claws to outside
-        intake.armServoClose();
+        armServoClose();
         //intake.armServoOpen(0.35);
         telemetry.addData(">", "Status: Initialized");
         telemetry.update();
         waitForStart();
-        timer.reset();
+        runtime.reset();
         while (opModeIsActive()) {
-            outtake.slidesMove();
-            intake.armRetract();
+            slidesMove();
+            armRetract();
             // Drive Code
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
@@ -148,99 +185,186 @@ public class DriveCode extends LinearOpMode {
 
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                intake.armServoOpen(0.35);
+                armServoOpen(0.35);
             }
             // arm claw close
             if (driver.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                intake.armServoClose();
+                armServoClose();
             }
             //Makes intake pivot go out 0.15 so variable is now 0.65
             if (driver.getButton(GamepadKeys.Button.X)) {
-                intake.setArmPivotServoOut();
+                setArmPivotServoOut();
             }
             //Brings pivot back to 0.5
             if (driver.getButton(GamepadKeys.Button.B)){
-                intake.setArmPivotServoBack();
+                setArmPivotServoBack();
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
                 Intake.armtarget = 0;
-                intake.setArmPivotServoBack();
-                intake.armRetract();
+                setArmPivotServoBack();
+                armRetract();
             }
-            intake.armRetract();
+            armRetract();
 
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
 
-                outtake.outtakeServoOpen();
-                outtake.outtakearmPosState4();
-                timer.reset();
+                outtakeServoOpen();
+                outtakearmPosState4();
+                runtime.reset();
                 sleep(1000);
-                outtake.outtakeServoClosetight();
+                outtakeServoClosetight();
                 sleep(100);
-                intake.armServoOpen(0.35);
+                armServoOpen(0.35);
                 sleep(100);
-                outtake.outtakearmPosState2();
+                outtakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
                 Intake.armtarget = -350;
-                intake.armRetract();
+                armRetract();
             }
 
             if (driver.getButton(GamepadKeys.Button.DPAD_DOWN)){
                 Intake.armtarget = -425;
-                intake.armRetract();
+                armRetract();
             }
-            intake.armRetract();
+            armRetract();
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
                 Outtake.slidetarget = 3300;
-                outtake.slidesMove();
+                slidesMove();
             }
-            outtake.slidesMove();
+            slidesMove();
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
                 Outtake.slidetarget = 600;
-                outtake.slidesMove();
+                slidesMove();
             }
-            outtake.slidesMove();
+            slidesMove();
 
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
                 Outtake.slidetarget = 0;
-                outtake.slidesMove();
+                slidesMove();
             }
-            outtake.slidesMove();
+            slidesMove();
             // slide arm claw open
             if (operator.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                outtake.outtakeServoOpen();
+                outtakeServoOpen();
             }
             // arm claw close
 
             if (operator.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                outtake.outtakeServoClose();
+                outtakeServoClose();
             }
 
             if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
-                outtake.outtakeServoClosetight();
+                outtakeServoClosetight();
             }
             if (operator.getButton(GamepadKeys.Button.B)){
-                outtake.outtakearmPosState3();
+                outtakearmPosState3();
             }
             if (operator.getButton(GamepadKeys.Button.X)){
-                outtake.outtakearmPosState2();
+                outtakearmPosState2();
             }
 
             if (operator.getButton(GamepadKeys.Button.Y)){
-                outtake.outtakearmPosState4();
+                outtakearmPosState4();
             }
 
             if (operator.getButton(GamepadKeys.Button.A)){
-                outtake.outtakearmPosState1();
+                outtakearmPosState1();
             }
 
             //when OpMode is Active
         }
         //Run OpMode
+    }
+    public void outtakeServoOpen(){
+        outtakeClawServo.setPosition(0.2);
+        if (slidetarget == 3300){
+                outtakearmPosState3();
+        }
+    }
+
+    public void outtakeServoClose(){outtakeClawServo.setPosition(0.035);}
+
+    public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
+
+    public void outtakearmPosState1(){
+        leftOuttakeArm.setPosition(STATE_1[0]);
+        rightOuttakeArm.setPosition(STATE_1[1]);
+
+    }
+
+    public void outtakearmPosState2(){
+        leftOuttakeArm.setPosition(STATE_2[0]);
+        rightOuttakeArm.setPosition(STATE_2[1]);
+    }
+
+    public void outtakearmPosState3(){
+        leftOuttakeArm.setPosition(STATE_3[0]);
+        rightOuttakeArm.setPosition(STATE_3[1]);
+    }
+
+    public void outtakearmPosState4(){
+        leftOuttakeArm.setPosition(STATE_4[0]);
+        rightOuttakeArm.setPosition(STATE_4[1]);
+    }
+    public void slidesMove() {
+
+        slideController.setPID(Kp, Ki, Kd);
+        double ticks_in_degree = 537.7 / 360;
+        int slidePos = rightSlide.getCurrentPosition();
+        double slidePID = slideController.calculate(slidePos, slidetarget);
+        //Gobilda 202 19.2:1
+
+        double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
+
+        double slidePower = slidePID + slideFF;
+
+        if (slidetarget == 0) {
+            leftSlide.setPower(slidePower * 0.8);
+            rightSlide.setPower(slidePower * 0.8);
+        } else {
+            leftSlide.setPower(slidePower);
+            rightSlide.setPower(slidePower);
+        }
+
+        telemetry.addData("slidePos", slidePos);
+        telemetry.addData("slideTarget", slidetarget);
+        telemetry.update();
+    }
+    public void armRetract() {
+        armController.setPID(p, i, d);
+        double ticks_in_degree = 537.7 / 360;
+        int armPos = arm.getCurrentPosition();
+        double armPID = armController.calculate(armPos, armtarget);
+        double armFF = Math.cos(Math.toRadians(armtarget / ticks_in_degree)) * f;
+
+        double armpower = armPID + armFF;
+
+        arm.setPower(armpower * 0.75);
+
+        telemetry.addData("armPos", armPos);
+        telemetry.addData("armTarget", armtarget);
+        telemetry.update();
+    }
+
+    public void armServoOpen(double pos){
+        armServo.setPosition(pos);
+    }
+
+    public void armServoClose(){
+        armServo.setPosition(0.0425);
+    }
+
+    public void setArmPivotServoOut(){
+        pivotTarget += 0.15;
+        armPivotServo.setPosition(pivotTarget);
+    }
+
+    public void setArmPivotServoBack(){
+        armPivotServo.setPosition(0.5);
     }
     //end
 }

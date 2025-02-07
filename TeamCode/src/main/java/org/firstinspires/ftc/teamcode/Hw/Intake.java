@@ -45,6 +45,22 @@ public class Intake extends OpMode {
 
     public void loop() {
        armRetract();
+
+       if (gamepad1.x){
+           setArmPivotServoOut();
+       }
+
+       if (gamepad1.b){
+           setArmPivotServoBack();
+       }
+
+       if (gamepad1.right_bumper){
+           armServoOpen(0.35);
+       }
+
+       if (gamepad1.left_bumper){
+           armServoClose();
+       }
     }
 
     public void armRetract() {
@@ -68,7 +84,7 @@ public class Intake extends OpMode {
     }
 
     public void armServoClose(){
-        armServo.setPosition(0.035);
+        armServo.setPosition(0.0425);
     }
 
     public void setArmPivotServoOut(){

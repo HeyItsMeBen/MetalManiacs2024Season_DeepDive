@@ -39,7 +39,7 @@ public class Outtake extends OpMode {
     double[] STATE_3 = {.2,.8};
 
     //Scored arm servo pos
-    double[] STATE_4 = {0,1};
+    double[] STATE_4 = {0.135,0.865};
 
     //Outtake subsystem
     public void init() {
