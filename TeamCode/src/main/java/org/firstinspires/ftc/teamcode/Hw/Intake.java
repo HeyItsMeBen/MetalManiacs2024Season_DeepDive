@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -43,8 +44,19 @@ public class Intake extends OpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
+    public Intake(HardwareMap hwMap){
+        arm = hwMap.get(DcMotor.class, "arm");
+        armServo = hwMap.get(Servo.class, "intakeClawServo");
+        armPivotServo = hwMap.get(Servo.class, "intakePivotServo");
+
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
     public void loop() {
-       armRetract();
+       armRetract(armtarget);
 
        if (gamepad1.x){
            setArmPivotServoOut();
@@ -63,7 +75,7 @@ public class Intake extends OpMode {
        }
     }
 
-    public void armRetract() {
+    public void armRetract(int armtarget) {
         armController.setPID(p, i, d);
         double ticks_in_degree = 537.7 / 360;
         int armPos = arm.getCurrentPosition();

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -68,8 +69,27 @@ public class Outtake extends OpMode {
         //outtakeServoClose();
     }
 
+    public Outtake(HardwareMap hwMap) {
+        leftSlide = hwMap.get(DcMotor.class, "leftSlide");
+        rightSlide = hwMap.get(DcMotor.class, "rightSlide");
+        leftOuttakeArm = hwMap.get(Servo.class, "leftOuttake");
+        rightOuttakeArm = hwMap.get(Servo.class, "rightOuttake");
+        outtakeClawServo = hwMap.get(Servo.class, "outtakeServo");
+
+        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
     public void loop() {
-        slidesMove();
+        slidesMove(slidetarget);
 
         if (gamepad2.a){
             outtakearmPosState1();
@@ -84,6 +104,14 @@ public class Outtake extends OpMode {
             outtakearmPosState4();
         }
 
+        if (gamepad2.right_bumper){
+            outtakeServoOpen();
+        }
+
+        if (gamepad2.left_bumper){
+            outtakeServoClosetight();
+        }
+
         telemetry.addData("leftservopos", leftOuttakeArm.getPosition());
         telemetry.addData("rightservopos", rightOuttakeArm.getPosition());
         telemetry.addData("target", slidetarget);
@@ -91,7 +119,7 @@ public class Outtake extends OpMode {
         telemetry.update();
     }
 
-    public void slidesMove() {
+    public void slidesMove(int slidetarget) {
 
         slideController.setPID(Kp, Ki, Kd);
         double ticks_in_degree = 537.7 / 360;
@@ -121,7 +149,6 @@ public class Outtake extends OpMode {
         if (slidetarget == -3300){
             if (runtime.milliseconds() > 300){
                 outtakearmPosState3();
-                slidetarget = 0;
             }
         }
     }

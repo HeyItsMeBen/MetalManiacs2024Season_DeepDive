@@ -32,44 +32,12 @@ public class DriveCode extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
 
+    Intake intake;
+    int armTarget;
 
-    private DcMotor leftSlide = null;
-    private DcMotor rightSlide = null;
+    Outtake outtake;
+    int slideTarget;
 
-    private Servo outtakeClawServo = null;
-    private Servo leftOuttakeArm = null;
-    private Servo rightOuttakeArm = null;
-
-    private PIDController slideController;
-
-    public static double Kp = 0.009, Ki = 0, Kd = 0.0005;
-    double Kf = 0 ;
-    public static int slidetarget = 0;
-
-    // State for picking up specimens
-    double[] STATE_1 = {1,0};
-    
-    //State for depositing in basket
-    double[] STATE_2 = {0.7,.3};
-
-    //"Stand-by state" (After deposit + default state)
-    double[] STATE_3 = {.3,.7};
-
-    //State being able to transfer
-    double[] STATE_4 = {0.135,0.865};
-
-
-
-    public DcMotor arm = null;
-    private Servo armServo = null;
-    private Servo armPivotServo = null;
-    private PIDController armController;
-    public static double p = 0.005, i = 0., d = 0.00075;
-    public static double f = 0;
-
-    public static int armtarget = 0;
-
-    public double pivotTarget = 0.5;
     // Note: pushing stick forward gives negative value
     @Override
     public void runOpMode() {
@@ -77,12 +45,10 @@ public class DriveCode extends LinearOpMode {
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
 
-        slideController = new PIDController(Kp, Ki, Kd);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         ElapsedTime runtime = new ElapsedTime();
 
-        armController = new PIDController(p, i, d);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        intake = new Intake(hardwareMap);
+        outtake = new Outtake(hardwareMap);
 
         // Driver Code
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
@@ -108,52 +74,22 @@ public class DriveCode extends LinearOpMode {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
-        leftOuttakeArm = hardwareMap.get(Servo.class, "leftOuttake");
-        rightOuttakeArm = hardwareMap.get(Servo.class, "rightOuttake");
-        outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
-        //Outtake Subsystem init
-
-        leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        //Intake Subsystem init
-        //arm Subsystem
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        armServo = hardwareMap.get(Servo.class, "intakeClawServo");
-        armPivotServo = hardwareMap.get(Servo.class, "intakePivotServo");
-
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         //close outtake claw
-        outtakeServoClosetight();
+        outtake.outtakeServoClosetight();
         //outtake arm pos 4
-        outtakearmPosState4();
+        outtake.outtakearmPosState4();
         //Set pivot to neutral
-        setArmPivotServoBack();
+        intake.setArmPivotServoBack();
         //claws to outside
-        armServoClose();
+        intake.armServoClose();
         //intake.armServoOpen(0.35);
         telemetry.addData(">", "Status: Initialized");
         telemetry.update();
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
-            slidesMove();
-            armRetract();
+            outtake.slidesMove(slideTarget);
+            intake.armRetract(armTarget);
             // Drive Code
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
@@ -187,187 +123,99 @@ public class DriveCode extends LinearOpMode {
 
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                armServoOpen(0.35);
+                intake.armServoOpen(0.35);
             }
             // arm claw close
             if (driver.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                armServoClose();
+                intake.armServoClose();
             }
             //Makes intake pivot go out 0.15 so variable is now 0.65
             if (driver.getButton(GamepadKeys.Button.X)) {
-                setArmPivotServoOut();
+                intake.setArmPivotServoOut();
             }
             //Brings pivot back to 0.5
             if (driver.getButton(GamepadKeys.Button.B)){
-                setArmPivotServoBack();
+                intake.setArmPivotServoBack();
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                Intake.armtarget = 0;
-                setArmPivotServoBack();
-                armRetract();
+                armTarget = -5;
+                intake.setArmPivotServoBack();
+                intake.armRetract(armTarget);
             }
-            armRetract();
+            intake.armRetract(armTarget);
 
             if (driver.getButton(GamepadKeys.Button.DPAD_UP)){
 
-                outtakeServoOpen();
-                outtakearmPosState4();
+                outtake.outtakeServoOpen();
+                outtake.outtakearmPosState4();
                 runtime.reset();
                 sleep(1000);
-                outtakeServoClosetight();
+                outtake.outtakeServoClosetight();
                 sleep(100);
-                armServoOpen(0.35);
+                intake.armServoOpen(0.35);
                 sleep(100);
-                outtakearmPosState2();
+                outtake.outtakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
-                Intake.armtarget = -350;
-                armRetract();
+                armTarget = -350;
+                intake.armRetract(armTarget);
             }
 
             if (driver.getButton(GamepadKeys.Button.DPAD_DOWN)){
-                Intake.armtarget = -425;
-                armRetract();
+                armTarget = -425;
+                intake.armRetract(armTarget);
             }
-            armRetract();
+            intake.armRetract(armTarget);
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
-                Outtake.slidetarget = 3300;
-                slidesMove();
+                slideTarget = 3300;
+                outtake.slidesMove(slideTarget);
             }
-            slidesMove();
+            outtake.slidesMove(slideTarget);
+
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                Outtake.slidetarget = 600;
-                slidesMove();
+                slideTarget = 825;
+                outtake.slidesMove(slideTarget);
             }
-            slidesMove();
+            outtake.slidesMove(slideTarget);
 
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                Outtake.slidetarget = 0;
-                slidesMove();
+                slideTarget = 0;
+                outtake.slidesMove(slideTarget);
             }
-            slidesMove();
+            outtake.slidesMove(slideTarget);
             // slide arm claw open
             if (operator.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
-                outtakeServoOpen();
+                outtake.outtakeServoOpen();
             }
             // arm claw close
 
             if (operator.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                outtakeServoClose();
+                outtake.outtakeServoClose();
             }
 
             if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
-                outtakeServoClosetight();
+                outtake.outtakeServoClosetight();
             }
             if (operator.getButton(GamepadKeys.Button.B)){
-                outtakearmPosState3();
+                outtake.outtakearmPosState3();
             }
             if (operator.getButton(GamepadKeys.Button.X)){
-                outtakearmPosState2();
+                outtake.outtakearmPosState2();
             }
 
             if (operator.getButton(GamepadKeys.Button.Y)){
-                outtakearmPosState4();
+                outtake.outtakearmPosState4();
             }
 
             if (operator.getButton(GamepadKeys.Button.A)){
-                outtakearmPosState1();
+                outtake.outtakearmPosState1();
             }
-
             //when OpMode is Active
         }
         //Run OpMode
-    }
-    public void outtakeServoOpen(){
-        outtakeClawServo.setPosition(0.2);
-        if (slidetarget == 3300){
-                sleep(300);
-                outtakearmPosState3();
-        }
-    }
-
-    public void outtakeServoClose(){outtakeClawServo.setPosition(0.035);}
-
-    public void outtakeServoClosetight(){outtakeClawServo.setPosition(0);}
-
-    public void outtakearmPosState1(){
-        leftOuttakeArm.setPosition(STATE_1[0]);
-        rightOuttakeArm.setPosition(STATE_1[1]);
-
-    }
-
-    public void outtakearmPosState2(){
-        leftOuttakeArm.setPosition(STATE_2[0]);
-        rightOuttakeArm.setPosition(STATE_2[1]);
-    }
-
-    public void outtakearmPosState3(){
-        leftOuttakeArm.setPosition(STATE_3[0]);
-        rightOuttakeArm.setPosition(STATE_3[1]);
-    }
-
-    public void outtakearmPosState4(){
-        leftOuttakeArm.setPosition(STATE_4[0]);
-        rightOuttakeArm.setPosition(STATE_4[1]);
-    }
-    public void slidesMove() {
-
-        slideController.setPID(Kp, Ki, Kd);
-        double ticks_in_degree = 537.7 / 360;
-        int slidePos = rightSlide.getCurrentPosition();
-        double slidePID = slideController.calculate(slidePos, slidetarget);
-        //Gobilda 202 19.2:1
-
-        double slideFF = Math.cos(Math.toRadians(slidetarget / ticks_in_degree)) * Kf;
-
-        double slidePower = slidePID + slideFF;
-
-        if (slidetarget == 0) {
-            leftSlide.setPower(slidePower * 0.8);
-            rightSlide.setPower(slidePower * 0.8);
-        } else {
-            leftSlide.setPower(slidePower);
-            rightSlide.setPower(slidePower);
-        }
-
-        telemetry.addData("slidePos", slidePos);
-        telemetry.addData("slideTarget", slidetarget);
-        telemetry.update();
-    }
-    public void armRetract() {
-        armController.setPID(p, i, d);
-        double ticks_in_degree = 537.7 / 360;
-        int armPos = arm.getCurrentPosition();
-        double armPID = armController.calculate(armPos, armtarget);
-        double armFF = Math.cos(Math.toRadians(armtarget / ticks_in_degree)) * f;
-
-        double armpower = armPID + armFF;
-
-        arm.setPower(armpower * 0.75);
-
-        telemetry.addData("armPos", armPos);
-        telemetry.addData("armTarget", armtarget);
-        telemetry.update();
-    }
-
-    public void armServoOpen(double pos){
-        armServo.setPosition(pos);
-    }
-
-    public void armServoClose(){
-        armServo.setPosition(0.0425);
-    }
-
-    public void setArmPivotServoOut(){
-        pivotTarget += 0.15;
-        armPivotServo.setPosition(pivotTarget);
-    }
-
-    public void setArmPivotServoBack(){
-        armPivotServo.setPosition(0.5);
     }
     //end
 }
