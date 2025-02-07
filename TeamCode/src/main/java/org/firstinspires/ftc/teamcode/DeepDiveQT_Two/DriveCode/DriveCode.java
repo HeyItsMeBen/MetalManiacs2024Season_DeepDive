@@ -282,6 +282,7 @@ public class DriveCode extends LinearOpMode {
     public void outtakeServoOpen(){
         outtakeClawServo.setPosition(0.2);
         if (slidetarget == 3300){
+                sleep(300);
                 outtakearmPosState3();
         }
     }
