@@ -17,15 +17,22 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.tuning.TuningOpMod
 
 import org.firstinspires.ftc.teamcode.Hardware.Slides_PID;
 import org.firstinspires.ftc.teamcode.Hardware.outtakeArm;
-
 @Autonomous(name = "SpecimenPathing", group = "Linear OpMode")
 public final class AutoMainSpecimenPathing extends LinearOpMode {
-    public double LeftStrafeCompensation=0;
-    double currentTileSize=71.125;
-    double referenceTileSize=70;//(reference tile should be MeepMeep)
+    double currentTileSize=71.125/3;//divide by 3 cuz 70 is the size for half a field
+    double referenceTileSize=70/3;//(reference tile should be MeepMeep)
+    double currentBotLength=17;
+    double referenceBotLength=17;
     //Notes: 71.125(ourFieldSize), 70.5in(compFieldSize), 70in(MeepMeep)
-    public double MeepMeepTileCompensation=currentTileSize/referenceTileSize;   //multiply this by every movement of the wheels (besides rotation ofc)
-    public double interactionCompensation=(currentTileSize-referenceTileSize)/2;    //applicable when bot interacts with something at it's side, rather than at it's center (eg: starting, scoring(usually), grabbing(usually). This happens cuz when field size changes and bot size stays constant, the field size to bot size ratio changes. Ask me for clarification if needed.
+    double MeepMeepTileCompensation=currentTileSize/referenceTileSize;   //multiply this by every movement of the wheels (besides rotation ofc)
+    //double interactionCompensation=(currentTileSize-referenceTileSize)/2+(currentBotLength/2-referenceBotLength/2);    //applicable when bot interacts with something at it's side, rather than at it's center (eg: starting, scoring(usually), grabbing(usually). This happens cuz when field size changes and bot size stays constant, the field size to bot size ratio changes. Ask me for clarification if needed.
+    double currentInteractionDistance=(currentTileSize/2)-(currentBotLength/2);
+    double referenceInteractionDistance=(referenceTileSize/2)-(referenceBotLength/2);
+    double interactionCompensation=currentInteractionDistance-referenceInteractionDistance;
+
+    double botSizeWhenGrabFromWall=19-(2/16);
+    double botSizeWhenScoreSpecimen=19.86;
+
     Servo intakeClaw;
     Servo outtakeClaw;
     Slides_PID slides;
@@ -33,7 +40,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
     //Servo servo=hardwareMap.get(Servo.class, "servo");
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(-34.99500+23.33+23.6+2.0, -61.5+0.5625-interactionCompensation, Math.toRadians(270));
+        Pose2d beginPose = new Pose2d(13.93500, -62+0.1875006-interactionCompensation, Math.toRadians(270));
         intakeClaw= hardwareMap.get(Servo.class, "intakeClawServo");
         outtakeClaw= hardwareMap.get(Servo.class, "outtakeServo");
         slides = new Slides_PID(hardwareMap);
@@ -48,27 +55,27 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             .stopAndAdd(new setServos(hardwareMap, 0, 0, 0.99))
                             .waitSeconds(3) //set timer if you want
                             //hang preloaded sample
-                            .strafeTo( new Vector2d((5) * MeepMeepTileCompensation, (-39) * MeepMeepTileCompensation))
+                            .strafeTo(new Vector2d((5) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation))
 
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
                             //.waitSeconds(4)
-                            .strafeTo( new Vector2d((5) * MeepMeepTileCompensation, (-39+6.75-0.5625+interactionCompensation) * MeepMeepTileCompensation))    //scores
+                            .strafeTo( new Vector2d((5) * MeepMeepTileCompensation, (-32.75-0.1875006+getNewInteractionvalue(botSizeWhenScoreSpecimen)) * MeepMeepTileCompensation))    //scores
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             //.waitSeconds(4)
-                            .strafeTo( new Vector2d((5) * MeepMeepTileCompensation, (-38-8) * MeepMeepTileCompensation))
+                            .strafeTo( new Vector2d((5) * MeepMeepTileCompensation, (-46.5) * MeepMeepTileCompensation))
 
                             .stopAndAdd(new scoreSpecimenPart3(hardwareMap))
                             .waitSeconds(4)
 
-                            .splineTo(new Vector2d((20)* MeepMeepTileCompensation, (-53)* MeepMeepTileCompensation), Math.toRadians(Math.PI/2))
+                            .splineTo(new Vector2d((20)* MeepMeepTileCompensation, (-53.5)* MeepMeepTileCompensation), Math.toRadians(Math.PI/2))
                             //.splineTo(new Vector2d((35+2)*MeepMeepCompensation, (-20)*MeepMeepCompensation), Math.toRadians(95))
-                            .splineTo(new Vector2d((35)* MeepMeepTileCompensation, (-12)* MeepMeepTileCompensation), Math.toRadians(90))
+                            .splineTo(new Vector2d((35)* MeepMeepTileCompensation, (-12.5)* MeepMeepTileCompensation), Math.toRadians(90))
 
                             //.waitSeconds(0.5)
 
                             //push first sample
-                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-12) * MeepMeepTileCompensation))
-                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-50) * MeepMeepTileCompensation))
+                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-12.5) * MeepMeepTileCompensation))
+                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-50.5) * MeepMeepTileCompensation))
 
                             //push second sample
                             /*.strafeTo(new Vector2d((45) * MeepMeepCompensation, (-12) * MeepMeepCompensation))
@@ -79,25 +86,25 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             //grab specimen from wall 1
                             .strafeToLinearHeading(new Vector2d((45) * MeepMeepTileCompensation, (-45) * MeepMeepTileCompensation), Math.toRadians(90))  //get out of observation zone    //-47
                             .waitSeconds(1) //Human get ready!
-                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-70+11+4.25+0.5625-interactionCompensation) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
+                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-55.25+0.1875006-getNewInteractionvalue(botSizeWhenGrabFromWall)) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
                             .stopAndAdd(new grabSpecimenFromWallPart2(hardwareMap))
                             .waitSeconds(4) //(temporary until i get arm working)
-                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-70+11+4+6) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
+                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-49.5) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
                             //.waitSeconds(1)//grabFromWall
 
                             //move to bar and score
                             .turnTo(Math.toRadians(0))//180-->0
                             .setTangent(Math.toRadians(180))
-                            .splineTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-39) * MeepMeepTileCompensation), Math.toRadians(90))
+                            .splineTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation), Math.toRadians(90))
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
                             .waitSeconds(4)
                             //.stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.597222222))
                             .waitSeconds(1)
                             //.stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArm.prepSpecimen))
-                            .strafeTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-39+6.75+1.5-0.5625+interactionCompensation) * MeepMeepTileCompensation))     //scores //-4-->0
+                            .strafeTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-31.25-0.1875006+getNewInteractionvalue(botSizeWhenScoreSpecimen)) * MeepMeepTileCompensation))     //scores //-4-->0
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             //.waitSeconds(4)
-                            .strafeTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-38-8) * MeepMeepTileCompensation))
+                            .strafeTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-46.5) * MeepMeepTileCompensation))
 
                             //.stopAndAdd(new scoreSpecimenPart3(hardwareMap))
                             .waitSeconds(4)
@@ -105,25 +112,25 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             //grab specimen from wall 2
                             .strafeToLinearHeading(new Vector2d((45) * MeepMeepTileCompensation, (-45) * MeepMeepTileCompensation), Math.toRadians(90))  //get out of observation zone    //-47
                             .waitSeconds(1) //Human get ready!
-                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-70+11+4.25+0.5625-interactionCompensation) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
+                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-55.25+0.1875006-getNewInteractionvalue(botSizeWhenGrabFromWall)) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
                             .stopAndAdd(new grabSpecimenFromWallPart2(hardwareMap))
                             .waitSeconds(4) //(temporary until i get arm working)
-                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-70+11+4+6) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
+                            .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-49.5) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
                             //.waitSeconds(1)//grabFromWall
 
                             //move to bar and score
                             .turnTo(Math.toRadians(0))//180-->0
                             .setTangent(Math.toRadians(180))
-                            .splineTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-39) * MeepMeepTileCompensation), Math.toRadians(90))
+                            .splineTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation), Math.toRadians(90))
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
                             .waitSeconds(4)
                             //.stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.597222222))
                             .waitSeconds(1)
                             //.stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArm.prepSpecimen))
-                            .strafeTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-39+6.75+1.5-0.5625+interactionCompensation) * MeepMeepTileCompensation))     //scores //-4-->0
+                            .strafeTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-31.25-0.1875006+getNewInteractionvalue(botSizeWhenScoreSpecimen)) * MeepMeepTileCompensation))     //scores //-4-->0
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             //.waitSeconds(4)
-                            .strafeTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-38-8) * MeepMeepTileCompensation))
+                            .strafeTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-46.5) * MeepMeepTileCompensation))
 
                             //.stopAndAdd(new scoreSpecimenPart3(hardwareMap))
                             //.waitSeconds(4)
@@ -252,5 +259,12 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         while (timer.seconds()<estimatedTime){
             //empty loop. Keeps running until actual position reaches target position
         }
+    }
+    double getNewInteractionvalue(double newRefBotLength){
+        double newCurrentBotLength=newRefBotLength*(currentBotLength/referenceBotLength);
+        double newCurrentInteractionDistance=(currentTileSize/2)-(newCurrentBotLength-currentBotLength/2); //calculates distance from the center of the bot to the edge of the claw(or whatever “interact
+        double newReferenceInteractionDistance=(referenceTileSize/2)-(newRefBotLength-referenceBotLength/2);
+        double newInteractionCompensation=newCurrentInteractionDistance-newReferenceInteractionDistance;
+        return newInteractionCompensation;
     }
 }
