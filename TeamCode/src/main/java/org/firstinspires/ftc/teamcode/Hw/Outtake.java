@@ -174,5 +174,9 @@ public class Outtake extends OpMode {
         rightOuttakeArm.setPosition(STATE_4[1]);
     }
 
+    public void manualSlidesMove(double slidePower){
+        rightSlide.setPower(slidePower);
+        leftSlide.setPower(slidePower);
+    }
     //end
 }

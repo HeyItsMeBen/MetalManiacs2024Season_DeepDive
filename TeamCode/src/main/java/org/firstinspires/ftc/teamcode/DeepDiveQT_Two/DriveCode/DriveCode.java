@@ -1,22 +1,15 @@
 package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.DriveCode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hw.Intake;
 import org.firstinspires.ftc.teamcode.Hw.Outtake;
-
-import java.util.concurrent.CountDownLatch;
 
 @Config
 @TeleOp(name = "QT Drive Code", group = "Linear OpMode")
@@ -37,6 +30,7 @@ public class DriveCode extends LinearOpMode {
 
     Outtake outtake;
     int slideTarget;
+    int manualSlides = 0; //0 = false, 1 = true
 
     // Note: pushing stick forward gives negative value
     @Override
@@ -158,32 +152,45 @@ public class DriveCode extends LinearOpMode {
                 outtake.outtakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
-                armTarget = -350;
-                intake.armRetract(armTarget);
-            }
-
-            if (driver.getButton(GamepadKeys.Button.DPAD_DOWN)){
-                armTarget = -425;
+                if(armTarget == 0) {
+                    armTarget = -350;
+                }
+                if (armTarget == -350){
+                    armTarget = -425;
+                }
+                if (armTarget == -425){
+                    armTarget = -350;
+                }
                 intake.armRetract(armTarget);
             }
             intake.armRetract(armTarget);
+
             // Moves slides up to basket
             if (operator.getButton(GamepadKeys.Button.DPAD_UP)){
                 slideTarget = 3300;
                 outtake.slidesMove(slideTarget);
+                manualSlides = 0;
             }
             outtake.slidesMove(slideTarget);
 
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
                 slideTarget = 825;
+                manualSlides = 1;
                 outtake.slidesMove(slideTarget);
             }
             outtake.slidesMove(slideTarget);
 
+            if (manualSlides == 1 && gamepad2.right_stick_y >= 0.01){
+                double slidePower = gamepad2.right_stick_y;
+                outtake.manualSlidesMove(slidePower);
+            }
+
             //Moves Slides down
             if (operator.getButton(GamepadKeys.Button.DPAD_DOWN)) {
                 slideTarget = 0;
+                manualSlides = 0;
                 outtake.slidesMove(slideTarget);
+
             }
             outtake.slidesMove(slideTarget);
             // slide arm claw open
