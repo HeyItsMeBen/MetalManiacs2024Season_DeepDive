@@ -40,7 +40,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     DcMotor arm;
     DcMotor leftSlide;
     DcMotor rightSlide;
-    public static double Arm_p = 0.0025, Arm_i = 0.05, Arm_d = 0.0001, Arm_f = 0;
+    Servo intakeClaw;
+    public static double Arm_p = 0.005, Arm_i = 0, Arm_d = 0.00075, Arm_f = 0;
     private static double Slides_p = 0.009, Slides_i = 0, Slides_d = 0.0005, Slides_f = 0;
 
 
@@ -56,6 +57,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+        intakeClaw=hardwareMap.get(Servo.class, "intakeClawServo");
 
 
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -88,7 +90,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
                 //grab and score first sample
                 .strafeToLinearHeading(new Vector2d(-48*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
-                .waitSeconds(2) //grab first sample
+                //.waitSeconds(2) //grab first sample
+                        .stopAndAdd(new grabSample(hardwareMap))
                 .waitSeconds(2) //transfer to linear slides
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                 .waitSeconds(3) //score first sample
@@ -136,9 +139,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             intakeClaw.setPosition(0.35);   //open
             highBarPivot.setPosition(0.5);
 
-            setArmTarget(-350, 0.75);   //arm down
-            setArmTarget(-400, 1);      //arm down a bit more
-            setIntakeClawPosition(0.035);   //close
+            setArmTarget(-350-50, 0.75);   //arm down
+            setArmTarget(-400-50, 1);      //arm down a bit more
+            setIntakeClawPosition(0.035);   //close //set to 0 if it can't grab
             setArmTarget(-100, 1);      //arm up
             setArmTarget(0, 1);      //arm up abit more
 
@@ -467,13 +470,11 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         }
     }
     public void setIntakeClawPosition(double position){
-        Servo intakeClaw;
-
-        intakeClaw=hardwareMap.get(Servo.class, "intakeClawServo");
-
+        ElapsedTime timer;
+        timer=new ElapsedTime();
+        double estimatedTime=Math.abs((intakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
         intakeClaw.setPosition(position);
-
-        while (intakeClaw.getPosition()!=position){
+        while (timer.seconds()<estimatedTime){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
