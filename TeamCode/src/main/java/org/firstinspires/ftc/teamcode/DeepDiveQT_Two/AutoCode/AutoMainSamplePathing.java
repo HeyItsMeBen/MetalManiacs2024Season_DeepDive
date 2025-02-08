@@ -92,40 +92,43 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
                 //set servos to defaults
-                .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
-
+                    .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
                 //score initial (first) sample
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
                 .strafeToLinearHeading(slides_up_position, Math.toRadians(45)) //spin and move to open slides
 
                 .strafeTo(scoring_position)
-                .stopAndAdd(new prepSample(hardwareMap))
-                .waitSeconds(5)
-                .stopAndAdd(new scoreAndReset(hardwareMap))
+                    .stopAndAdd(new prepSample(hardwareMap))
+                        .waitSeconds(1)
+                    .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab second sample
                 .strafeToLinearHeading(new Vector2d(-46*MeepMeepTileCompensation, -45*MeepMeepTileCompensation), Math.toRadians(90))
-                //.stopAndAdd(new grabSample(hardwareMap))
+                    //.stopAndAdd(new grabSample(hardwareMap))
+                        .waitSeconds(1)
 
                 //score second sample
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
-                .stopAndAdd(new prepSample(hardwareMap))
-                .stopAndAdd(new scoreAndReset(hardwareMap))
+                    .stopAndAdd(new prepSample(hardwareMap))
+                        .waitSeconds(1)
+                    .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab and third second sample
                 .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -45* MeepMeepTileCompensation), Math.toRadians(90))
-                //.stopAndAdd(new grabSample(hardwareMap))
+                    //.stopAndAdd(new grabSample(hardwareMap))
+                        .waitSeconds(1)
 
                 //score third sample
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
-                .stopAndAdd(new prepSample(hardwareMap))
-                .stopAndAdd(new scoreAndReset(hardwareMap))
+                    .stopAndAdd(new prepSample(hardwareMap))
+                        .waitSeconds(1)
+                    .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //go to achieve first ascent
                 .splineToLinearHeading(new Pose2d(-25* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
-                .stopAndAdd(new achieveFirstAscent(hardwareMap))
-                .splineToLinearHeading(new Pose2d(-24* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
-                .waitSeconds(5)
+                    .stopAndAdd(new achieveFirstAscent(hardwareMap))
+                //.splineToLinearHeading(new Pose2d(-24* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
+                        .waitSeconds(5)
                 .build());
     }
 
