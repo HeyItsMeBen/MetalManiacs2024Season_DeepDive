@@ -60,7 +60,7 @@ public class Intake {
     }
 
     public void armServoClose(){
-        armServo.setPosition(0.0425);
+        armServo.setPosition(0.05);
     }
 
     public void setArmPivotServoOut(){

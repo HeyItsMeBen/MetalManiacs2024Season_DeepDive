@@ -34,13 +34,13 @@ public class Outtake{
     double[] STATE_1 = {1,0};
 
     //Stand-by arm servo pos
-    double[] STATE_2 = {0.87,.13};
+    double[] STATE_2 = {0.815,.185};
 
     //ready to score arm servo pos
     double[] STATE_3 = {.2,.8};
 
     //Scored arm servo pos
-    double[] STATE_4 = {0.1185,0.8815};
+    double[] STATE_4 = {0.1,0.9};
 
     //Outtake subsystem
     public Outtake(HardwareMap hwMap) {
