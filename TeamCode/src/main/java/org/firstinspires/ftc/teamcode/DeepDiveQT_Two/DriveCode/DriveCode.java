@@ -110,10 +110,10 @@ public class DriveCode extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            frontLeftDrive.setPower(leftFrontPower * 0.8);
-            frontRightDrive.setPower(rightFrontPower * 0.8);
-            backLeftDrive.setPower(leftBackPower * 0.8);
-            backRightDrive.setPower(rightBackPower * 0.8);
+            frontLeftDrive.setPower(leftFrontPower * 0.7);
+            frontRightDrive.setPower(rightFrontPower * 0.7);
+            backLeftDrive.setPower(leftBackPower * 0.7);
+            backRightDrive.setPower(rightBackPower * 0.7);
 
             // arm claw open
             if (driver.getButton(GamepadKeys.Button.RIGHT_BUMPER)){
