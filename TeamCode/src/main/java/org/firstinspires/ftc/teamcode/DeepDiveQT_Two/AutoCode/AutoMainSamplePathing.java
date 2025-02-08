@@ -92,7 +92,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
                 //set servos to defaults
-                    .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
+                    .stopAndAdd(new setOuttakeClaw(hardwareMap, 0.35))
+                    .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
+                    .stopAndAdd(new setIntakeClaw(hardwareMap, 0))
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45)) //spin and move to open slides
                     .stopAndAdd(new prepSample(hardwareMap))
@@ -109,7 +111,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .strafeTo(scoring_position)
                 .turnTo(Math.toRadians(45))
                         .waitSeconds(1)
-                    .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
+                    .stopAndAdd(new setOuttakeClaw(hardwareMap, 0.35))
+                    .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
+                    .stopAndAdd(new setIntakeClaw(hardwareMap, 0))
                     .stopAndAdd(new prepSample(hardwareMap))
                         .waitSeconds(1)
                     .stopAndAdd(new scoreAndReset(hardwareMap))
@@ -128,7 +132,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 //go and achieve first ascent
                 .splineToLinearHeading(new Pose2d(-30* MeepMeepTileCompensation, (-10* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
                 .strafeTo(new Vector2d(-25*MeepMeepTileCompensation, -10*MeepMeepTileCompensation))
-                    .stopAndAdd(new achieveFirstAscent(hardwareMap))
+                    .stopAndAdd(new setOuttakeArm(hardwareMap, 0.4))
                 .build());
     }
 
@@ -191,8 +195,6 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             return false;
         }
     }
-
-
     public class achieveFirstAscent implements Action { //touch the bar in submersible
         public achieveFirstAscent(HardwareMap hMap) {
 
@@ -203,23 +205,37 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             return false;
         }
     }
-
-
-    public class setServos implements Action {
+    public class setIntakeClaw implements Action {
         double intakeClawPos;
-        double outtakeClawPos;
-        double outtakeArmPos;
-        public setServos(HardwareMap hMap, double intakeClawPosition, double outtakeClawPosition, double outtakeArmPosition) {
+        public setIntakeClaw(HardwareMap hMap, double intakeClawPosition) {
             intakeClawPos=intakeClawPosition;
-            outtakeClawPos=outtakeClawPosition;
-            outtakeArmPos=outtakeArmPosition;
         }
-
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             intakeClawServo.setPosition(intakeClawPos);
+            return false;
+        }
+    }
+    public class setOuttakeClaw implements Action {
+        double outtakeClawPos;
+        public setOuttakeClaw(HardwareMap hMap, double outtakeClawPosition) {
+            outtakeClawPos=outtakeClawPosition;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             outtakeClaw.setPosition(outtakeClawPos);
-            outtakeArmServos.setArmTarget(outtakeArmPos);
+            return false;
+        }
+    }
+    public class setOuttakeArm implements Action {
+        double outtakeArmPos;
+        public setOuttakeArm(HardwareMap hMap, double outtakeArmPosition) {
+            outtakeArmPos=outtakeArmPosition;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            //outtakeArmServos.setArmTarget(outtakeArmPos);
+            setOuttakeArmPosition(outtakeArmPos);
             return false;
         }
     }
