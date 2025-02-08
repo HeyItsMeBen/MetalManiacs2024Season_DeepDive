@@ -71,7 +71,7 @@ public class DriveCode extends LinearOpMode {
         //close outtake claw
         outtake.outtakeServoClosetight();
         //outtake arm pos 4
-        outtake.outtakearmPosState4();
+        outtake.outtakearmPosState1();
         //Set pivot to neutral
         intake.setArmPivotServoBack();
         //claws to outside

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hw;
+package org.firstinspires.ftc.teamcode.DeepDiveQT_Two.PID;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @TeleOp
-public class Outtake{
+public class OuttakePID extends OpMode {
 
     private DcMotor leftSlide = null;
     private DcMotor rightSlide = null;
@@ -43,12 +43,12 @@ public class Outtake{
     double[] STATE_4 = {0.125,0.875};
 
     //Outtake subsystem
-    public Outtake(HardwareMap hwMap) {
-        leftSlide = hwMap.get(DcMotor.class, "leftSlide");
-        rightSlide = hwMap.get(DcMotor.class, "rightSlide");
-        leftOuttakeArm = hwMap.get(Servo.class, "leftOuttake");
-        rightOuttakeArm = hwMap.get(Servo.class, "rightOuttake");
-        outtakeClawServo = hwMap.get(Servo.class, "outtakeServo");
+    public void init() {
+        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+        leftOuttakeArm = hardwareMap.get(Servo.class, "leftOuttake");
+        rightOuttakeArm = hardwareMap.get(Servo.class, "rightOuttake");
+        outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
 
         leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -60,6 +60,41 @@ public class Outtake{
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideController = new PIDController(Kp, Ki, Kd);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        outtakearmPosState1();
+    }
+
+    public void loop() {
+        slidesMove(slidetarget);
+
+        if (gamepad2.a){
+            outtakearmPosState1();
+        }
+        if (gamepad2.x){
+            outtakearmPosState3();
+        }
+        if (gamepad2.b){
+            outtakearmPosState2();
+        }
+        if (gamepad2.y){
+            outtakearmPosState4();
+        }
+
+        if (gamepad2.right_bumper){
+            outtakeServoOpen();
+        }
+
+        if (gamepad2.left_bumper){
+            outtakeServoClosetight();
+        }
+
+        telemetry.addData("leftservopos", leftOuttakeArm.getPosition());
+        telemetry.addData("rightservopos", rightOuttakeArm.getPosition());
+        telemetry.addData("target", slidetarget);
+        telemetry.addData("leftslidepos", leftSlide.getCurrentPosition());
+        telemetry.update();
     }
 
     public void slidesMove(int slidetarget) {
@@ -82,6 +117,9 @@ public class Outtake{
             rightSlide.setPower(slidePower);
         }
 
+        telemetry.addData("slidePos", slidePos);
+        telemetry.addData("slideTarget", slidetarget);
+        telemetry.update();
     }
     public void outtakeServoOpen(){
         runtime.reset();
