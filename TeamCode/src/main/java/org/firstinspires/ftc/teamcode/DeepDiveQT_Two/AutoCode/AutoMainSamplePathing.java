@@ -97,9 +97,6 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 //score initial (first) sample
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
                 .strafeToLinearHeading(slides_up_position, Math.toRadians(45)) //spin and move to open slides
-                //    .waitSeconds(2) //placeholder for slide action
-                //.strafeTo(scoring_position)
-                //    .waitSeconds(3) //score sample
 
                 .strafeTo(scoring_position)
                 .stopAndAdd(new prepSample(hardwareMap))
@@ -107,20 +104,17 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab second sample
-                .strafeToLinearHeading(new Vector2d(-46*MeepMeepTileCompensation, -43*MeepMeepTileCompensation), Math.toRadians(90))
-
-                .stopAndAdd(new grabSample(hardwareMap))
+                .strafeToLinearHeading(new Vector2d(-46*MeepMeepTileCompensation, -45*MeepMeepTileCompensation), Math.toRadians(90))
+                //.stopAndAdd(new grabSample(hardwareMap))
 
                 //score second sample
-                //.strafeToLinearHeading(slides_up_position, Math.toRadians(45))
-                //    .waitSeconds(3) //bring slides up
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                 .stopAndAdd(new prepSample(hardwareMap))
                 .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab and third second sample
-                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
-                .stopAndAdd(new grabSample(hardwareMap))
+                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -45* MeepMeepTileCompensation), Math.toRadians(90))
+                //.stopAndAdd(new grabSample(hardwareMap))
 
                 //score third sample
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
