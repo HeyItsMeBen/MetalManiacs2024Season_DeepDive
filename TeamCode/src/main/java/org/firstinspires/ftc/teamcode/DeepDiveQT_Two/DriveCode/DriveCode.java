@@ -174,13 +174,13 @@ public class DriveCode extends LinearOpMode {
             outtake.slidesMove(slideTarget);
 
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                slideTarget = 775;
+                slideTarget = 625;
                 manualSlides = 1;
                 outtake.slidesMove(slideTarget);
             }
             outtake.slidesMove(slideTarget);
 
-            if (manualSlides == 1 && gamepad2.right_stick_y >= 0.01){
+            if (manualSlides == 1 && gamepad2.right_stick_y > 0.01){
                 double slidePower = gamepad2.right_stick_y;
                 outtake.manualSlidesMove(slidePower);
             }
@@ -200,12 +200,20 @@ public class DriveCode extends LinearOpMode {
             // arm claw close
 
             if (operator.getButton(GamepadKeys.Button.LEFT_BUMPER)){
+                outtake.outtakeServoClose();
+            }
+            if (gamepad2.right_trigger > 0.01){
                 outtake.outtakeServoClosetight();
+            }
+            if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
+                outtake.outtakeServoClose();
+                outtake.outtakearmPosState5();
+                sleep(600);
+                outtake.outtakeServoClosetight();
+                sleep(100);
+                outtake.outtakearmPosState2();
             }
 
-            if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
-                outtake.outtakeServoClosetight();
-            }
             if (operator.getButton(GamepadKeys.Button.B)){
                 outtake.outtakearmPosState3();
             }

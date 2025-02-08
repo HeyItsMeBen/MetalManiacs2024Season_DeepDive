@@ -34,13 +34,15 @@ public class Outtake{
     double[] STATE_1 = {1,0};
 
     //Stand-by arm servo pos
-    double[] STATE_2 = {0.815,.185};
+    double[] STATE_2 = {0.8,.2};
 
     //ready to score arm servo pos
     double[] STATE_3 = {.2,.8};
 
     //Scored arm servo pos
     double[] STATE_4 = {0.1,0.9};
+
+    double[] STATE_5 = {0.5, 0.5};
 
     //Outtake subsystem
     public Outtake(HardwareMap hwMap) {
@@ -122,6 +124,10 @@ public class Outtake{
     public void manualSlidesMove(double slidePower){
         rightSlide.setPower(slidePower);
         leftSlide.setPower(slidePower);
+    }
+    public void outtakearmPosState5() {
+        leftOuttakeArm.setPosition(STATE_5[0]);
+        rightOuttakeArm.setPosition(STATE_5[1]);
     }
     //end
 }
