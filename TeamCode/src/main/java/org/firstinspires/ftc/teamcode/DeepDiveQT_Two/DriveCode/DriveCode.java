@@ -174,7 +174,7 @@ public class DriveCode extends LinearOpMode {
             outtake.slidesMove(slideTarget);
 
             if (operator.getButton(GamepadKeys.Button.DPAD_LEFT)){
-                slideTarget = 825;
+                slideTarget = 775;
                 manualSlides = 1;
                 outtake.slidesMove(slideTarget);
             }
@@ -200,7 +200,7 @@ public class DriveCode extends LinearOpMode {
             // arm claw close
 
             if (operator.getButton(GamepadKeys.Button.LEFT_BUMPER)){
-                outtake.outtakeServoClose();
+                outtake.outtakeServoClosetight();
             }
 
             if (operator.getButton(GamepadKeys.Button.DPAD_RIGHT)){
