@@ -93,16 +93,13 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
                 //set servos to defaults
                     .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
-                //score initial (first) sample
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
-                .strafeToLinearHeading(slides_up_position, Math.toRadians(45)) //spin and move to open slides
-
-                .strafeTo(scoring_position)
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45)) //spin and move to open slides
                     .stopAndAdd(new prepSample(hardwareMap))
                         .waitSeconds(1)
                     .stopAndAdd(new scoreAndReset(hardwareMap))
 
-                //grab second sample
+                //grab first sample
                 .strafeToLinearHeading(new Vector2d(-46*MeepMeepTileCompensation, -45*MeepMeepTileCompensation), Math.toRadians(90))
                     //.stopAndAdd(new grabSample(hardwareMap))
                         .waitSeconds(1)
