@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Hardware.outtakeArm;
 
 @Autonomous(name = "specimenPathing", group = "Linear OpMode")
 public final class AutoMainSpecimenPathing extends LinearOpMode {
-    double currentTileSize=71.125/3;//divide by 3 cuz 70 is the size for half a field
+    double currentTileSize=70.5625/3;//divide by 3 cuz 70 is the size for half a field
     double referenceTileSize=70/3;//(reference tile should be MeepMeep)
     double currentBotLength=17;
     double referenceBotLength=17;

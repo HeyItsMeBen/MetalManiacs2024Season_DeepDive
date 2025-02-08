@@ -8,7 +8,7 @@ public class outtakeArm {
     private Servo outtakeArmRightServo;
     private Servo outtakeArmLeftServo;
     //sample positions
-    public double grabSample=0.865; //0.99-->0.865
+    public double grabSample=0.9; //0.99-->0.865
     public double scoreSample=0.3;
 
     //specimen positions

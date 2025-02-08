@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Hardware.outtakeArm;
 
 @Autonomous(name = "Sample Pathing", group = "Linear OpMode")
 public final class AutoMainSamplePathing extends LinearOpMode {
-    double currentTileSize=71.125/3;//divide by 3 cuz 70 is the size for half a field
+    double currentTileSize=70.5625/3;//divide by 3 cuz 70 is the size for half a field
     double referenceTileSize=70/3;//(reference tile should be MeepMeep)
     double currentBotLength=17;
     double referenceBotLength=17;
@@ -94,9 +94,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
                 //set servos to defaults
-                .stopAndAdd(new setOuttakeClaw(hardwareMap, 0.35))
+                .stopAndAdd(new setOuttakeClaw(hardwareMap, 0))
                 .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
-                .stopAndAdd(new setIntakeClaw(hardwareMap, 0))
+                .stopAndAdd(new setIntakeClaw(hardwareMap, 0.35))
 
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45)) //spin and move to open slides
@@ -155,8 +155,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             intakeClaw.setPosition(0.35);   //open
             highBarPivot.setPosition(outtakeArmServos.standby);
 
-            setArmTarget(-350, 0.75);   //arm down
-            setArmTarget(-425, 1);      //arm down a bit more
+            setArmTarget(-700, 0.75);   //arm down
+            setArmTarget(-795, 1);      //arm down a bit more
             setIntakeClawPosition(0.035);               //grab
             setArmTarget(-100, 0.75);      //arm up
             setArmTarget(0, 1);      //arm up abit more
@@ -177,6 +177,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
             setOuttakeClawPosition(0.035);  //loose grip
             setIntakeClawPosition(0.35);    //releases
+            setOuttakeArmPosition(outtakeArmServos.grabFromWall);
+            setOuttakeClawPosition(0);  //tight grip
+            setOuttakeArmPosition(outtakeArmServos.standby);
             setSlidesTarget(3300, 3);   //raise slides
             setOuttakeArmPosition(outtakeArmServos.scoreSample);    //pivot arm to be over slides
 

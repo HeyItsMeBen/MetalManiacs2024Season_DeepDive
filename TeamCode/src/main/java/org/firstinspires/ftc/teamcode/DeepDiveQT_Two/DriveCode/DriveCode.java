@@ -133,7 +133,7 @@ public class DriveCode extends LinearOpMode {
             }
             //brings arm back and allows for it to be picked up by outtake arm
             if (driver.getButton(GamepadKeys.Button.A)){
-                armTarget = -5;
+                armTarget = -0;
                 intake.setArmPivotServoBack();
                 intake.armRetract(armTarget);
             }
@@ -144,7 +144,7 @@ public class DriveCode extends LinearOpMode {
                 outtake.outtakeServoOpen();
                 outtake.outtakearmPosState4();
                 runtime.reset();
-                sleep(500);
+                sleep(750);
                 outtake.outtakeServoClose();
                 sleep(100);
                 intake.armServoOpen(0.35);
@@ -156,12 +156,12 @@ public class DriveCode extends LinearOpMode {
                 outtake.outtakearmPosState2();
             }
             if (driver.getButton(GamepadKeys.Button.Y)){
-                    armTarget = -350;
+                    armTarget = -700;
                 intake.armRetract(armTarget);
             }
 
             if (driver.getButton(GamepadKeys.Button.DPAD_DOWN)){
-                armTarget = -425;
+                armTarget = -795;
             }
             intake.armRetract(armTarget);
 

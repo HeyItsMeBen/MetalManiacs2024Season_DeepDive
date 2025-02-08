@@ -19,7 +19,7 @@ public class Intake {
     private Servo armPivotServo = null;
 
     private PIDController armController;
-    public static double p = 0.005, i = 0., d = 0.00075;
+    public static double p = 0.01, i = 0.05, d = 0.001;
     public static double f = 0;
 
     public static int armtarget = 0;
@@ -34,7 +34,7 @@ public class Intake {
         armServo = hwMap.get(Servo.class, "intakeClawServo");
         armPivotServo = hwMap.get(Servo.class, "intakePivotServo");
 
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -45,14 +45,14 @@ public class Intake {
 
     public void armRetract(int armtarget) {
         armController.setPID(p, i, d);
-        double ticks_in_degree = 537.7 / 360;
+        double ticks_in_degree = 1120 / 360;
         int armPos = arm.getCurrentPosition();
         double armPID = armController.calculate(armPos, armtarget);
         double armFF = Math.cos(Math.toRadians(armtarget / ticks_in_degree)) * f;
 
         double armpower = armPID + armFF;
 
-        arm.setPower(armpower * 0.75);
+        arm.setPower(armpower * 0.5);//0.75-->0.5
     }
 
     public void armServoOpen(double pos){
