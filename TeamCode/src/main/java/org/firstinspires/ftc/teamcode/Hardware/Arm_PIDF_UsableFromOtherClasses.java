@@ -28,8 +28,8 @@ public class Arm_PIDF_UsableFromOtherClasses {
         double target=givenTarget*-325;
         controller.setPID(p, i, d);
         int armPos = arm_motor.getCurrentPosition();
-        double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+        double pid = controller.calculate(armPos, givenTarget);
+        double ff = Math.cos(Math.toRadians(givenTarget / ticks_in_degree)) * f;
 
         double power = pid + ff;
 

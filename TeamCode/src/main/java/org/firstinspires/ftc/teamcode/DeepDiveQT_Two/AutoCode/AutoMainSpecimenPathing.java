@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.tuning.TuningOpMod
 import org.firstinspires.ftc.teamcode.Hardware.Slides_PID;
 import org.firstinspires.ftc.teamcode.Hardware.outtakeArm;
 
-@Autonomous(name = "2specimen1push", group = "Linear OpMode")
+@Autonomous(name = "specimenPathing", group = "Linear OpMode")
 public final class AutoMainSpecimenPathing extends LinearOpMode {
     double currentTileSize=71.125/3;//divide by 3 cuz 70 is the size for half a field
     double referenceTileSize=70/3;//(reference tile should be MeepMeep)
@@ -105,7 +105,8 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             .strafeTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-46.5) * MeepMeepTileCompensation))
 
-                            .stopAndAdd(new scoreSpecimenPart3(hardwareMap))
+                            .waitSeconds(30)
+                            //.stopAndAdd(new scoreSpecimenPart3(hardwareMap))
 
                             //grab specimen from wall 2
                             .strafeToLinearHeading(new Vector2d((45) * MeepMeepTileCompensation, (-45) * MeepMeepTileCompensation), Math.toRadians(90))  //get out of observation zone    //-47
