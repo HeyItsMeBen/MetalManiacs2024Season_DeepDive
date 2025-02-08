@@ -147,7 +147,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         //@Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             setOuttakeArmPosition(outtakeArmServos.prepSpecimen);
-            setSlidesTarget(875, 0.75);    //-875-->875
+            setSlidesTarget(875, 0.75);    //875-->1000
             return false;
         }
     }
@@ -225,7 +225,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         ElapsedTime timer;
         timer=new ElapsedTime();
 
-        while (timer.seconds()<seconds) {
+        while (timer.seconds()<seconds && opModeIsActive()) {
             slides.setSlidesTarget(target);
         }
     }
@@ -234,7 +234,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         timer=new ElapsedTime();
         double estimatedTime=Math.abs((outtakeArmServos.getArmPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
         outtakeArmServos.setArmTarget(position);
-        while (timer.seconds()<estimatedTime){
+        while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
@@ -243,7 +243,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         timer=new ElapsedTime();
         double estimatedTime=Math.abs((outtakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and multiplied by 2 becuase we are not using full range of motion
         outtakeClaw.setPosition(position);
-        while (timer.seconds()<estimatedTime){
+        while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
@@ -252,7 +252,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         timer=new ElapsedTime();
         double estimatedTime=Math.abs((intakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
         intakeClaw.setPosition(position);
-        while (timer.seconds()<estimatedTime){
+        while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
