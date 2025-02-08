@@ -71,11 +71,11 @@ public class DriveCode extends LinearOpMode {
         //close outtake claw
         outtake.outtakeServoClosetight();
         //outtake arm pos 4
-        outtake.outtakearmPosState1();
+        outtake.outtakearmPosState3();
         //Set pivot to neutral
         intake.setArmPivotServoBack();
         //claws to outside
-        intake.armServoClose();
+        intake.armServoOpen(0.35);
         //intake.armServoOpen(0.35);
         telemetry.addData(">", "Status: Initialized");
         telemetry.update();
@@ -145,9 +145,13 @@ public class DriveCode extends LinearOpMode {
                 outtake.outtakearmPosState4();
                 runtime.reset();
                 sleep(1000);
-                outtake.outtakeServoClosetight();
+                outtake.outtakeServoClose();
                 sleep(100);
                 intake.armServoOpen(0.35);
+                sleep(100);
+                outtake.outtakearmPosState1();
+                sleep(1000);
+                outtake.outtakeServoClosetight();
                 sleep(100);
                 outtake.outtakearmPosState2();
             }

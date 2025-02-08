@@ -12,9 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name = "Intake", group = "OpMode")
-public class Intake extends OpMode {
-
+public class Intake {
 
     public DcMotor arm = null;
     private Servo armServo = null;
@@ -29,20 +27,7 @@ public class Intake extends OpMode {
     public double pivotTarget = 0.5;
 
 
-    public void init() {
-        //arm Subsystem
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        armServo = hardwareMap.get(Servo.class, "intakeClawServo");
-        armPivotServo = hardwareMap.get(Servo.class, "intakePivotServo");
 
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        armController = new PIDController(p, i, d);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    }
 
     public Intake(HardwareMap hwMap){
         arm = hwMap.get(DcMotor.class, "arm");
@@ -53,27 +38,10 @@ public class Intake extends OpMode {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        armController = new PIDController(p, i, d);
     }
 
-    public void loop() {
-       armRetract(armtarget);
-
-       if (gamepad1.x){
-           setArmPivotServoOut();
-       }
-
-       if (gamepad1.b){
-           setArmPivotServoBack();
-       }
-
-       if (gamepad1.right_bumper){
-           armServoOpen(0.35);
-       }
-
-       if (gamepad1.left_bumper){
-           armServoClose();
-       }
-    }
 
     public void armRetract(int armtarget) {
         armController.setPID(p, i, d);
@@ -85,10 +53,6 @@ public class Intake extends OpMode {
         double armpower = armPID + armFF;
 
         arm.setPower(armpower * 0.75);
-
-        telemetry.addData("armPos", armPos);
-        telemetry.addData("armTarget", armtarget);
-        telemetry.update();
     }
 
     public void armServoOpen(double pos){

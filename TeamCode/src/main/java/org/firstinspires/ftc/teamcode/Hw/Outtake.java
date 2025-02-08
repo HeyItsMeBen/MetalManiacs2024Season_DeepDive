@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-@TeleOp
+
 public class Outtake{
 
     private DcMotor leftSlide = null;
@@ -25,7 +25,7 @@ public class Outtake{
 
     private PIDController slideController;
 
-    public static double Kp = 0.009, Ki = 0, Kd = 0.0005;
+    public static double Kp = 0.02, Ki = 0, Kd = 0.0005;
     double Kf = 0 ;
     public static int slidetarget = 0;
 
@@ -34,13 +34,13 @@ public class Outtake{
     double[] STATE_1 = {1,0};
 
     //Stand-by arm servo pos
-    double[] STATE_2 = {0.725,.275};
+    double[] STATE_2 = {0.87,.13};
 
     //ready to score arm servo pos
     double[] STATE_3 = {.2,.8};
 
     //Scored arm servo pos
-    double[] STATE_4 = {0.125,0.875};
+    double[] STATE_4 = {0.1185,0.8815};
 
     //Outtake subsystem
     public Outtake(HardwareMap hwMap) {
@@ -60,7 +60,7 @@ public class Outtake{
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
+
         slideController = new PIDController(Kp, Ki, Kd);
     }
 
