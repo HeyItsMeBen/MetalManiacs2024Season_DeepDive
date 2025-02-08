@@ -13,33 +13,38 @@ public class MeepMeepTesting {
 
         MeepMeep meepMeep = new MeepMeep(800);
 
-        RoadRunnerBotEntity Finn = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity Robot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(40, 30, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(18, 18)
+                .setDimensions(17, 17)
                 .build();
 
         Vector2d scoring_position = new Vector2d((-50) * MeepMeepCompensation, (-50) * MeepMeepCompensation);
+        Vector2d slides_up_position = new Vector2d((-48)*MeepMeepCompensation, (-48)*MeepMeepCompensation);
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
 
-        Finn.runAction(Finn.getDrive().actionBuilder(beginPose)
+        Robot.runAction(Robot.getDrive().actionBuilder(beginPose)
 
                 //go to scoring position and score initial sample
-                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .strafeTo(new Vector2d(-20 * MeepMeepCompensation, -50 * MeepMeepCompensation))
+                .strafeToLinearHeading(slides_up_position, Math.toRadians(45))
+                .strafeTo(scoring_position)
                         .waitSeconds(3) //score initial sample
 
                 //grab and score first sample
-                .strafeToLinearHeading(new Vector2d(-48*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-46*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
                     .waitSeconds(2) //grab first sample
                     .waitSeconds(2) //transfer to linear slides
-                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .strafeToLinearHeading(slides_up_position, Math.toRadians(45))
+                .strafeTo(scoring_position)
                     .waitSeconds(3) //score first sample
 
                 //grab and score second sample
                 .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
                     .waitSeconds(2) //grab second sample
                     .waitSeconds(2) //transfer to linear slides
-                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .strafeToLinearHeading(slides_up_position, Math.toRadians(45))
+                .strafeTo(scoring_position)
                     .waitSeconds(3) //score second sample
 
                 //go to achieve first ascent
@@ -51,7 +56,7 @@ public class MeepMeepTesting {
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(Finn)
+                .addEntity(Robot)
                 .start();
     }
 }
