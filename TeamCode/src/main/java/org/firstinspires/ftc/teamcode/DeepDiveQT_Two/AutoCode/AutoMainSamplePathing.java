@@ -108,23 +108,27 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                         .waitSeconds(1)
 
                 //score second sample
-                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .strafeTo(scoring_position)
+                .turnTo(Math.toRadians(45))
+                //.strafeToLinearHeading(scoring_position, Math.toRadians(45))
                     .stopAndAdd(new prepSample(hardwareMap))
                         .waitSeconds(1)
                     .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab and third second sample
-                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -45* MeepMeepTileCompensation), Math.toRadians(90))
-                    //.stopAndAdd(new grabSample(hardwareMap))
-                        .waitSeconds(1)
-
-                //score third sample
-                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
-                    .stopAndAdd(new prepSample(hardwareMap))
-                        .waitSeconds(1)
-                    .stopAndAdd(new scoreAndReset(hardwareMap))
+//                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -45* MeepMeepTileCompensation), Math.toRadians(90))
+//                    //.stopAndAdd(new grabSample(hardwareMap))
+//                        .waitSeconds(1)
+//
+//                //score third sample
+//                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+//                    .stopAndAdd(new prepSample(hardwareMap))
+//                        .waitSeconds(1)
+//                    .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //go to achieve first ascent
+
+                //go and achieve first ascent
                 .splineToLinearHeading(new Pose2d(-25* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
                     .stopAndAdd(new achieveFirstAscent(hardwareMap))
                 //.splineToLinearHeading(new Pose2d(-24* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
