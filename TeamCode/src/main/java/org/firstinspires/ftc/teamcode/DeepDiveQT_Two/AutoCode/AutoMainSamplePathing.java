@@ -92,30 +92,30 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
                 //set servos to defaults
-                    //.stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
+                    .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45)) //spin and move to open slides
                     .stopAndAdd(new prepSample(hardwareMap))
                         .waitSeconds(1)
                     .stopAndAdd(new scoreAndReset(hardwareMap))
 
-                //grab first sample
+                //grab second sample
                 .strafeTo(new Vector2d(-45*MeepMeepTileCompensation, -43.5*MeepMeepTileCompensation))
                     .turnTo(Math.toRadians(90))
-                    //.stopAndAdd(new grabSample(hardwareMap))
+                    .stopAndAdd(new grabSample(hardwareMap)) //check first to see if working
                         .waitSeconds(1)
 
                 //score second sample
                 .strafeTo(scoring_position)
                 .turnTo(Math.toRadians(45))
-                //.strafeToLinearHeading(scoring_position, Math.toRadians(45))
-                    //.stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
+                        .waitSeconds(1)
+                    .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
                     .stopAndAdd(new prepSample(hardwareMap))
                         .waitSeconds(1)
                     .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab and third second sample
-//                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -45* MeepMeepTileCompensation), Math.toRadians(90))
+//                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
 //                    //.stopAndAdd(new grabSample(hardwareMap))
 //                        .waitSeconds(1)
 //
@@ -125,14 +125,10 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 //                        .waitSeconds(1)
 //                    .stopAndAdd(new scoreAndReset(hardwareMap))
 
-                //go to achieve first ascent
-
                 //go and achieve first ascent
-                .splineToLinearHeading(new Pose2d(-25* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-30* MeepMeepTileCompensation, (-10* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .strafeTo(new Vector2d(-25*MeepMeepTileCompensation, -10*MeepMeepTileCompensation))
                     .stopAndAdd(new achieveFirstAscent(hardwareMap))
-                    //.stopAndAdd(new grabSample(hardwareMap))
-                //.splineToLinearHeading(new Pose2d(-24* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
-                        .waitSeconds(1)
                 .build());
     }
 
@@ -156,7 +152,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             setArmTarget(-400-50, 1);      //arm down a bit more
             setIntakeClawPosition(0.035);               //grab
             setArmTarget(-100, 1);      //arm up
-            setArmTarget(0, 1);      //arm up abit more
+            setArmTarget(0, 0.75);      //arm up abit more
             setOuttakeArmPosition(outtakeArmServos.grabSample);
 
             // do we need to keep running?

@@ -48,7 +48,8 @@ public class MeepMeepTesting {
                     .waitSeconds(3) //score second sample
 
                 //go to achieve first ascent
-                .splineToLinearHeading(new Pose2d(-25*MeepMeepCompensation, (-5*MeepMeepCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-30* MeepMeepCompensation, (-10), Math.toRadians(180)), Math.toRadians(0))
+                .strafeTo(new Vector2d(-25, -10))
                     .waitSeconds(1) //achieve first ascent
 
                 .build());
