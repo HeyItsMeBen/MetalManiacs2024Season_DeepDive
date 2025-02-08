@@ -148,8 +148,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             intakeClaw.setPosition(0.35);   //open
             highBarPivot.setPosition(outtakeArmServos.standby);
 
-            setArmTarget(-300, 1);   //arm down
-            setArmTarget(-400, 0.75);      //arm down a bit more
+            setArmTarget(-300, 0.75);   //arm down
+            setArmTarget(-400, 1);      //arm down a bit more
             setIntakeClawPosition(0.035);               //grab
             setArmTarget(-100, 0.75);      //arm up
             setArmTarget(0, 1);      //arm up abit more
