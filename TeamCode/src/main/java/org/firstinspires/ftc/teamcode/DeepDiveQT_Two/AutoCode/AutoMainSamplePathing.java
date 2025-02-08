@@ -82,8 +82,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
-        Vector2d scoring_position = new Vector2d((-50) * MeepMeepTileCompensation, (-50) * MeepMeepTileCompensation);
-        Vector2d slides_up_position = new Vector2d((-48)*MeepMeepTileCompensation, (-48)*MeepMeepTileCompensation);
+        Vector2d scoring_position = new Vector2d((-50+2) * MeepMeepTileCompensation, (-50+2) * MeepMeepTileCompensation);
+        Vector2d slides_up_position = new Vector2d((-48+2)*MeepMeepTileCompensation, (-48+2)*MeepMeepTileCompensation);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -92,67 +92,118 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
                 //set servos to defaults
-                .stopAndAdd(new setServos(hardwareMap,0, 0.0, outtakeArmServos.grabSample))
-
+                .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
 
                 //score initial (first) sample
-                    //.stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArmServos.grabSample)) //close claws
                 .strafeTo(new Vector2d(-20 * MeepMeepTileCompensation, -50 * MeepMeepTileCompensation)) //move out. This way, not hit wall when spin
                 .strafeToLinearHeading(slides_up_position, Math.toRadians(45)) //spin and move to open slides
-                    .waitSeconds(2) //placeholder for slide action
+                //    .waitSeconds(2) //placeholder for slide action
+                //.strafeTo(scoring_position)
+                //    .waitSeconds(3) //score sample
+
                 .strafeTo(scoring_position)
-                    .waitSeconds(3) //score sample
+                .stopAndAdd(new prepSample(hardwareMap))
+                .waitSeconds(5)
+                .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab second sample
                 .strafeToLinearHeading(new Vector2d(-46*MeepMeepTileCompensation, -43*MeepMeepTileCompensation), Math.toRadians(90))
-                    .waitSeconds(2) //bring linear slides down
-                    //.stopAndAdd(new grabSample(hardwareMap))
-                    .waitSeconds(2) //grab sample with arm and bring it to linear slides
+
+                .stopAndAdd(new grabSample(hardwareMap))
 
                 //score second sample
-                .strafeToLinearHeading(slides_up_position, Math.toRadians(45))
-                    .waitSeconds(3) //bring slides up
-                .strafeTo(scoring_position)
-                    .waitSeconds(3) //score second sample
+                //.strafeToLinearHeading(slides_up_position, Math.toRadians(45))
+                //    .waitSeconds(3) //bring slides up
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .stopAndAdd(new prepSample(hardwareMap))
+                .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab and third second sample
                 .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
-                    .waitSeconds(2) //bring linear slides down
-                    //.stopAndAdd(new grabSample(hardwareMap))
-                    .waitSeconds(2) //grab sample with arm and bring it to linear slides
+                .stopAndAdd(new grabSample(hardwareMap))
 
                 //score third sample
-                .strafeToLinearHeading(slides_up_position, Math.toRadians(45))
-                    .waitSeconds(3) //bring slides up
-                .strafeTo(scoring_position)
-                    .waitSeconds(3) //score second sample
+                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                .stopAndAdd(new prepSample(hardwareMap))
+                .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //go to achieve first ascent
                 .splineToLinearHeading(new Pose2d(-25* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
-                    .waitSeconds(1) //touch outtake arm to the low bar
-
+                .stopAndAdd(new achieveFirstAscent(hardwareMap))
+                .splineToLinearHeading(new Pose2d(-24* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .waitSeconds(5)
                 .build());
-
     }
 
+    public class grabSample implements Action {
+        Servo intakeClaw;
+        Servo highBarPivot;
+        DcMotor arm;
 
-    public class moveIntakeArm implements Action {
+        public grabSample(HardwareMap hMap) {
 
-
-        public moveIntakeArm(HardwareMap hMap, double arm_position) {
+            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
+            highBarPivot = hardwareMap.get(Servo.class, "rightOuttake");
+            arm = hMap.get(DcMotor.class, "arm");
         }
-
-
-
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeClaw.setPosition(0.35);   //open
+            highBarPivot.setPosition(outtakeArmServos.standby);
 
-            setArmTarget(0, 0.75);
+            setArmTarget(-350-50, 0.75);   //arm down
+            setArmTarget(-400-50, 1);      //arm down a bit more
+            setIntakeClawPosition(0.035);               //grab
+            setArmTarget(-100, 1);      //arm up
+            setArmTarget(0, 1);      //arm up abit more
+            setOuttakeArmPosition(outtakeArmServos.grabSample);
 
             // do we need to keep running?
             return false;
         }
     }
+
+    public class prepSample implements Action {
+
+        public prepSample(HardwareMap hMap) {
+
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+            /*setIntakeClawPosition(0.35);    //releases
+            setOuttakeClawPosition(0.035);  //loose grip
+            setOuttakeArmPosition(outtakeArmServos.grabFromWall);   //lets sample slide down
+            setOuttakeClawPosition(0);              //tightens grip
+            setOuttakeArmPosition(outtakeArmServos.standby);    //clearance
+            setSlidesTarget(3300, 4);   //raise slides
+            setOuttakeArmPosition(outtakeArmServos.prepSample);    //pivot arm to be over slides
+            setOuttakeClawPosition(0.35);   //scores
+             */
+            setOuttakeClawPosition(0.035);  //loose grip
+            setIntakeClawPosition(0.35);    //releases
+            setSlidesTarget(3300, 4);   //raise slides
+            setOuttakeArmPosition(outtakeArmServos.scoreSample);    //pivot arm to be over slides
+
+            return false;
+        }
+    }
+    public class scoreAndReset implements Action {
+
+        public scoreAndReset(HardwareMap hMap) {
+
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+            setOuttakeClawPosition(0.35);   //scores
+            setOuttakeArmPosition(outtakeArmServos.standby);
+            setSlidesTarget(0, 4);
+
+            return false;
+        }
+    }
+
 
     public class achieveFirstAscent implements Action { //touch the bar in submersible
         public achieveFirstAscent(HardwareMap hMap) {
@@ -188,7 +239,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         ElapsedTime timer;
         timer=new ElapsedTime();
 
-        while (timer.seconds()<seconds) {
+        while (timer.seconds()<seconds && opModeIsActive()) {
             slides.setSlidesTarget(target);
         }
     }
@@ -197,7 +248,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         timer=new ElapsedTime();
         double estimatedTime=Math.abs((outtakeArmServos.getArmPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
         outtakeArmServos.setArmTarget(position);
-        while (timer.seconds()<estimatedTime){
+        while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
@@ -206,7 +257,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         timer=new ElapsedTime();
         double estimatedTime=Math.abs((outtakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and multiplied by 2 becuase we are not using full range of motion
         outtakeClaw.setPosition(position);
-        while (timer.seconds()<estimatedTime){
+        while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
@@ -214,7 +265,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         ElapsedTime timer;
         timer=new ElapsedTime();
 
-        while (timer.seconds()<seconds) {
+        while (timer.seconds()<seconds && opModeIsActive()) {
             arm.setArmTarget(target);
         }
     }
@@ -223,7 +274,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         timer=new ElapsedTime();
         double estimatedTime=Math.abs((intakeClawServo.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
         intakeClawServo.setPosition(position);
-        while (timer.seconds()<estimatedTime){
+        while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
         }
     }
