@@ -60,10 +60,11 @@ public class Outtake{
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        
+        slideController = new PIDController(Kp, Ki, Kd);
     }
 
     public void slidesMove(int slidetarget) {
-
         slideController.setPID(Kp, Ki, Kd);
         double ticks_in_degree = 537.7 / 360;
         int slidePos = rightSlide.getCurrentPosition();
