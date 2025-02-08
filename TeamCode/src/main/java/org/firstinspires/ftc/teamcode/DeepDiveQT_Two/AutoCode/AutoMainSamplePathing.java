@@ -100,7 +100,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                     .stopAndAdd(new scoreAndReset(hardwareMap))
 
                 //grab first sample
-                .strafeToLinearHeading(new Vector2d(-46*MeepMeepTileCompensation, -45*MeepMeepTileCompensation), Math.toRadians(90))
+                .strafeTo(new Vector2d(-46*MeepMeepTileCompensation, -44*MeepMeepTileCompensation))
+                    .turnTo(Math.toRadians(90))
                     //.stopAndAdd(new grabSample(hardwareMap))
                         .waitSeconds(1)
 
@@ -108,6 +109,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .strafeTo(scoring_position)
                 .turnTo(Math.toRadians(45))
                 //.strafeToLinearHeading(scoring_position, Math.toRadians(45))
+                    .stopAndAdd(new setServos(hardwareMap,0.35, 0, outtakeArmServos.grabSample))
                     .stopAndAdd(new prepSample(hardwareMap))
                         .waitSeconds(1)
                     .stopAndAdd(new scoreAndReset(hardwareMap))
@@ -180,7 +182,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
              */
             setOuttakeClawPosition(0.035);  //loose grip
             setIntakeClawPosition(0.35);    //releases
-            setSlidesTarget(3300, 4);   //raise slides
+            setSlidesTarget(3300, 3);   //raise slides
             setOuttakeArmPosition(outtakeArmServos.scoreSample);    //pivot arm to be over slides
 
             return false;
@@ -196,7 +198,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
             setOuttakeClawPosition(0.35);   //scores
             setOuttakeArmPosition(outtakeArmServos.standby);
-            setSlidesTarget(0, 4);
+            setSlidesTarget(0, 3);
 
             return false;
         }
