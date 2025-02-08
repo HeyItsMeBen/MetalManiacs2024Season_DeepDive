@@ -42,7 +42,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
     //Servo servo=hardwareMap.get(Servo.class, "servo");
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(13.93500, -62+0.1875006-interactionCompensation, Math.toRadians(270));
+        Pose2d beginPose = new Pose2d(13.93500-0.1875006+interactionCompensation, -62+0.1875006-interactionCompensation, Math.toRadians(270));
         intakeClaw= hardwareMap.get(Servo.class, "intakeClawServo");
         outtakeClaw= hardwareMap.get(Servo.class, "outtakeServo");
         slides = new Slides_PID(hardwareMap);
