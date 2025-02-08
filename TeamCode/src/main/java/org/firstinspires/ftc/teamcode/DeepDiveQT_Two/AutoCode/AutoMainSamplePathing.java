@@ -148,11 +148,11 @@ public final class AutoMainSamplePathing extends LinearOpMode {
             intakeClaw.setPosition(0.35);   //open
             highBarPivot.setPosition(outtakeArmServos.standby);
 
-            setArmTarget(-350-50, 0.75);   //arm down
-            setArmTarget(-400-50, 1);      //arm down a bit more
+            setArmTarget(-350-50, 1);   //arm down
+            setArmTarget(-400-50, 0.75);      //arm down a bit more
             setIntakeClawPosition(0.035);               //grab
-            setArmTarget(-100, 1);      //arm up
-            setArmTarget(0, 0.75);      //arm up abit more
+            setArmTarget(-100, 0.75);      //arm up
+            setArmTarget(0, 1);      //arm up abit more
             setOuttakeArmPosition(outtakeArmServos.grabSample);
 
             // do we need to keep running?
@@ -168,7 +168,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
-            //setOuttakeClawPosition(0.035);  //loose grip
+            setOuttakeClawPosition(0.035);  //loose grip
             setIntakeClawPosition(0.35);    //releases
             setSlidesTarget(3300, 3);   //raise slides
             setOuttakeArmPosition(outtakeArmServos.scoreSample);    //pivot arm to be over slides
@@ -184,7 +184,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
-            //setOuttakeClawPosition(0.35);   //scores
+            setOuttakeClawPosition(0.35);   //scores
             setOuttakeArmPosition(outtakeArmServos.standby);
             setSlidesTarget(0, 3);
 

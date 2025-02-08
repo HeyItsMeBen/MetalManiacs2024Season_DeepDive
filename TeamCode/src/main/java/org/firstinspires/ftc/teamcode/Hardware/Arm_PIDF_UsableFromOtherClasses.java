@@ -25,7 +25,7 @@ public class Arm_PIDF_UsableFromOtherClasses {
 
 
     public void setArmTarget(double givenTarget) {
-        double target=givenTarget*-325;
+        //double target=givenTarget*-325;
         controller.setPID(p, i, d);
         int armPos = arm_motor.getCurrentPosition();
         double pid = controller.calculate(armPos, givenTarget);
