@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Hw.Intake;
 import org.firstinspires.ftc.teamcode.Hw.Outtake;
 
 @Config
-@TeleOp(name = "QT Drive Code", group = "Linear OpMode")
+@TeleOp(name = "QT3 Drive Code", group = "Linear OpMode")
 
 public class DriveCode extends LinearOpMode {
 

@@ -23,8 +23,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Slides_PID;
 import org.firstinspires.ftc.teamcode.Hardware.outtakeArm;
 
 
-@Autonomous(name = "QT3 Sample Pathing", group = "Linear OpMode")
-public final class AutoMainSamplePathing extends LinearOpMode {
+@Autonomous(name = "QT3 Parking", group = "Linear OpMode")
+public final class AutoMainParking extends LinearOpMode {
     double currentTileSize=70.5625/3;//divide by 3 cuz 70 is the size for half a field
     double referenceTileSize=70/3;//(reference tile should be MeepMeep)
     double currentBotLength=17;
@@ -93,51 +93,52 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
+                .strafeTo(new Vector2d(-56, -56))
                 //set servos to defaults
-                    .stopAndAdd(new setOuttakeClaw(hardwareMap, 0))
-                    .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
-                    .stopAndAdd(new setIntakeClaw(hardwareMap, 0.35))
-
-                .strafeTo(slides_up_position) //move out. This way, not hit wall when spin
-                .turnTo(Math.toRadians(45))
-                    .stopAndAdd(new prepSample(hardwareMap))
-                    .strafeTo(scoring_position) //prepare to score sample
-                    .waitSeconds(1)
-                    .stopAndAdd(new scoreAndReset(hardwareMap))
-                    .waitSeconds(2)
-
-                //grab second sample
-                .strafeTo(new Vector2d((-45)*MeepMeepTileCompensation, (-43.5-0.1875006)*MeepMeepTileCompensation+getNewInteractionvalue(botSizeWhenGrabSample)))
-                .turnTo(Math.toRadians(90))
-                .stopAndAdd(new grabSample(hardwareMap)) //check first to see if working
-                .waitSeconds(1)
-
-                //score second sample
-                .strafeTo(slides_up_position)
-                .turnTo(Math.toRadians(45))
-                    .stopAndAdd(new setOuttakeClaw(hardwareMap, 0.35))
-                    .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
-                    .stopAndAdd(new setIntakeClaw(hardwareMap, 0))
-                    .stopAndAdd(new prepSample(hardwareMap))
-                    .waitSeconds(1)
-                    .stopAndAdd(new scoreAndReset(hardwareMap))
-                    .waitSeconds(2)
-
-                //grab and third second sample
-//                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
-//                    //.stopAndAdd(new grabSample(hardwareMap))
-//                        .waitSeconds(1)
+//                .stopAndAdd(new setOuttakeClaw(hardwareMap, 0))
+//                .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
+//                .stopAndAdd(new setIntakeClaw(hardwareMap, 0.35))
 //
-//                //score third sample
-//                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
-//                    .stopAndAdd(new prepSample(hardwareMap))
-//                        .waitSeconds(1)
-//                    .stopAndAdd(new scoreAndReset(hardwareMap))
-
-                //go and achieve first ascent
-                .splineToLinearHeading(new Pose2d(-30* MeepMeepTileCompensation, (-10* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
-                .strafeTo(new Vector2d(-25*MeepMeepTileCompensation, -10*MeepMeepTileCompensation))
-                .stopAndAdd(new setOuttakeArm(hardwareMap, 0.4))
+//                .strafeTo(slides_up_position) //move out. This way, not hit wall when spin
+//                .turnTo(Math.toRadians(45))
+//                .stopAndAdd(new prepSample(hardwareMap))
+//                .strafeTo(scoring_position) //prepare to score sample
+//                .waitSeconds(1)
+//                .stopAndAdd(new scoreAndReset(hardwareMap))
+//                .waitSeconds(2)
+//
+//                //grab second sample
+//                .strafeTo(new Vector2d((-45)*MeepMeepTileCompensation, (-43.5-0.1875006)*MeepMeepTileCompensation+getNewInteractionvalue(botSizeWhenGrabSample)))
+//                .turnTo(Math.toRadians(90))
+//                .stopAndAdd(new grabSample(hardwareMap)) //check first to see if working
+//                .waitSeconds(1)
+//
+//                //score second sample
+//                .strafeTo(slides_up_position)
+//                .turnTo(Math.toRadians(45))
+//                .stopAndAdd(new setOuttakeClaw(hardwareMap, 0.35))
+//                .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
+//                .stopAndAdd(new setIntakeClaw(hardwareMap, 0))
+//                .stopAndAdd(new prepSample(hardwareMap))
+//                .waitSeconds(1)
+//                .stopAndAdd(new scoreAndReset(hardwareMap))
+//                .waitSeconds(2)
+//
+//                //grab and third second sample
+////                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
+////                    //.stopAndAdd(new grabSample(hardwareMap))
+////                        .waitSeconds(1)
+////
+////                //score third sample
+////                .strafeToLinearHeading(scoring_position, Math.toRadians(45))
+////                    .stopAndAdd(new prepSample(hardwareMap))
+////                        .waitSeconds(1)
+////                    .stopAndAdd(new scoreAndReset(hardwareMap))
+//
+//                //go and achieve first ascent
+//                .splineToLinearHeading(new Pose2d(-30* MeepMeepTileCompensation, (-10* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
+//                .strafeTo(new Vector2d(-25*MeepMeepTileCompensation, -10*MeepMeepTileCompensation))
+//                .stopAndAdd(new setOuttakeArm(hardwareMap, 0.4))
                 .build());
     }
 
