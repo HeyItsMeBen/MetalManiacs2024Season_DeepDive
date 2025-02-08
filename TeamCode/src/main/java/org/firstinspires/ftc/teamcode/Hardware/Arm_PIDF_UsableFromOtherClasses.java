@@ -17,7 +17,7 @@ public class Arm_PIDF_UsableFromOtherClasses {
         controller = new PIDController(p, i, d);
 
 
-        arm_motor = hMap.get(DcMotorEx.class, "arm");
+        arm_motor = hMap.get(DcMotorEx.class, "arm");   //real name?
         arm_motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         arm_motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm_motor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
