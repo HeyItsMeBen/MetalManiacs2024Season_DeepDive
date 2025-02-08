@@ -49,7 +49,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     Slides_PID slides;
     DcMotor leftSlide;
     DcMotor rightSlide;
-    Servo intakeClaw;
+    Servo intakeClawServo;
     Servo outtakeClaw;
     public static double Arm_p = 0.005, Arm_i = 0, Arm_d = 0.00075, Arm_f = 0;
     private static double Slides_p = 0.009, Slides_i = 0, Slides_d = 0.0005, Slides_f = 0;
@@ -61,7 +61,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
         leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
-        intakeClaw=hardwareMap.get(Servo.class, "intakeClawServo");
+        intakeClawServo=hardwareMap.get(Servo.class, "intakeClawServo");
         outtakeClaw=hardwareMap.get(Servo.class, "outtakeServo");
         slides = new Slides_PID(hardwareMap);
         outtakeArmServos= new outtakeArm(hardwareMap);
@@ -90,6 +90,10 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         waitForStart();
 
         Actions.runBlocking(drive.actionBuilder(beginPose)
+
+                //set servos to defaults
+                .stopAndAdd(new setServos(hardwareMap,0, 0.0, outtakeArmServos.grabSample))
+
 
                 //score initial (first) sample
                     //.stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArmServos.grabSample)) //close claws
@@ -132,64 +136,24 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     }
 
 
-    public class grabSample implements Action {
-        Servo intakeClaw;
-        Servo highBarPivot;
-        DcMotor arm;
-        int armPos;
-        double armPID;
-        double armFF;
-        double armpower;
+    public class moveIntakeArm implements Action {
 
 
-        public grabSample(HardwareMap hMap) {
-
-
-            intakeClaw=hMap.get(Servo.class, "intakeClawServo");
-            highBarPivot = hardwareMap.get(Servo.class, "rightOuttake");
-            arm = hMap.get(DcMotor.class, "arm");
-
-
-
+        public moveIntakeArm(HardwareMap hMap, double arm_position) {
         }
+
 
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            intakeClaw.setPosition(0.35);   //open
-            highBarPivot.setPosition(0.5);
 
-            setArmTarget(-350-50, 0.75);   //arm down
-            setArmTarget(-400-50, 1);      //arm down a bit more
-            setIntakeClawPosition(0.035);   //close //set to 0 if it can't grab
-            setArmTarget(-100, 1);      //arm up
-            setArmTarget(0, 1);      //arm up abit more
+            setArmTarget(0, 0.75);
 
             // do we need to keep running?
             return false;
         }
     }
 
-    public class retrieveSample implements Action {
-        public retrieveSample(HardwareMap hMap) {
-
-        }
-
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setOuttakeClawPosition(0.35);
-            setOuttakeArmPosition(outtakeArmServos.grabSample);
-            setOuttakeClawPosition(0.035);
-            setIntakeClawPosition(0.35);
-            setOuttakeArmPosition(outtakeArmServos.standby);
-            setSlidesTarget(-2000, 2);
-            setOuttakeArmPosition(outtakeArmServos.scoreSample);
-            //y no drop?
-
-            return false;
-        }
-    }
     public class achieveFirstAscent implements Action { //touch the bar in submersible
         public achieveFirstAscent(HardwareMap hMap) {
 
@@ -201,22 +165,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         }
     }
 
-    public class retractSlide implements Action {
-        public retractSlide(HardwareMap hMap) {
 
-        }
-
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            setOuttakeArmPosition(outtakeArmServos.grabFromWall);//actual value was 0
-            setOuttakeClawPosition(0.2);
-            setOuttakeArmPosition(outtakeArmServos.standby);
-            setSlidesTarget(0, 2);
-
-            return false;
-        }
-    }
     public class setServos implements Action {
         double intakeClawPos;
         double outtakeClawPos;
@@ -229,13 +178,12 @@ public final class AutoMainSamplePathing extends LinearOpMode {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            intakeClaw.setPosition(intakeClawPos);
+            intakeClawServo.setPosition(intakeClawPos);
             outtakeClaw.setPosition(outtakeClawPos);
             outtakeArmServos.setArmTarget(outtakeArmPos);
             return false;
         }
     }
-
     public void setSlidesTarget(double target, double seconds){
         ElapsedTime timer;
         timer=new ElapsedTime();
@@ -273,8 +221,8 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     public void setIntakeClawPosition(double position){
         ElapsedTime timer;
         timer=new ElapsedTime();
-        double estimatedTime=Math.abs((intakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
-        intakeClaw.setPosition(position);
+        double estimatedTime=Math.abs((intakeClawServo.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
+        intakeClawServo.setPosition(position);
         while (timer.seconds()<estimatedTime){
             //empty loop. Keeps running until actual position reaches target position
         }
