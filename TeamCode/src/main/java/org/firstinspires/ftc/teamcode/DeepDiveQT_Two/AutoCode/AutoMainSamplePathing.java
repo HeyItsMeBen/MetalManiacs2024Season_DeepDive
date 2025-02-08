@@ -130,8 +130,9 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 //go and achieve first ascent
                 .splineToLinearHeading(new Pose2d(-25* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
                     .stopAndAdd(new achieveFirstAscent(hardwareMap))
+                    //.stopAndAdd(new grabSample(hardwareMap))
                 //.splineToLinearHeading(new Pose2d(-24* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
-                        .waitSeconds(2)
+                        .waitSeconds(1)
                 .build());
     }
 
