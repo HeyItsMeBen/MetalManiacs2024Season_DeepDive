@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Slides_PID {
-    private static double Kp = 0.009, Ki = 0, Kd = 0.0005, Kf = 0;
+    private static double Kp = 0.02, Ki = 0, Kd = 0.0005, Kf = 0;
     private final double ticks_in_degree = 537.7/360;
     PIDController slideController= new PIDController(Kp, Ki, Kd);
     DcMotor rightSlide;

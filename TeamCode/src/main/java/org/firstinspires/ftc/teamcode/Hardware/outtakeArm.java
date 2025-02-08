@@ -5,25 +5,28 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class outtakeArm {
-    private Servo outtakeArm;
+    private Servo outtakeArmRightServo;
+    private Servo outtakeArmLeftServo;
     //sample positions
-    public double grabSample=0.99; //0-->0.99
-    public double scoreSample=0.3;//0.5;
+    public double grabSample=0.865; //0.99-->0.865
+    public double scoreSample=0.3;
 
     //specimen positions
-    public double prepSpecimen=0.160;
-    public double scoreSpecimen=0.125-0.0078125;    //i got 0.0078125 by dividing 0.25(90º) by 2, four times
-    public double grabFromWall=0;   //1-->0
+    public double prepSpecimen=0.13;
+    //public double scoreSpecimen=0.125-0.0078125;    //i got 0.0078125 by dividing 0.25(90º) by 2, four times
+    public double grabFromWall=0;   //0
 
     //specimen/sample positions
-    public double standby=0.885;//0.25;
+    public double standby=0.7;//0.885-->.7
 
     public outtakeArm(HardwareMap hMap) {
-        outtakeArm = hMap.get(Servo.class, "rightOuttake"); //real name? //"outtakeArm"
+        outtakeArmRightServo = hMap.get(Servo.class, "rightOuttake"); //real name? //"outtakeArm"
+        outtakeArmLeftServo = hMap.get(Servo.class, "leftOuttake"); //real name? //"outtakeArm"
     }
 
     public void setArmTarget(double givenTarget) {
-        outtakeArm.setPosition(givenTarget);
+        outtakeArmRightServo.setPosition(givenTarget);
+        outtakeArmLeftServo.setPosition(1-givenTarget);
     }
-    public double getArmPosition(){return outtakeArm.getPosition();}
+    public double getArmPosition(){return outtakeArmRightServo.getPosition();}
 }
