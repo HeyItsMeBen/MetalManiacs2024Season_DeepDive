@@ -18,52 +18,62 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.arcrobotics.ftclib.controller.PIDController;
 
-
-
-
-import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.tuning.TuningOpModes;
-
-
-import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.DeepDiveQT_Two.AutoCode.TankDrive;
 import org.firstinspires.ftc.teamcode.Hardware.Arm_PIDF_UsableFromOtherClasses;
-import org.firstinspires.ftc.teamcode.Hardware.compLinearSlide;
+import org.firstinspires.ftc.teamcode.Hardware.Slides_PID;
+import org.firstinspires.ftc.teamcode.Hardware.outtakeArm;
 
 
 @Autonomous(name = "Sample Pathing", group = "Linear OpMode")
 public final class AutoMainSamplePathing extends LinearOpMode {
-    public double LeftStrafeCompensation=0;
-    public double MeepMeepCompensation=1.0125;
-    //Servo servo=hardwareMap.get(Servo.class, "servo");
+    double currentTileSize=71.125/3;//divide by 3 cuz 70 is the size for half a field
+    double referenceTileSize=70/3;//(reference tile should be MeepMeep)
+    double currentBotLength=17;
+    double referenceBotLength=17;
+    //Notes: 71.125(ourFieldSize), 70.5in(compFieldSize), 70in(MeepMeep)
+    double MeepMeepTileCompensation =currentTileSize/referenceTileSize;   //multiply this by every movement of the wheels (besides rotation ofc)
+    //double interactionCompensation=(currentTileSize-referenceTileSize)/2+(currentBotLength/2-referenceBotLength/2);    //applicable when bot interacts with something at it's side, rather than at it's center (eg: starting, scoring(usually), grabbing(usually). This happens cuz when field size changes and bot size stays constant, the field size to bot size ratio changes. Ask me for clarification if needed.
+    double currentInteractionDistance=(currentTileSize/2)-(currentBotLength/2);
+    double referenceInteractionDistance=(referenceTileSize/2)-(referenceBotLength/2);
+    double interactionCompensation=currentInteractionDistance-referenceInteractionDistance;
+
+    //double botSizeWhenGrabFromWall=19-(2/16);
+    //double botSizeWhenScoreSpecimen=19.86; //placeholder value. Likely NOT ACCURATE
+    double botSizeWhenGrabFromWall=17;//19
+    double botSizeWhenScoreSpecimen=17; //placeholder value. Likely NOT ACCURATE
+
+
     private PIDController armController;
     private PIDController slideController;
-    DcMotor arm;
+    Arm_PIDF_UsableFromOtherClasses arm;
+    outtakeArm outtakeArmServos;
+    Slides_PID slides;
     DcMotor leftSlide;
     DcMotor rightSlide;
     Servo intakeClaw;
+    Servo outtakeClaw;
     public static double Arm_p = 0.005, Arm_i = 0, Arm_d = 0.00075, Arm_f = 0;
     private static double Slides_p = 0.009, Slides_i = 0, Slides_d = 0.0005, Slides_f = 0;
 
-
     private final double ticks_in_degree = 537.7/360;
-
-
-
 
     @Override
     public void runOpMode() throws InterruptedException {
 
 
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
+        //arm = hardwareMap.get(DcMotor.class, "arm");
+        /*leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");*/
         intakeClaw=hardwareMap.get(Servo.class, "intakeClawServo");
+        outtakeClaw=hardwareMap.get(Servo.class, "outtakeClawServo");
+        slides = new Slides_PID(hardwareMap);
+        outtakeArmServos= new outtakeArm(hardwareMap);
+        arm = new Arm_PIDF_UsableFromOtherClasses(hardwareMap);
 
 
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        /*arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
 
 
         leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -76,7 +86,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         Pose2d beginPose = new Pose2d(-15, -60, Math.toRadians(0));
-        Vector2d scoring_position = new Vector2d((-50) * MeepMeepCompensation, (-50) * MeepMeepCompensation);
+        Vector2d scoring_position = new Vector2d((-50) * MeepMeepTileCompensation, (-50) * MeepMeepTileCompensation);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -85,11 +95,12 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
 
                 //go to scoring position and score initial sample
+                .stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArmServos.grabSample))
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                 .waitSeconds(3) //score initial sample
 
                 //grab and score first sample
-                .strafeToLinearHeading(new Vector2d(-48*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-48* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
                 //.waitSeconds(2) //grab first sample
                         .stopAndAdd(new grabSample(hardwareMap))
                 .waitSeconds(2) //transfer to linear slides
@@ -97,14 +108,14 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                 .waitSeconds(3) //score first sample
 
                 //grab and score second sample
-                .strafeToLinearHeading(new Vector2d(-57*MeepMeepCompensation, -43*MeepMeepCompensation), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-57* MeepMeepTileCompensation, -43* MeepMeepTileCompensation), Math.toRadians(90))
                 .waitSeconds(2) //grab second sample
                 .waitSeconds(2) //transfer to linear slides
                 .strafeToLinearHeading(scoring_position, Math.toRadians(45))
                 .waitSeconds(3) //score second sample
 
                 //go to achieve first ascent
-                .splineToLinearHeading(new Pose2d(-25*MeepMeepCompensation, (-5*MeepMeepCompensation), Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-25* MeepMeepTileCompensation, (-5* MeepMeepTileCompensation), Math.toRadians(180)), Math.toRadians(0))
                 .waitSeconds(1) //achieve first ascent
 
                 .build());
@@ -245,228 +256,103 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         }
     }*/
     public class retrieveSample implements Action {
-        DcMotor leftSlide = null;
-        DcMotor rightSlide = null;
-        Servo outtakeClawServo;
-        Servo slideRightServo;
-        Servo intakeClawServo;
-        int slidePos;
-        double slidePID;
-        double slideFF;
-        double slidePower ;
-        DcMotor arm;
-        int armPos;
-        double armPID;
-        double armFF;
-        double armpower;
-
-
-        ElapsedTime timer;
-
-
         public retrieveSample(HardwareMap hMap) {
-
-
-            leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-            rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
-            slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
-            intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo");
-            outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
-            arm = hardwareMap.get(DcMotor.class, "arm");
-            armController = new PIDController(Arm_p, Arm_i, Arm_d);
-
-
-            leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-//            leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-            leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-            slideController = new PIDController(Slides_p, Slides_i, Slides_d);
-
 
         }
 
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (timer == null) {
-                timer = new ElapsedTime();
-                outtakeClawServo.setPosition(0.2); //open
-            } else if (timer.seconds() >= 2.5) {
-                slideRightServo.setPosition(0); //prepare to drop sample
-            } else if (timer.seconds() >= 1.5) {
+            setOuttakeClawPosition(0.35);
+            setOuttakeArmPosition(outtakeArmServos.grabSample);
+            setOuttakeClawPosition(0.035);
+            setIntakeClawPosition(0.35);
+            setOuttakeArmPosition(outtakeArmServos.standby);
+            setSlidesTarget(-2000, 2);
+            setOuttakeArmPosition(outtakeArmServos.scoreSample);
+            //y no drop?
 
-                slideRightServo.setPosition(0.76); //clearance
-                slideController.setPID(Slides_p, Slides_i, Slides_d);
-                slidePos = rightSlide.getCurrentPosition();
-                slidePID = slideController.calculate(slidePos, -2000);
-                slideFF = Math.cos(Math.toRadians(-2000 / ticks_in_degree)) * Slides_f;
-                slidePower = slidePID + slideFF;
-                leftSlide.setPower(slidePower);
-                rightSlide.setPower(slidePower);
-//            } else if (timer.seconds() >= 1.0) {
-//
-//                armController.setPID(Arm_p, Arm_i, Arm_d);
-//                armPos = arm.getCurrentPosition();
-//                armPID = armController.calculate(armPos, -100);
-//                armFF = Math.cos(Math.toRadians(-100 / ticks_in_degree)) * Arm_f;
-//                armpower = armPID + armFF;
-//                arm.setPower(armpower);
-            } else if (timer.seconds() >= 0.5) {
-                outtakeClawServo.setPosition(0.035); //close linear slides claw
-                intakeClawServo.setPosition(0.35);   //open claw
-                //slideRightServo.setPosition(0.76); //clearance
-            } else {
-                slideRightServo.setPosition(.99); //posed to transfer sample
-            }
-
-            // do we need to keep running?
-            if (timer.seconds() < 3){
-                return true;
-            } else{
-                return false;
-            }
-
-
+            return false;
         }
     }
     public class achieveFirstAscent implements Action {
-
-        Servo slideRightServo;
-        ElapsedTime timer;
         public achieveFirstAscent(HardwareMap hMap) {
 
-
-            slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
-
-
         }
-
-
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (timer == null) {
-                timer = new ElapsedTime();
-                slideRightServo.setPosition(0.5); //touch the bar
-            }
-            // do we need to keep running?
-            if (timer.seconds() < 3){
-                return true;
-            } else{
-                return false;
-            }
+            setOuttakeArmPosition(0.7);//0.5-->0.7(to be safe. Re-assign new value later)
+            return false;
         }
     }
 
     public class retractSlide implements Action {
-
-        DcMotor leftSlide = null;
-        DcMotor rightSlide = null;
-        Servo outtakeClawServo;
-        Servo slideRightServo;
-        Servo intakeClawServo;
-        int slidePos;
-        double slidePID;
-        double slideFF;
-        double slidePower ;
-        DcMotor arm;
-        int armPos;
-        double armPID;
-        double armFF;
-        double armpower;
-        ElapsedTime timer;
-
         public retractSlide(HardwareMap hMap) {
-
-
-            leftSlide = hardwareMap.get(DcMotor.class, "leftSlide");
-            rightSlide = hardwareMap.get(DcMotor.class, "rightSlide");
-            slideRightServo = hardwareMap.get(Servo.class, "rightOuttake");
-            intakeClawServo = hardwareMap.get(Servo.class, "intakeClawServo");
-            outtakeClawServo = hardwareMap.get(Servo.class, "outtakeServo");
-            arm = hardwareMap.get(DcMotor.class, "arm");
-            armController = new PIDController(Arm_p, Arm_i, Arm_d);
-
-
-            leftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-//            leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-            leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-            slideController = new PIDController(Slides_p, Slides_i, Slides_d);
-
 
         }
 
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            if (timer == null) {
-                timer = new ElapsedTime();
-                slideRightServo.setPosition(0); //prepare to drop sample
-            } else if (timer.seconds() >= 1.5) {
-                slideController.setPID(Slides_p, Slides_i, Slides_d);
-                slidePos = rightSlide.getCurrentPosition();
-                slidePID = slideController.calculate(slidePos, 0);
-                slideFF = Math.cos(Math.toRadians(0 / ticks_in_degree)) * Slides_f;
-                slidePower = slidePID + slideFF;
-                leftSlide.setPower(slidePower);
-                rightSlide.setPower(slidePower);
-            } else if (timer.seconds() >= 1) {
-                slideRightServo.setPosition(0.5); //pivot over linear slides
-            } else {
-                outtakeClawServo.setPosition(0.2); //open linear slide claw
-            }
-            // do we need to keep running?
-            if (timer.seconds() < 2.5){
-                return true;
-            } else{
-                return false;
-            }
+            setOuttakeArmPosition(outtakeArmServos.grabFromWall);//actual value was 0
+            setOuttakeClawPosition(0.2);
+            setOuttakeArmPosition(outtakeArmServos.standby);
+            setSlidesTarget(0, 2);
+
+            return false;
+        }
+    }
+    public class setServos implements Action {
+        double intakeClawPos;
+        double outtakeClawPos;
+        double outtakeArmPos;
+        public setServos(HardwareMap hMap, double intakeClawPosition, double outtakeClawPosition, double outtakeArmPosition) {
+            intakeClawPos=intakeClawPosition;
+            outtakeClawPos=outtakeClawPosition;
+            outtakeArmPos=outtakeArmPosition;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intakeClaw.setPosition(intakeClawPos);
+            outtakeClaw.setPosition(outtakeClawPos);
+            outtakeArmServos.setArmTarget(outtakeArmPos);
+            return false;
         }
     }
 
-    public void setArmTarget(double target, double seconds){
-        DcMotor arm;
-        int armPos;
-        double armPID;
-        double armFF;
-        double armpower;
+    public void setSlidesTarget(double target, double seconds){
         ElapsedTime timer;
         timer=new ElapsedTime();
 
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armController = new PIDController(Arm_p, Arm_i, Arm_d);
+        while (timer.seconds()<seconds) {
+            slides.setSlidesTarget(target);
+        }
+    }
+    public void setOuttakeArmPosition(double position){
+        ElapsedTime timer;
+        timer=new ElapsedTime();
+        double estimatedTime=Math.abs((outtakeArmServos.getArmPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
+        outtakeArmServos.setArmTarget(position);
+        while (timer.seconds()<estimatedTime){
+            //empty loop. Keeps running until actual position reaches target position
+        }
+    }
+    public void setOuttakeClawPosition(double position){
+        ElapsedTime timer;
+        timer=new ElapsedTime();
+        double estimatedTime=Math.abs((outtakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and multiplied by 2 becuase we are not using full range of motion
+        outtakeClaw.setPosition(position);
+        while (timer.seconds()<estimatedTime){
+            //empty loop. Keeps running until actual position reaches target position
+        }
+    }
+    public void setArmTarget(double target, double seconds){
+        ElapsedTime timer;
+        timer=new ElapsedTime();
 
         while (timer.seconds()<seconds) {
-            armController.setPID(Arm_p, Arm_i, Arm_d);
-            armPos = arm.getCurrentPosition();
-            armPID = armController.calculate(armPos, target);
-            armFF = Math.cos(Math.toRadians(target / ticks_in_degree)) * Arm_f;
-            armpower = armPID + armFF;
-            arm.setPower(armpower);
+            arm.setArmTarget(target);
         }
     }
     public void setIntakeClawPosition(double position){
@@ -477,6 +363,13 @@ public final class AutoMainSamplePathing extends LinearOpMode {
         while (timer.seconds()<estimatedTime){
             //empty loop. Keeps running until actual position reaches target position
         }
+    }
+    double getNewInteractionvalue(double newRefBotLength){
+        double newCurrentBotLength=newRefBotLength*(currentBotLength/referenceBotLength);
+        double newCurrentInteractionDistance=(currentTileSize/2)-(newCurrentBotLength-currentBotLength/2); //calculates distance from the center of the bot to the edge of the claw(or whatever “interact
+        double newReferenceInteractionDistance=(referenceTileSize/2)-(newRefBotLength-referenceBotLength/2);
+        double newInteractionCompensation=newCurrentInteractionDistance-newReferenceInteractionDistance;
+        return newInteractionCompensation;
     }
 }
 

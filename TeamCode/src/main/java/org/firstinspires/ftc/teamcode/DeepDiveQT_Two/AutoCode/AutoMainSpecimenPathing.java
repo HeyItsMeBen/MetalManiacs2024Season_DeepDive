@@ -30,13 +30,15 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
     double referenceInteractionDistance=(referenceTileSize/2)-(referenceBotLength/2);
     double interactionCompensation=currentInteractionDistance-referenceInteractionDistance;
 
-    double botSizeWhenGrabFromWall=19-(2/16);
-    double botSizeWhenScoreSpecimen=19.86;
+    //double botSizeWhenGrabFromWall=17+3.375;
+    //double botSizeWhenScoreSpecimen=19.86; //placeholder value. Likely NOT ACCURATE
+    double botSizeWhenGrabFromWall=17;
+    double botSizeWhenScoreSpecimen=17; //placeholder value. Likely NOT ACCURATE
 
     Servo intakeClaw;
     Servo outtakeClaw;
     Slides_PID slides;
-    org.firstinspires.ftc.teamcode.Hardware.outtakeArm outtakeArm;
+    outtakeArm outtakeArmServos;
     //Servo servo=hardwareMap.get(Servo.class, "servo");
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,7 +46,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         intakeClaw= hardwareMap.get(Servo.class, "intakeClawServo");
         outtakeClaw= hardwareMap.get(Servo.class, "outtakeServo");
         slides = new Slides_PID(hardwareMap);
-        outtakeArm = new outtakeArm(hardwareMap);
+        outtakeArmServos = new outtakeArm(hardwareMap);
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -52,13 +54,16 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
             Actions.runBlocking(
                     drive.actionBuilder(beginPose)
                             //go to scoring position
-                            .stopAndAdd(new setServos(hardwareMap, 0, 0, 0.99))
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0, 0.8))
                             .waitSeconds(3) //set timer if you want
                             //hang preloaded sample
                             .strafeTo(new Vector2d((5) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation))
 
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
-                            //.waitSeconds(4)
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.5))
+                            .waitSeconds(1)
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArmServos.prepSpecimen))
+                            .waitSeconds(4)
                             .strafeTo( new Vector2d((5) * MeepMeepTileCompensation, (-32.75-0.1875006+getNewInteractionvalue(botSizeWhenScoreSpecimen)) * MeepMeepTileCompensation))    //scores
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             //.waitSeconds(4)
@@ -85,6 +90,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             //score specimen
                             //grab specimen from wall 1
                             .strafeToLinearHeading(new Vector2d((45) * MeepMeepTileCompensation, (-45) * MeepMeepTileCompensation), Math.toRadians(90))  //get out of observation zone    //-47
+                            .stopAndAdd(new grabSpecimenFromWallPart1(hardwareMap))
                             .waitSeconds(1) //Human get ready!
                             .strafeTo(new Vector2d((45) * MeepMeepTileCompensation, (-55.25+0.1875006-getNewInteractionvalue(botSizeWhenGrabFromWall)) * MeepMeepTileCompensation))  //-70+11.5-->-50-->
                             .stopAndAdd(new grabSpecimenFromWallPart2(hardwareMap))
@@ -98,9 +104,9 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             .splineTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation), Math.toRadians(90))
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
                             .waitSeconds(4)
-                            //.stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.597222222))
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.5))
                             .waitSeconds(1)
-                            //.stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArm.prepSpecimen))
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArmServos.prepSpecimen))
                             .strafeTo( new Vector2d((5-4) * MeepMeepTileCompensation, (-31.25-0.1875006+getNewInteractionvalue(botSizeWhenScoreSpecimen)) * MeepMeepTileCompensation))     //scores //-4-->0
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             //.waitSeconds(4)
@@ -124,9 +130,9 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
                             .splineTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation), Math.toRadians(90))
                             .stopAndAdd(new scoreSpecimenPart1(hardwareMap))
                             .waitSeconds(4)
-                            //.stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.597222222))
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0.035, 0.5))
                             .waitSeconds(1)
-                            //.stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArm.prepSpecimen))
+                            .stopAndAdd(new setServos(hardwareMap, 0, 0, outtakeArmServos.prepSpecimen))
                             .strafeTo( new Vector2d((5-8) * MeepMeepTileCompensation, (-31.25-0.1875006+getNewInteractionvalue(botSizeWhenScoreSpecimen)) * MeepMeepTileCompensation))     //scores //-4-->0
                             .stopAndAdd(new scoreSpecimenPart2(hardwareMap))                                                //releases
                             //.waitSeconds(4)
@@ -147,7 +153,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         }
         //@Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            //setOuttakeArmPosition(outtakeArm.prepSpecimen);
+            setOuttakeArmPosition(outtakeArmServos.prepSpecimen);
             setSlidesTarget(875, 2);    //-875-->875
             return false;
         }
@@ -166,7 +172,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         //@Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             setSlidesTarget(0, 2);   //retract slides downward.
-            //setOuttakeArmPosition(outtakeArm.standby);
+            setOuttakeArmPosition(outtakeArmServos.standby);
 
             return false;
         }
@@ -177,12 +183,12 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
     public class setStandby implements Action {
 
         public setStandby(HardwareMap hMap) {
-            outtakeArm = new outtakeArm(hMap);
+            outtakeArmServos = new outtakeArm(hMap);
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            outtakeArm.setArmTarget(outtakeArm.standby);
+            outtakeArmServos.setArmTarget(outtakeArmServos.standby);
             return false;
         }
     }
@@ -200,7 +206,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             intakeClaw.setPosition(intakeClawPos);
             outtakeClaw.setPosition(outtakeClawPos);
-            //outtakeArm.setArmTarget(outtakeArmPos);
+            outtakeArmServos.setArmTarget(outtakeArmPos);
             return false;
         }
     }
@@ -209,7 +215,7 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
         public grabSpecimenFromWallPart1(HardwareMap hMap) {}
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            //setOuttakeArmPosition(0);
+            setOuttakeArmPosition(outtakeArmServos.grabFromWall);
             return false;
         }
     }
@@ -233,8 +239,8 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
     public void setOuttakeArmPosition(double position){
         ElapsedTime timer;
         timer=new ElapsedTime();
-        double estimatedTime=Math.abs((outtakeArm.getArmPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
-        outtakeArm.setArmTarget(position);
+        double estimatedTime=Math.abs((outtakeArmServos.getArmPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and divided by half becuase we are not using full range of motion
+        outtakeArmServos.setArmTarget(position);
         while (timer.seconds()<estimatedTime){
             //empty loop. Keeps running until actual position reaches target position
         }
@@ -242,9 +248,6 @@ public final class AutoMainSpecimenPathing extends LinearOpMode {
     public void setOuttakeClawPosition(double position){
         ElapsedTime timer;
         timer=new ElapsedTime();
-        //if (outtakeClaw.getPosition()==null){
-            //outtakeClaw.setPosition(0);
-        //}
         double estimatedTime=Math.abs((outtakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and multiplied by 2 becuase we are not using full range of motion
         outtakeClaw.setPosition(position);
         while (timer.seconds()<estimatedTime){

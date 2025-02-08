@@ -21,7 +21,7 @@ public class MeepMeepSpecimenWithCompensation {
         double interactionCompensation=currentInteractionDistance-referenceInteractionDistance;
 
         double botSizeWhenGrabFromWall=19-(2/16);
-        double botSizeWhenScoreSpecimen=19.86;
+        double botSizeWhenScoreSpecimen=19.86;  //placeholder value. Likely NOT ACCURATE
 
         double grabFromWallCompensation=((currentTileSize/2)-((botSizeWhenGrabFromWall*(currentBotLength/referenceBotLength))-currentBotLength/2))-((referenceTileSize/2)-(botSizeWhenGrabFromWall-referenceBotLength/2));  //This is here because i wasn't allowed to put methods in MeepMeep. I used a method in the autonomous programs, and it's a lot smoother than these variables here
         double scoreSpecimenCompensation=((currentTileSize/2)-((botSizeWhenScoreSpecimen*(currentBotLength/referenceBotLength))-currentBotLength/2))-((referenceTileSize/2)-(botSizeWhenScoreSpecimen-referenceBotLength/2)); //This is here because i wasn't allowed to put methods in MeepMeep. I used a method in the autonomous programs, and it's a lot smoother than these variables here
