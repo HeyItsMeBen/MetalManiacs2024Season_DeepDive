@@ -98,7 +98,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
                     .stopAndAdd(new setOuttakeArm(hardwareMap, outtakeArmServos.grabSample))
                     .stopAndAdd(new setIntakeClaw(hardwareMap, 0.35))
 
-                .strafeTo(slides_up_position) //move out. This way, not hit wall when spin
+                .strafeTo(slides_up_position) //move out. This way, will not hit wall when spin
                 .turnTo(Math.toRadians(45))
                     .stopAndAdd(new prepSample(hardwareMap))
                     .strafeTo(scoring_position) //prepare to score sample
@@ -268,7 +268,7 @@ public final class AutoMainSamplePathing extends LinearOpMode {
     public void setOuttakeClawPosition(double position){
         ElapsedTime timer;
         timer=new ElapsedTime();
-        double estimatedTime=Math.abs((outtakeClaw.getPosition()-position))*0.8;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and multiplied by 2 becuase we are not using full range of motion
+        double estimatedTime=Math.abs((outtakeClaw.getPosition()-position))*1.2;//intake claw took 0.35 seconds (roughly) to open all the way (by all the way i mean from 0 to 0.5). So, i rounded up to 0.4 and multiplied by 2 becuase we are not using full range of motion
         outtakeClaw.setPosition(position);
         while (timer.seconds()<estimatedTime && opModeIsActive()){
             //empty loop. Keeps running until actual position reaches target position
