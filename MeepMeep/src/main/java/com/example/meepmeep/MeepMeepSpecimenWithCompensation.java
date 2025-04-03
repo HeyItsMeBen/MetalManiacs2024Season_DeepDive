@@ -42,7 +42,7 @@ public class MeepMeepSpecimenWithCompensation {
                 //.stopAndAdd(new setServos(hardwareMap, 0, 0, 0.99))
                 .waitSeconds(3) //set timer if you want
                 //hang preloaded sample
-                .strafeTo(new Vector2d((5) * MeepMeepTileCompensation, (-39.5) * MeepMeepTileCompensation))
+                .strafeTo(new Vector2d((-56) * MeepMeepTileCompensation, (-56) * MeepMeepTileCompensation))
 
                 //.stopAndAdd(new scoreSpecimenPart1(hardwareMap))
                 .waitSeconds(4)
